@@ -8,32 +8,24 @@
     "net10.0": []
   },
   "packageFolders": {
-    "C:\\Users\\bmrom\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\1dami\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\bmrom\\Documents\\Clases FP\\Retos Intermodulares\\Reto Investigacion\\clueGame\\clueGame\\clueGame.csproj",
+      "projectUniqueName": "C:\\Users\\1dami\\Documents\\Reto Investigacion\\clue\\clueGame\\clueGame.csproj",
       "projectName": "clueGame",
-      "projectPath": "C:\\Users\\bmrom\\Documents\\Clases FP\\Retos Intermodulares\\Reto Investigacion\\clueGame\\clueGame\\clueGame.csproj",
-      "packagesPath": "C:\\Users\\bmrom\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\bmrom\\Documents\\Clases FP\\Retos Intermodulares\\Reto Investigacion\\clueGame\\clueGame\\obj\\",
+      "projectPath": "C:\\Users\\1dami\\Documents\\Reto Investigacion\\clue\\clueGame\\clueGame.csproj",
+      "packagesPath": "C:\\Users\\1dami\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\1dami\\Documents\\Reto Investigacion\\clue\\clueGame\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\bmrom\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\1dami\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -52,7 +44,7 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.100"
+      "SdkAnalysisLevel": "10.0.200"
     },
     "frameworks": {
       "net10.0": {
@@ -76,7 +68,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

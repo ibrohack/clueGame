@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("clueGame")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+81756900e4679ef66e65da00518f8a3b2653844d")]
 [assembly: System.Reflection.AssemblyProductAttribute("clueGame")]
 [assembly: System.Reflection.AssemblyTitleAttribute("clueGame")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
