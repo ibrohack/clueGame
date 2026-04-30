@@ -1,0 +1,8 @@
+[
+  { "_id": "weapon_1", "name": "Candelabro", "imageUrl": "/img/weapons/candelabro.png" },
+  { "_id": "weapon_2", "name": "Cuchillo", "imageUrl": "/img/weapons/cuchillo.png" },
+  { "_id": "weapon_3", "name": "Tubería de Plomo", "imageUrl": "/img/weapons/tuberia.png" },
+  { "_id": "weapon_4", "name": "Pistola", "imageUrl": "/img/weapons/pistola.png" },
+  { "_id": "weapon_5", "name": "Cuerda", "imageUrl": "/img/weapons/cuerda.png" },
+  { "_id": "weapon_6", "name": "Llave Inglesa", "imageUrl": "/img/weapons/llave.png" }
+]

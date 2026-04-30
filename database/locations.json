@@ -1,0 +1,11 @@
+[
+  { "_id": "location_1", "name": "Cocina", "imageUrl": "/img/locations/cocina.png" },
+  { "_id": "location_2", "name": "Comedor", "imageUrl": "/img/locations/comedor.png" },
+  { "_id": "location_3", "name": "Sala de Baile", "imageUrl": "/img/locations/sala_baile.png" },
+  { "_id": "location_4", "name": "Invernadero", "imageUrl": "/img/locations/invernadero.png" },
+  { "_id": "location_5", "name": "Billar", "imageUrl": "/img/locations/billar.png" },
+  { "_id": "location_6", "name": "Biblioteca", "imageUrl": "/img/locations/biblioteca.png" },
+  { "_id": "location_7", "name": "Estudio", "imageUrl": "/img/locations/estudio.png" },
+  { "_id": "location_8", "name": "Vestíbulo", "imageUrl": "/img/locations/vestibulo.png" },
+  { "_id": "location_9", "name": "Salón", "imageUrl": "/img/locations/salon.png" }
+]

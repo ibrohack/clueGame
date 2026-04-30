@@ -1,0 +1,117 @@
+[
+  {
+    "_id": "game_001",
+    "createdAt": "2026-04-30T10:00:00Z",
+    "isFinished": false,
+    "secret": {
+      "characterId": "character_4",
+      "weaponId": "weapon_2",
+      "locationId": "location_7"
+    },
+    "players": [
+      {
+        "playerId": "player_001",
+        "name": "Brayan",
+        "turnOrder": 1,
+        "detectiveSheet": {
+          "characters": [
+            { "id": "character_1", "status": "discarded" },
+            { "id": "character_2", "status": "unknown" },
+            { "id": "character_3", "status": "suspect" },
+            { "id": "character_4", "status": "suspect" },
+            { "id": "character_5", "status": "discarded" },
+            { "id": "character_6", "status": "unknown" }
+          ],
+          "weapons": [
+            { "id": "weapon_1", "status": "discarded" },
+            { "id": "weapon_2", "status": "suspect" },
+            { "id": "weapon_3", "status": "unknown" },
+            { "id": "weapon_4", "status": "unknown" },
+            { "id": "weapon_5", "status": "discarded" },
+            { "id": "weapon_6", "status": "unknown" }
+          ],
+          "locations": [
+            { "id": "location_1", "status": "discarded" },
+            { "id": "location_2", "status": "unknown" },
+            { "id": "location_3", "status": "unknown" },
+            { "id": "location_4", "status": "suspect" },
+            { "id": "location_5", "status": "discarded" },
+            { "id": "location_6", "status": "unknown" },
+            { "id": "location_7", "status": "suspect" },
+            { "id": "location_8", "status": "unknown" },
+            { "id": "location_9", "status": "unknown" }
+          ]
+        }
+      },
+      {
+        "playerId": "player_002",
+        "name": "Ana",
+        "turnOrder": 2,
+        "detectiveSheet": {
+          "characters": [
+            { "id": "character_1", "status": "unknown" },
+            { "id": "character_2", "status": "suspect" },
+            { "id": "character_3", "status": "discarded" },
+            { "id": "character_4", "status": "unknown" },
+            { "id": "character_5", "status": "unknown" },
+            { "id": "character_6", "status": "discarded" }
+          ],
+          "weapons": [
+            { "id": "weapon_1", "status": "unknown" },
+            { "id": "weapon_2", "status": "unknown" },
+            { "id": "weapon_3", "status": "discarded" },
+            { "id": "weapon_4", "status": "suspect" },
+            { "id": "weapon_5", "status": "unknown" },
+            { "id": "weapon_6", "status": "discarded" }
+          ],
+          "locations": [
+            { "id": "location_1", "status": "unknown" },
+            { "id": "location_2", "status": "discarded" },
+            { "id": "location_3", "status": "unknown" },
+            { "id": "location_4", "status": "unknown" },
+            { "id": "location_5", "status": "suspect" },
+            { "id": "location_6", "status": "unknown" },
+            { "id": "location_7", "status": "unknown" },
+            { "id": "location_8", "status": "discarded" },
+            { "id": "location_9", "status": "unknown" }
+          ]
+        }
+      },
+      {
+        "playerId": "player_003",
+        "name": "Carlos",
+        "turnOrder": 3,
+        "detectiveSheet": {
+          "characters": [
+            { "id": "character_1", "status": "unknown" },
+            { "id": "character_2", "status": "unknown" },
+            { "id": "character_3", "status": "unknown" },
+            { "id": "character_4", "status": "unknown" },
+            { "id": "character_5", "status": "discarded" },
+            { "id": "character_6", "status": "suspect" }
+          ],
+          "weapons": [
+            { "id": "weapon_1", "status": "unknown" },
+            { "id": "weapon_2", "status": "unknown" },
+            { "id": "weapon_3", "status": "unknown" },
+            { "id": "weapon_4", "status": "discarded" },
+            { "id": "weapon_5", "status": "unknown" },
+            { "id": "weapon_6", "status": "suspect" }
+          ],
+          "locations": [
+            { "id": "location_1", "status": "unknown" },
+            { "id": "location_2", "status": "unknown" },
+            { "id": "location_3", "status": "discarded" },
+            { "id": "location_4", "status": "unknown" },
+            { "id": "location_5", "status": "unknown" },
+            { "id": "location_6", "status": "unknown" },
+            { "id": "location_7", "status": "unknown" },
+            { "id": "location_8", "status": "unknown" },
+            { "id": "location_9", "status": "suspect" }
+          ]
+        }
+      }
+    ],
+    "currentTurnPlayerId": "player_001"
+  }
+]

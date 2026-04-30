@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "guess_001",
+    "gameId": "game_001",
+    "playerId": "player_001",
+    "characterId": "character_3",
+    "weaponId": "weapon_2",
+    "locationId": "location_4",
+    "isCorrect": false,
+    "createdAt": "2026-04-30T10:05:00Z"
+  },
+  {
+    "_id": "guess_002",
+    "gameId": "game_001",
+    "playerId": "player_002",
+    "characterId": "character_2",
+    "weaponId": "weapon_4",
+    "locationId": "location_5",
+    "isCorrect": false,
+    "createdAt": "2026-04-30T10:07:00Z"
+  }
+]

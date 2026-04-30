@@ -1,0 +1,8 @@
+[
+  { "_id": "character_1", "name": "Miss Scarlet", "imageUrl": "/img/characters/scarlet.png" },
+  { "_id": "character_2", "name": "Colonel Mustard", "imageUrl": "/img/characters/mustard.png" },
+  { "_id": "character_3", "name": "Mrs. White", "imageUrl": "/img/characters/white.png" },
+  { "_id": "character_4", "name": "Mr. Green", "imageUrl": "/img/characters/green.png" },
+  { "_id": "character_5", "name": "Mrs. Peacock", "imageUrl": "/img/characters/peacock.png" },
+  { "_id": "character_6", "name": "Professor Plum", "imageUrl": "/img/characters/plum.png" }
+]
