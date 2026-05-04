@@ -1,0 +1,24 @@
+# Build results
+bin/
+obj/
+
+# IDE and Editor
+.vscode/
+.vs/
+*.user
+
+# Development settings
+appsettings.Development.json
+Properties/launchSettings.json
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
