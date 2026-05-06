@@ -1,8 +1,8 @@
 [
-  { "_id": "weapon_1", "name": "Candelabro", "imageUrl": "/img/weapons/candelabro.png" },
-  { "_id": "weapon_2", "name": "Cuchillo", "imageUrl": "/img/weapons/cuchillo.png" },
-  { "_id": "weapon_3", "name": "Tubería de Plomo", "imageUrl": "/img/weapons/tuberia.png" },
-  { "_id": "weapon_4", "name": "Pistola", "imageUrl": "/img/weapons/pistola.png" },
-  { "_id": "weapon_5", "name": "Cuerda", "imageUrl": "/img/weapons/cuerda.png" },
-  { "_id": "weapon_6", "name": "Llave Inglesa", "imageUrl": "/img/weapons/llave.png" }
+  { "_id": "weapon_1", "name": "Mower", "imageUrl": "/img/weapons/mower.png" },
+  { "_id": "weapon_2", "name": "Dumbel", "imageUrl": "/img/weapons/dumbel.png" },
+  { "_id": "weapon_3", "name": "Flowerpot", "imageUrl": "/img/weapons/flowerpot.png" },
+  { "_id": "weapon_4", "name": "Plastic Bag", "imageUrl": "/img/weapons/plastic_bag.png" },
+  { "_id": "weapon_5", "name": "Chain Saw", "imageUrl": "/img/weapons/chain_saw.png" },
+  { "_id": "weapon_6", "name": "Rat Poison", "imageUrl": "/img/weapons/rat_poison.png" }
 ]
