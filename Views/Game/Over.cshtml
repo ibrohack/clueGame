@@ -1,0 +1,24 @@
+@model clueGame.Models.ViewModels.GameOverViewModel
+@{
+    ViewData["Title"] = Model.Won ? "You Won!" : "Game Over";
+}
+
+@if (Model.Won)
+{
+    <h2>You solved the mystery!</h2>
+    <p>Congratulations — your accusation was correct.</p>
+}
+else
+{
+    <h2>Game Over</h2>
+    <p>Your accusation was wrong. Better luck next time.</p>
+}
+
+<h3>The Solution Was:</h3>
+<ul>
+    <li><strong>Suspect:</strong> @Model.SecretCharacterName</li>
+    <li><strong>Weapon:</strong> @Model.SecretWeaponName</li>
+    <li><strong>Location:</strong> @Model.SecretLocationName</li>
+</ul>
+
+<a asp-action="New">Play Again</a>

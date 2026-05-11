@@ -1,0 +1,26 @@
+@model clueGame.Models.ViewModels.NewGameViewModel
+@{
+    ViewData["Title"] = "New Game";
+}
+
+<h2>Start a New Game</h2>
+
+<form asp-action="Create" method="post" style="max-width:400px">
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div>
+        <label asp-for="BotCount">Number of bots (2–5)</label>
+        <select asp-for="BotCount">
+            <option value="2">2 bots (3 players total)</option>
+            <option value="3" selected>3 bots (4 players total)</option>
+            <option value="4">4 bots (5 players total)</option>
+            <option value="5">5 bots (6 players total)</option>
+        </select>
+        <span asp-validation-for="BotCount" class="text-danger"></span>
+    </div>
+
+    <br />
+    <button type="submit">Start Game</button>
+</form>

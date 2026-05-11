@@ -1,0 +1,234 @@
+@model clueGame.Models.ViewModels.BoardViewModel
+@{
+    ViewData["Title"] = "Game Board";
+    var game = Model.Game;
+    var human = Model.HumanPlayer;
+    var isHumanTurn = game.TurnPhase == "human_suggestion";
+    var isHumanDone = game.TurnPhase == "human_done";
+    var isBotTurns = game.TurnPhase == "bot_turns";
+
+    string StatusLabel(string status) => status switch
+    {
+        "in_hand"  => "[MY CARD]",
+        "discarded"=> "[SEEN]",
+        "suspect"  => "[?]",
+        _          => "[ ]"
+    };
+}
+
+<h2>Game Board</h2>
+
+<p>
+    <strong>Your character:</strong>
+    @Model.Characters.FirstOrDefault(c => c.Id == human.CharacterId)?.Name
+    &nbsp;|&nbsp;
+    <strong>Phase:</strong> @game.TurnPhase
+    &nbsp;|&nbsp;
+    <strong>Players:</strong> @string.Join(", ", game.Players.Select(p => p.Name + (p.IsBot ? " (bot)" : " (you)")))
+</p>
+
+@* ── Suggestion result ── *@
+@if (Model.LastSuggestionResult is { } sr)
+{
+    <div style="border:1px solid #999;padding:8px;margin-bottom:12px">
+        <strong>Your suggestion:</strong>
+        @sr.CharacterName + @sr.WeaponName + @sr.LocationName
+        <br />
+        @if (sr.NoOneRefuted)
+        {
+            <span>Nobody could refute your suggestion.</span>
+        }
+        else
+        {
+            <span><strong>@sr.RefutedByName</strong> showed you: <strong>@sr.ShownCardName</strong></span>
+        }
+    </div>
+}
+
+@* ── Bot turn summary ── *@
+@if (Model.CurrentBotTurn is { } bt)
+{
+    <div style="border:1px solid #aaa;padding:8px;margin-bottom:12px">
+        <strong>@bt.BotName's turn:</strong>
+        @if (!string.IsNullOrEmpty(bt.CharacterName))
+        {
+            <span>Suggested @bt.CharacterName + @bt.WeaponName at @bt.LocationName.</span>
+        }
+        <br />
+        @if (bt.NoOneRefuted)
+        {
+            <span>Nobody refuted.</span>
+        }
+        else
+        {
+            <span>Refuted by <strong>@bt.RefutedByName</strong>.</span>
+        }
+    </div>
+}
+
+@* ── Action panel ── *@
+<div style="margin-bottom:16px">
+    @if (isHumanTurn)
+    {
+        <a asp-action="Accuse" asp-route-gameId="@game.Id">Make Accusation</a>
+        <text> | </text>
+        <a href="#suggest-form">Make Suggestion ↓</a>
+    }
+
+    @if (isHumanDone)
+    {
+        <form asp-action="EndTurn" method="post" style="display:inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="gameId" value="@game.Id" />
+            <button type="submit">End Turn (start bot turns)</button>
+        </form>
+    }
+
+    @if (isBotTurns)
+    {
+        <form asp-action="NextBot" method="post" style="display:inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="gameId" value="@game.Id" />
+            <input type="hidden" name="botIndex" value="@game.PendingBotIndex" />
+            <button type="submit">Next Bot Turn →</button>
+        </form>
+    }
+
+    &nbsp;|&nbsp;
+    <form asp-action="Abandon" method="post" style="display:inline"
+          onsubmit="return confirm('Abandon this game?')">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="gameId" value="@game.Id" />
+        <button type="submit">Abandon Game</button>
+    </form>
+</div>
+
+@* ── Detective Sheet ── *@
+<h3>Detective Sheet</h3>
+
+<table border="1" cellpadding="4" style="border-collapse:collapse;margin-bottom:16px">
+    <tr><th colspan="3">Suspects</th></tr>
+    <tr><th>Name</th><th>Status</th><th>Mark</th></tr>
+    @foreach (var card in human.DetectiveSheet.Characters)
+    {
+        var name = Model.Characters.FirstOrDefault(c => c.Id == card.Id)?.Name ?? card.Id;
+        <tr>
+            <td>@name</td>
+            <td>@StatusLabel(card.Status)</td>
+            <td>
+                @if (card.Status != "in_hand")
+                {
+                    <form asp-action="ToggleCardStatus" method="post" style="display:inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="gameId" value="@game.Id" />
+                        <input type="hidden" name="cardId" value="@card.Id" />
+                        <select name="status">
+                            <option value="unknown" selected="@(card.Status=="unknown")">Unknown</option>
+                            <option value="suspect" selected="@(card.Status=="suspect")">Suspect</option>
+                            <option value="discarded" selected="@(card.Status=="discarded")">Discarded</option>
+                        </select>
+                        <button type="submit">Set</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+</table>
+
+<table border="1" cellpadding="4" style="border-collapse:collapse;margin-bottom:16px">
+    <tr><th colspan="3">Weapons</th></tr>
+    <tr><th>Name</th><th>Status</th><th>Mark</th></tr>
+    @foreach (var card in human.DetectiveSheet.Weapons)
+    {
+        var name = Model.Weapons.FirstOrDefault(w => w.Id == card.Id)?.Name ?? card.Id;
+        <tr>
+            <td>@name</td>
+            <td>@StatusLabel(card.Status)</td>
+            <td>
+                @if (card.Status != "in_hand")
+                {
+                    <form asp-action="ToggleCardStatus" method="post" style="display:inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="gameId" value="@game.Id" />
+                        <input type="hidden" name="cardId" value="@card.Id" />
+                        <select name="status">
+                            <option value="unknown" selected="@(card.Status=="unknown")">Unknown</option>
+                            <option value="suspect" selected="@(card.Status=="suspect")">Suspect</option>
+                            <option value="discarded" selected="@(card.Status=="discarded")">Discarded</option>
+                        </select>
+                        <button type="submit">Set</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+</table>
+
+<table border="1" cellpadding="4" style="border-collapse:collapse;margin-bottom:24px">
+    <tr><th colspan="3">Locations</th></tr>
+    <tr><th>Name</th><th>Status</th><th>Mark</th></tr>
+    @foreach (var card in human.DetectiveSheet.Locations)
+    {
+        var name = Model.Locations.FirstOrDefault(l => l.Id == card.Id)?.Name ?? card.Id;
+        <tr>
+            <td>@name</td>
+            <td>@StatusLabel(card.Status)</td>
+            <td>
+                @if (card.Status != "in_hand")
+                {
+                    <form asp-action="ToggleCardStatus" method="post" style="display:inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="gameId" value="@game.Id" />
+                        <input type="hidden" name="cardId" value="@card.Id" />
+                        <select name="status">
+                            <option value="unknown" selected="@(card.Status=="unknown")">Unknown</option>
+                            <option value="suspect" selected="@(card.Status=="suspect")">Suspect</option>
+                            <option value="discarded" selected="@(card.Status=="discarded")">Discarded</option>
+                        </select>
+                        <button type="submit">Set</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+</table>
+
+@* ── Suggestion form ── *@
+@if (isHumanTurn)
+{
+    <h3 id="suggest-form">Make a Suggestion</h3>
+    <form asp-action="Suggest" method="post" style="max-width:400px">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="GameId" value="@game.Id" />
+
+        <div>
+            <label>Suspect</label>
+            <select name="CharacterId">
+                @foreach (var c in Model.Characters)
+                {
+                    <option value="@c.Id">@c.Name</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label>Weapon</label>
+            <select name="WeaponId">
+                @foreach (var w in Model.Weapons)
+                {
+                    <option value="@w.Id">@w.Name</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label>Location</label>
+            <select name="LocationId">
+                @foreach (var l in Model.Locations)
+                {
+                    <option value="@l.Id">@l.Name</option>
+                }
+            </select>
+        </div>
+        <br />
+        <button type="submit">Submit Suggestion</button>
+    </form>
+}

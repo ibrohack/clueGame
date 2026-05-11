@@ -1,0 +1,36 @@
+@model clueGame.Models.ViewModels.ShowCardViewModel
+@{
+    ViewData["Title"] = "Show a Card";
+}
+
+<h2>Show a Card to @Model.BotName</h2>
+
+<p>
+    <strong>@Model.BotName</strong> suggested:
+    <strong>@Model.CharacterName</strong> with <strong>@Model.WeaponName</strong>
+    at <strong>@Model.LocationName</strong>.
+</p>
+<p>You hold one or more of these cards. Choose which one to reveal:</p>
+
+<form asp-action="ShowCard" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="gameId" value="@Model.GameId" />
+    <input type="hidden" name="botPlayerId" value="@Model.BotPlayerId" />
+    <input type="hidden" name="botIndex" value="@Model.BotIndex" />
+    <input type="hidden" name="suggestedCharacterId" value="@Model.SuggestedCharacterId" />
+    <input type="hidden" name="suggestedWeaponId" value="@Model.SuggestedWeaponId" />
+    <input type="hidden" name="suggestedLocationId" value="@Model.SuggestedLocationId" />
+
+    @foreach (var (id, name) in Model.MatchingCards)
+    {
+        <div>
+            <label>
+                <input type="radio" name="cardId" value="@id" required />
+                @name
+            </label>
+        </div>
+    }
+
+    <br />
+    <button type="submit">Show Selected Card</button>
+</form>

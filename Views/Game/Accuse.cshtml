@@ -1,0 +1,48 @@
+@model clueGame.Models.ViewModels.AccuseViewModel
+@{
+    ViewData["Title"] = "Make Accusation";
+}
+
+<h2>Make Your Final Accusation</h2>
+<p><strong>Warning:</strong> A wrong accusation ends the game immediately — you lose.</p>
+
+<form asp-action="Accuse" method="post" style="max-width:400px">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="GameId" />
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div>
+        <label>Suspect</label>
+        <select asp-for="CharacterId">
+            @foreach (var c in Model.Characters)
+            {
+                <option value="@c.Id">@c.Name</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label>Weapon</label>
+        <select asp-for="WeaponId">
+            @foreach (var w in Model.Weapons)
+            {
+                <option value="@w.Id">@w.Name</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label>Location</label>
+        <select asp-for="LocationId">
+            @foreach (var l in Model.Locations)
+            {
+                <option value="@l.Id">@l.Name</option>
+            }
+        </select>
+    </div>
+
+    <br />
+    <button type="submit" onclick="return confirm('Are you sure? A wrong accusation ends the game.')">
+        Submit Accusation
+    </button>
+    <a asp-action="Board" asp-route-gameId="@Model.GameId">Cancel</a>
+</form>
