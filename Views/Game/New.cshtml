@@ -5,12 +5,12 @@
 
 <h2>Start a New Game</h2>
 
-<form asp-action="Create" method="post" style="max-width:400px">
+<form asp-action="Create" method="post" style="max-width:700px">
     @Html.AntiForgeryToken()
 
     <div asp-validation-summary="All" class="text-danger"></div>
 
-    <div>
+    <div style="margin-bottom:1.5rem">
         <label asp-for="BotCount">Number of bots (2–5)</label>
         <select asp-for="BotCount">
             <option value="2">2 bots (3 players total)</option>
@@ -21,6 +21,37 @@
         <span asp-validation-for="BotCount" class="text-danger"></span>
     </div>
 
-    <br />
+    <div style="margin-bottom:1.5rem">
+        <p><strong>Choose your character:</strong></p>
+        <div style="display:flex;flex-wrap:wrap;gap:1rem">
+            @foreach (var character in Model.AvailableCharacters)
+            {
+                <label style="cursor:pointer;text-align:center;border:2px solid transparent;border-radius:8px;padding:0.5rem;transition:border-color 0.2s"
+                       class="character-card">
+                    <input type="radio" name="SelectedCharacterId" value="@character.Id"
+                           style="display:none" class="char-radio"
+                           @(Model.SelectedCharacterId == character.Id ? "checked" : "") />
+                    @if (!string.IsNullOrEmpty(character.ImageUrl))
+                    {
+                        <img src="@character.ImageUrl" alt="@character.Name"
+                             style="width:80px;height:80px;object-fit:cover;border-radius:6px;display:block" />
+                    }
+                    <span style="display:block;margin-top:0.3rem;font-size:0.85rem">@character.Name</span>
+                </label>
+            }
+        </div>
+        <span asp-validation-for="SelectedCharacterId" class="text-danger"></span>
+    </div>
+
     <button type="submit">Start Game</button>
 </form>
+
+<style>
+    .character-card:has(.char-radio:checked) {
+        border-color: #0d6efd;
+        background-color: #e7f1ff;
+    }
+    .character-card:hover {
+        border-color: #6ea8fe;
+    }
+</style>

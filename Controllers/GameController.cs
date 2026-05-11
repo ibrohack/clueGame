@@ -40,16 +40,37 @@ public class GameController : Controller
     }
 
     // GET /Game/New
-    public IActionResult New() => View(new NewGameViewModel());
+    public async Task<IActionResult> New()
+    {
+        var characters = await _mongo.GetAllCharactersAsync();
+        return View(new NewGameViewModel { AvailableCharacters = characters });
+    }
 
     // POST /Game/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(NewGameViewModel model)
     {
+        var characters = await _mongo.GetAllCharactersAsync();
+
         if (!ModelState.IsValid || model.BotCount < 2 || model.BotCount > 5)
         {
+            model.AvailableCharacters = characters;
             ModelState.AddModelError(string.Empty, "Choose between 2 and 5 bots.");
+            return View(nameof(New), model);
+        }
+
+        if (string.IsNullOrEmpty(model.SelectedCharacterId) || characters.All(c => c.Id != model.SelectedCharacterId))
+        {
+            model.AvailableCharacters = characters;
+            ModelState.AddModelError(string.Empty, "Please choose a character.");
+            return View(nameof(New), model);
+        }
+
+        if (characters.Count < model.BotCount + 1)
+        {
+            model.AvailableCharacters = characters;
+            ModelState.AddModelError(string.Empty, "Not enough characters in the database for that many bots.");
             return View(nameof(New), model);
         }
 
@@ -57,13 +78,13 @@ public class GameController : Controller
         if (user?.MongoPlayerId is null)
             return RedirectToAction("Index", "Home");
 
-        var characters = await _mongo.GetAllCharactersAsync();
         var weapons = await _mongo.GetAllWeaponsAsync();
         var locations = await _mongo.GetAllLocationsAsync();
 
         var game = _gameService.SetupGame(
             user.MongoPlayerId, user.DisplayName,
-            model.BotCount, characters, weapons, locations);
+            model.BotCount, model.SelectedCharacterId,
+            characters, weapons, locations);
 
         await _mongo.SaveGameAsync(game);
 

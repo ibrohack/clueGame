@@ -5,6 +5,8 @@ namespace clueGame.Models.ViewModels;
 public class NewGameViewModel
 {
     public int BotCount { get; set; } = 3;
+    public string SelectedCharacterId { get; set; } = string.Empty;
+    public List<MongoCharacter> AvailableCharacters { get; set; } = [];
 }
 
 public class BoardViewModel

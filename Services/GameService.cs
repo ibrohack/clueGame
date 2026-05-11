@@ -26,16 +26,12 @@ public class GameService
 {
     private static readonly Random _rng = new();
 
-    private static readonly string[] BotNames =
-    [
-        "Bot Alice", "Bot Bob", "Bot Carol", "Bot Dave", "Bot Eve"
-    ];
-
     // Builds the full initial game document (does not save to DB).
     public MongoGame SetupGame(
         string humanPlayerId,
         string humanDisplayName,
         int botCount,
+        string humanCharacterId,
         List<MongoCharacter> characters,
         List<MongoWeapon> weapons,
         List<MongoLocation> locations)
@@ -43,16 +39,8 @@ public class GameService
         var allCards = BuildAllCards(characters, weapons, locations);
         Shuffle(allCards);
 
-        // First three shuffled cards are the secret
-        var secret = new GameSecret
-        {
-            CharacterId = allCards[0],
-            WeaponId = allCards[1],
-            LocationId = allCards[2]
-        };
-
         // Ensure secret has exactly one of each type
-        secret = PickSecret(characters, weapons, locations);
+        var secret = PickSecret(characters, weapons, locations);
         var remainingCards = allCards
             .Where(c => c != secret.CharacterId && c != secret.WeaponId && c != secret.LocationId)
             .ToList();
@@ -62,7 +50,6 @@ public class GameService
         var players = new List<GamePlayer>();
 
         // Human player
-        var humanCharacterId = PickRandomCharacterId(characters, []);
         players.Add(new GamePlayer
         {
             PlayerId = humanPlayerId,
@@ -72,16 +59,17 @@ public class GameService
             TurnOrder = 1
         });
 
-        // Bots
+        // Bots — each gets a remaining character; their display name is the character's name
         var usedCharacters = new List<string> { humanCharacterId };
         for (int i = 0; i < botCount; i++)
         {
             var botCharId = PickRandomCharacterId(characters, usedCharacters);
             usedCharacters.Add(botCharId);
+            var botCharName = characters.First(c => c.Id == botCharId).Name;
             players.Add(new GamePlayer
             {
                 PlayerId = $"bot_{Guid.NewGuid():N}",
-                Name = BotNames[i % BotNames.Length],
+                Name = botCharName,
                 CharacterId = botCharId,
                 IsBot = true,
                 TurnOrder = i + 2
