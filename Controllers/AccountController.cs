@@ -2,24 +2,24 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using clueGame.Models;
 using clueGame.Models.ViewModels;
+using clueGame.Services;
 
 namespace clueGame.Controllers;
 
-/// <summary>
-/// Controlador de cuentas de usuario.
-/// Gestiona el registro, login y logout mediante ASP.NET Identity.
-/// </summary>
 public class AccountController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly MongoDbService _mongo;
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager)
+        SignInManager<ApplicationUser> signInManager,
+        MongoDbService mongo)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _mongo = mongo;
     }
 
     // GET: /Account/Register
@@ -55,9 +55,9 @@ public class AccountController : Controller
 
         if (result.Succeeded)
         {
-            // TODO: Crear documento Player en MongoDB y asignar MongoPlayerId
-            // user.MongoPlayerId = createdMongoPlayer.Id;
-            // await _userManager.UpdateAsync(user);
+            var mongoPlayer = await _mongo.CreatePlayerAsync(model.DisplayName);
+            user.MongoPlayerId = mongoPlayer.Id;
+            await _userManager.UpdateAsync(user);
 
             await _signInManager.SignInAsync(user, isPersistent: false);
             return RedirectToAction("Index", "Home");

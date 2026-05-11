@@ -10,6 +10,7 @@ obj/
 # Development settings
 appsettings.Development.json
 Properties/launchSettings.json
+.claude/
 
 # Logs
 *.log
