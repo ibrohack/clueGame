@@ -7,12 +7,23 @@
     var isHumanDone = game.TurnPhase == "human_done";
     var isBotTurns = game.TurnPhase == "bot_turns";
 
-    string StatusLabel(string status) => status switch
+    var matrix = Model.BuildMatrix();
+
+    string RowCss(string s) => s switch
     {
-        "in_hand"  => "[MY CARD]",
-        "discarded"=> "[SEEN]",
-        "suspect"  => "[?]",
-        _          => "[ ]"
+        "in_hand"   => "background:#c8e6c9",
+        "discarded" => "background:#e0e0e0",
+        "suspect"   => "background:#fff9c4",
+        _           => ""
+    };
+
+    string CellCss(string s) => s switch
+    {
+        "has_it"      => "background:#a5d6a7",
+        "no_has_it"   => "background:#ef9a9a",
+        "suspect_has" => "background:#c8e6c9;opacity:.8",
+        "suspect_no"  => "background:#ffcdd2;opacity:.8",
+        _             => ""
     };
 }
 
@@ -62,6 +73,10 @@
         else
         {
             <span>Refuted by <strong>@bt.RefutedByName</strong>.</span>
+            @if (!string.IsNullOrEmpty(bt.ShownCardName))
+            {
+                <span> Showed: <strong>@bt.ShownCardName</strong>.</span>
+            }
         }
     </div>
 }
@@ -103,94 +118,185 @@
     </form>
 </div>
 
-@* ── Detective Sheet ── *@
+@* ── Detective Sheet Matrix ── *@
 <h3>Detective Sheet</h3>
 
-<table border="1" cellpadding="4" style="border-collapse:collapse;margin-bottom:16px">
-    <tr><th colspan="3">Suspects</th></tr>
-    <tr><th>Name</th><th>Status</th><th>Mark</th></tr>
-    @foreach (var card in human.DetectiveSheet.Characters)
-    {
-        var name = Model.Characters.FirstOrDefault(c => c.Id == card.Id)?.Name ?? card.Id;
-        <tr>
-            <td>@name</td>
-            <td>@StatusLabel(card.Status)</td>
-            <td>
-                @if (card.Status != "in_hand")
-                {
-                    <form asp-action="ToggleCardStatus" method="post" style="display:inline">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="gameId" value="@game.Id" />
-                        <input type="hidden" name="cardId" value="@card.Id" />
-                        <select name="status">
-                            <option value="unknown" selected="@(card.Status=="unknown")">Unknown</option>
-                            <option value="suspect" selected="@(card.Status=="suspect")">Suspect</option>
-                            <option value="discarded" selected="@(card.Status=="discarded")">Discarded</option>
-                        </select>
-                        <button type="submit">Set</button>
-                    </form>
-                }
-            </td>
+<table border="1" cellpadding="0"
+       style="border-collapse:collapse;margin-bottom:24px;table-layout:fixed">
+    <colgroup>
+        <col style="width:150px" />
+        <col style="width:90px" />
+        @foreach (var _ in matrix.BotNames)
+        {
+            <col style="width:80px" />
+        }
+    </colgroup>
+    <thead>
+        <tr style="background:#f5f5f5">
+            <th style="padding:4px 6px">Card</th>
+            <th style="padding:4px 6px">Me</th>
+            @foreach (var botName in matrix.BotNames)
+            {
+                <th style="padding:4px 6px;font-size:.85rem">@botName</th>
+            }
         </tr>
-    }
-</table>
+    </thead>
+    <tbody>
 
-<table border="1" cellpadding="4" style="border-collapse:collapse;margin-bottom:16px">
-    <tr><th colspan="3">Weapons</th></tr>
-    <tr><th>Name</th><th>Status</th><th>Mark</th></tr>
-    @foreach (var card in human.DetectiveSheet.Weapons)
-    {
-        var name = Model.Weapons.FirstOrDefault(w => w.Id == card.Id)?.Name ?? card.Id;
-        <tr>
-            <td>@name</td>
-            <td>@StatusLabel(card.Status)</td>
-            <td>
-                @if (card.Status != "in_hand")
-                {
-                    <form asp-action="ToggleCardStatus" method="post" style="display:inline">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="gameId" value="@game.Id" />
-                        <input type="hidden" name="cardId" value="@card.Id" />
-                        <select name="status">
-                            <option value="unknown" selected="@(card.Status=="unknown")">Unknown</option>
-                            <option value="suspect" selected="@(card.Status=="suspect")">Suspect</option>
-                            <option value="discarded" selected="@(card.Status=="discarded")">Discarded</option>
-                        </select>
-                        <button type="submit">Set</button>
-                    </form>
-                }
-            </td>
+        @* ── Suspects ── *@
+        <tr style="background:#ddd">
+            <th colspan="@(2 + matrix.BotPlayerIds.Count)" style="text-align:left;padding:4px 6px">Suspects</th>
         </tr>
-    }
-</table>
+        @foreach (var row in matrix.CharacterRows)
+        {
+            <tr style="@RowCss(row.RowStatus)">
+                <td style="padding:4px 6px;white-space:nowrap"><strong>@row.CardName</strong></td>
+                <td style="text-align:center;min-width:90px;padding:2px">
+                    @if (row.RowStatus == "in_hand")
+                    {
+                        <span style="font-weight:bold">MY CARD</span>
+                    }
+                    else
+                    {
+                        <form asp-action="ToggleCardStatus" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="gameId" value="@matrix.GameId" />
+                            <input type="hidden" name="cardId" value="@row.CardId" />
+                            <select name="status" onchange="this.form.submit()" style="width:100%">
+                                <option value="normal"    selected="@(row.RowStatus == "normal"    ? "selected" : null)">—</option>
+                                <option value="suspect"   selected="@(row.RowStatus == "suspect"   ? "selected" : null)">?</option>
+                                <option value="discarded" selected="@(row.RowStatus == "discarded" ? "selected" : null)">SEEN</option>
+                            </select>
+                        </form>
+                    }
+                </td>
+                @for (int bi = 0; bi < matrix.BotPlayerIds.Count; bi++)
+                {
+                    var botId = matrix.BotPlayerIds[bi];
+                    var cell = row.BotCells.ElementAtOrDefault(bi);
+                    var cs = cell?.CellStatus ?? "normal";
+                    <td style="text-align:center;min-width:75px;padding:2px;@CellCss(cs)">
+                        <form asp-action="ToggleCellStatus" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="gameId" value="@matrix.GameId" />
+                            <input type="hidden" name="cardId" value="@row.CardId" />
+                            <input type="hidden" name="botPlayerId" value="@botId" />
+                            <select name="cellStatus" onchange="this.form.submit()" style="width:100%">
+                                <option value="normal"      selected="@(cs == "normal"      ? "selected" : null)">—</option>
+                                <option value="has_it"      selected="@(cs == "has_it"      ? "selected" : null)">HAS</option>
+                                <option value="no_has_it"   selected="@(cs == "no_has_it"   ? "selected" : null)">NO</option>
+                                <option value="suspect_has" selected="@(cs == "suspect_has" ? "selected" : null)">?HAS</option>
+                                <option value="suspect_no"  selected="@(cs == "suspect_no"  ? "selected" : null)">?NO</option>
+                            </select>
+                        </form>
+                    </td>
+                }
+            </tr>
+        }
 
-<table border="1" cellpadding="4" style="border-collapse:collapse;margin-bottom:24px">
-    <tr><th colspan="3">Locations</th></tr>
-    <tr><th>Name</th><th>Status</th><th>Mark</th></tr>
-    @foreach (var card in human.DetectiveSheet.Locations)
-    {
-        var name = Model.Locations.FirstOrDefault(l => l.Id == card.Id)?.Name ?? card.Id;
-        <tr>
-            <td>@name</td>
-            <td>@StatusLabel(card.Status)</td>
-            <td>
-                @if (card.Status != "in_hand")
-                {
-                    <form asp-action="ToggleCardStatus" method="post" style="display:inline">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="gameId" value="@game.Id" />
-                        <input type="hidden" name="cardId" value="@card.Id" />
-                        <select name="status">
-                            <option value="unknown" selected="@(card.Status=="unknown")">Unknown</option>
-                            <option value="suspect" selected="@(card.Status=="suspect")">Suspect</option>
-                            <option value="discarded" selected="@(card.Status=="discarded")">Discarded</option>
-                        </select>
-                        <button type="submit">Set</button>
-                    </form>
-                }
-            </td>
+        @* ── Weapons ── *@
+        <tr style="background:#ddd">
+            <th colspan="@(2 + matrix.BotPlayerIds.Count)" style="text-align:left;padding:4px 6px">Weapons</th>
         </tr>
-    }
+        @foreach (var row in matrix.WeaponRows)
+        {
+            <tr style="@RowCss(row.RowStatus)">
+                <td style="padding:4px 6px;white-space:nowrap"><strong>@row.CardName</strong></td>
+                <td style="text-align:center;min-width:90px;padding:2px">
+                    @if (row.RowStatus == "in_hand")
+                    {
+                        <span style="font-weight:bold">MY CARD</span>
+                    }
+                    else
+                    {
+                        <form asp-action="ToggleCardStatus" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="gameId" value="@matrix.GameId" />
+                            <input type="hidden" name="cardId" value="@row.CardId" />
+                            <select name="status" onchange="this.form.submit()" style="width:100%">
+                                <option value="normal"    selected="@(row.RowStatus == "normal"    ? "selected" : null)">—</option>
+                                <option value="suspect"   selected="@(row.RowStatus == "suspect"   ? "selected" : null)">?</option>
+                                <option value="discarded" selected="@(row.RowStatus == "discarded" ? "selected" : null)">SEEN</option>
+                            </select>
+                        </form>
+                    }
+                </td>
+                @for (int bi = 0; bi < matrix.BotPlayerIds.Count; bi++)
+                {
+                    var botId = matrix.BotPlayerIds[bi];
+                    var cell = row.BotCells.ElementAtOrDefault(bi);
+                    var cs = cell?.CellStatus ?? "normal";
+                    <td style="text-align:center;min-width:75px;padding:2px;@CellCss(cs)">
+                        <form asp-action="ToggleCellStatus" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="gameId" value="@matrix.GameId" />
+                            <input type="hidden" name="cardId" value="@row.CardId" />
+                            <input type="hidden" name="botPlayerId" value="@botId" />
+                            <select name="cellStatus" onchange="this.form.submit()" style="width:100%">
+                                <option value="normal"      selected="@(cs == "normal"      ? "selected" : null)">—</option>
+                                <option value="has_it"      selected="@(cs == "has_it"      ? "selected" : null)">HAS</option>
+                                <option value="no_has_it"   selected="@(cs == "no_has_it"   ? "selected" : null)">NO</option>
+                                <option value="suspect_has" selected="@(cs == "suspect_has" ? "selected" : null)">?HAS</option>
+                                <option value="suspect_no"  selected="@(cs == "suspect_no"  ? "selected" : null)">?NO</option>
+                            </select>
+                        </form>
+                    </td>
+                }
+            </tr>
+        }
+
+        @* ── Locations ── *@
+        <tr style="background:#ddd">
+            <th colspan="@(2 + matrix.BotPlayerIds.Count)" style="text-align:left;padding:4px 6px">Locations</th>
+        </tr>
+        @foreach (var row in matrix.LocationRows)
+        {
+            <tr style="@RowCss(row.RowStatus)">
+                <td style="padding:4px 6px;white-space:nowrap"><strong>@row.CardName</strong></td>
+                <td style="text-align:center;min-width:90px;padding:2px">
+                    @if (row.RowStatus == "in_hand")
+                    {
+                        <span style="font-weight:bold">MY CARD</span>
+                    }
+                    else
+                    {
+                        <form asp-action="ToggleCardStatus" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="gameId" value="@matrix.GameId" />
+                            <input type="hidden" name="cardId" value="@row.CardId" />
+                            <select name="status" onchange="this.form.submit()" style="width:100%">
+                                <option value="normal"    selected="@(row.RowStatus == "normal"    ? "selected" : null)">—</option>
+                                <option value="suspect"   selected="@(row.RowStatus == "suspect"   ? "selected" : null)">?</option>
+                                <option value="discarded" selected="@(row.RowStatus == "discarded" ? "selected" : null)">SEEN</option>
+                            </select>
+                        </form>
+                    }
+                </td>
+                @for (int bi = 0; bi < matrix.BotPlayerIds.Count; bi++)
+                {
+                    var botId = matrix.BotPlayerIds[bi];
+                    var cell = row.BotCells.ElementAtOrDefault(bi);
+                    var cs = cell?.CellStatus ?? "normal";
+                    <td style="text-align:center;min-width:75px;padding:2px;@CellCss(cs)">
+                        <form asp-action="ToggleCellStatus" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="gameId" value="@matrix.GameId" />
+                            <input type="hidden" name="cardId" value="@row.CardId" />
+                            <input type="hidden" name="botPlayerId" value="@botId" />
+                            <select name="cellStatus" onchange="this.form.submit()" style="width:100%">
+                                <option value="normal"      selected="@(cs == "normal"      ? "selected" : null)">—</option>
+                                <option value="has_it"      selected="@(cs == "has_it"      ? "selected" : null)">HAS</option>
+                                <option value="no_has_it"   selected="@(cs == "no_has_it"   ? "selected" : null)">NO</option>
+                                <option value="suspect_has" selected="@(cs == "suspect_has" ? "selected" : null)">?HAS</option>
+                                <option value="suspect_no"  selected="@(cs == "suspect_no"  ? "selected" : null)">?NO</option>
+                            </select>
+                        </form>
+                    </td>
+                }
+            </tr>
+        }
+
+    </tbody>
 </table>
 
 @* ── Suggestion form ── *@

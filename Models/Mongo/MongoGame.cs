@@ -90,7 +90,21 @@ public class DetectiveCard
     [BsonElement("id")]
     public string Id { get; set; } = string.Empty;
 
-    // "unknown" | "in_hand" | "discarded" | "suspect"
+    // "normal" | "in_hand" | "suspect" | "discarded"
     [BsonElement("status")]
-    public string Status { get; set; } = "unknown";
+    public string Status { get; set; } = "normal";
+
+    // One entry per bot player — only populated on the human player's sheet
+    [BsonElement("playerCells")]
+    public List<PlayerCell> PlayerCells { get; set; } = [];
+}
+
+public class PlayerCell
+{
+    [BsonElement("playerId")]
+    public string PlayerId { get; set; } = string.Empty;
+
+    // "normal" | "has_it" | "no_has_it" | "suspect_has" | "suspect_no"
+    [BsonElement("cellStatus")]
+    public string CellStatus { get; set; } = "normal";
 }

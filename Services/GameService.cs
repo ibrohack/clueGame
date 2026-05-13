@@ -78,18 +78,12 @@ public class GameService
 
         // Deal cards round-robin
         for (int i = 0; i < remainingCards.Count; i++)
-        {
             players[i % totalPlayers].Hand.Add(remainingCards[i]);
-        }
 
-        // Build detective sheets for all players
+        // Build detective sheets for all players (pass full player list for PlayerCells init)
         foreach (var player in players)
-        {
-            player.DetectiveSheet = BuildDetectiveSheet(
-                player, characters, weapons, locations, secret);
-        }
+            player.DetectiveSheet = BuildDetectiveSheet(player, players, characters, weapons, locations, secret);
 
-        // Randomize turn order (human keeps position 1 for simplicity)
         var game = new MongoGame
         {
             Id = $"game_{Guid.NewGuid():N}",
@@ -128,7 +122,6 @@ public class GameService
             var matching = player.Hand.Where(c => suggested.Contains(c)).ToList();
             if (matching.Count == 0) continue;
 
-            // Pick one matching card at random to show
             var shownCardId = matching[_rng.Next(matching.Count)];
             var shownCardName = GetCardName(shownCardId, characters, weapons, locations);
 
@@ -138,8 +131,7 @@ public class GameService
         return new SuggestionResult(null, null, null, null);
     }
 
-    // Generates a random suggestion for a bot. Prioritises cards the bot doesn't
-    // know about yet (unknown on its detective sheet).
+    // Generates a random suggestion for a bot. Prioritises cards the bot doesn't know about yet.
     public (string characterId, string weaponId, string locationId) MakeBotSuggestion(
         GamePlayer bot,
         List<MongoCharacter> characters,
@@ -147,13 +139,12 @@ public class GameService
         List<MongoLocation> locations)
     {
         var unknownChars = bot.DetectiveSheet.Characters
-            .Where(c => c.Status == "unknown").Select(c => c.Id).ToList();
+            .Where(c => c.Status == "normal").Select(c => c.Id).ToList();
         var unknownWeapons = bot.DetectiveSheet.Weapons
-            .Where(c => c.Status == "unknown").Select(c => c.Id).ToList();
+            .Where(c => c.Status == "normal").Select(c => c.Id).ToList();
         var unknownLocs = bot.DetectiveSheet.Locations
-            .Where(c => c.Status == "unknown").Select(c => c.Id).ToList();
+            .Where(c => c.Status == "normal").Select(c => c.Id).ToList();
 
-        // Fall back to full lists if a category is exhausted
         var charPool = unknownChars.Count > 0 ? unknownChars : characters.Select(c => c.Id).ToList();
         var weapPool = unknownWeapons.Count > 0 ? unknownWeapons : weapons.Select(w => w.Id).ToList();
         var locPool = unknownLocs.Count > 0 ? unknownLocs : locations.Select(l => l.Id).ToList();
@@ -175,17 +166,7 @@ public class GameService
     {
         var bot = game.Players.FirstOrDefault(p => p.PlayerId == botPlayerId);
         if (bot is null) return;
-
         MarkCardOnSheet(bot.DetectiveSheet, cardId, "discarded");
-    }
-
-    // After the human receives a card from a bot, mark it on the human's detective sheet.
-    public void ApplyCardShownToHuman(MongoGame game, string humanPlayerId, string cardId)
-    {
-        var human = game.Players.FirstOrDefault(p => p.PlayerId == humanPlayerId);
-        if (human is null) return;
-
-        MarkCardOnSheet(human.DetectiveSheet, cardId, "discarded");
     }
 
     // Returns list of card IDs the human holds that match a suggestion.
@@ -195,26 +176,166 @@ public class GameService
         return human.Hand.Where(c => suggested.Contains(c)).ToList();
     }
 
-    // Advances bot detective sheet when a bot-to-bot refutation happens.
-    public void ApplyBotToBotRefutation(MongoGame game, string refutingBotId, string shownCardId)
+    // Called when a bot refutes the human's suggestion.
+    // Updates human's matrix sheet: row → discarded, refuting bot cell → has_it,
+    // bots before refuter → no_has_it for all 3 suggested cards.
+    public void ApplyHumanSuggestionRefuted(
+        MongoGame game,
+        string humanPlayerId,
+        string refutingBotId,
+        string shownCardId,
+        string suggestedCharId,
+        string suggestedWeapId,
+        string suggestedLocId)
     {
-        // Other bots learn that refuting bot has the shown card — mark as discarded for them
-        foreach (var player in game.Players.Where(p => p.IsBot && p.PlayerId != refutingBotId))
+        var human = game.Players.FirstOrDefault(p => p.PlayerId == humanPlayerId);
+        if (human is null) return;
+
+        var sheet = human.DetectiveSheet;
+
+        var shownCard = FindCardOnSheet(sheet, shownCardId);
+        if (shownCard is not null && shownCard.Status != "in_hand")
+            shownCard.Status = "discarded";
+
+        SetCellStatus(sheet, shownCardId, refutingBotId, "has_it");
+
+        var botsBeforeRefuter = GetBotsBeforeRefuter(game, humanPlayerId, refutingBotId);
+        foreach (var botId in botsBeforeRefuter)
         {
-            MarkCardOnSheet(player.DetectiveSheet, shownCardId, "discarded");
+            foreach (var cardId in new[] { suggestedCharId, suggestedWeapId, suggestedLocId })
+            {
+                if (IsCellNormal(sheet, cardId, botId))
+                    SetCellStatus(sheet, cardId, botId, "no_has_it");
+            }
         }
     }
 
-    // Updates a card status on a detective sheet (finds the card in any category).
+    // Called when nobody refutes any suggestion (human or bot).
+    // Updates human's matrix sheet: rows for suggested cards → suspect (if normal, not in hand),
+    // all bot cells for those cards → no_has_it (if normal).
+    public void ApplyNoRefutationOutcome(
+        MongoGame game,
+        string humanPlayerId,
+        string suggestedCharId,
+        string suggestedWeapId,
+        string suggestedLocId)
+    {
+        var human = game.Players.FirstOrDefault(p => p.PlayerId == humanPlayerId);
+        if (human is null) return;
+
+        var sheet = human.DetectiveSheet;
+        var allBotIds = game.Players.Where(p => p.IsBot).Select(p => p.PlayerId).ToList();
+
+        foreach (var cardId in new[] { suggestedCharId, suggestedWeapId, suggestedLocId })
+        {
+            var card = FindCardOnSheet(sheet, cardId);
+            if (card is null) continue;
+
+            if (card.Status != "in_hand" && card.Status == "normal")
+                card.Status = "suspect";
+
+            foreach (var botId in allBotIds)
+            {
+                if (IsCellNormal(sheet, cardId, botId))
+                    SetCellStatus(sheet, cardId, botId, "no_has_it");
+            }
+        }
+    }
+
+    // Called when a bot refutes another bot's suggestion.
+    // Updates other bots' flat sheets (existing) and the human's matrix sheet.
+    public void ApplyBotToBotRefutation(
+        MongoGame game,
+        string humanPlayerId,
+        string suggestingBotId,
+        string refutingBotId,
+        string shownCardId,
+        string suggestedCharId,
+        string suggestedWeapId,
+        string suggestedLocId)
+    {
+        // Existing: other bots learn the shown card is discarded
+        foreach (var player in game.Players.Where(p => p.IsBot && p.PlayerId != refutingBotId))
+            MarkCardOnSheet(player.DetectiveSheet, shownCardId, "discarded");
+
+        // Human's matrix sheet
+        var human = game.Players.FirstOrDefault(p => p.PlayerId == humanPlayerId);
+        if (human is null) return;
+
+        var sheet = human.DetectiveSheet;
+
+        SetCellStatus(sheet, shownCardId, refutingBotId, "has_it");
+
+        var shownCard = FindCardOnSheet(sheet, shownCardId);
+        if (shownCard is not null && shownCard.Status != "in_hand")
+            shownCard.Status = "discarded";
+
+        var botsBeforeRefuter = GetBotsBeforeRefuter(game, suggestingBotId, refutingBotId);
+        foreach (var botId in botsBeforeRefuter)
+        {
+            foreach (var cardId in new[] { suggestedCharId, suggestedWeapId, suggestedLocId })
+            {
+                if (IsCellNormal(sheet, cardId, botId))
+                    SetCellStatus(sheet, cardId, botId, "no_has_it");
+            }
+        }
+    }
+
+    // Returns IDs of bots that are in turn order between the suggester and the refuter
+    // (those who passed without refuting).
+    public List<string> GetBotsBeforeRefuter(MongoGame game, string suggestingPlayerId, string refutingPlayerId)
+    {
+        var suggester = game.Players.First(p => p.PlayerId == suggestingPlayerId);
+        var orderedOthers = game.Players
+            .Where(p => p.PlayerId != suggestingPlayerId)
+            .OrderBy(p => p.TurnOrder)
+            .ToList();
+
+        // Rotate so players after the suggester come first
+        var afterSuggester = orderedOthers
+            .Where(p => p.TurnOrder > suggester.TurnOrder)
+            .Concat(orderedOthers.Where(p => p.TurnOrder < suggester.TurnOrder))
+            .ToList();
+
+        var result = new List<string>();
+        foreach (var p in afterSuggester)
+        {
+            if (p.PlayerId == refutingPlayerId) break;
+            if (p.IsBot) result.Add(p.PlayerId);
+        }
+        return result;
+    }
+
+    // Updates a card row status on a detective sheet (finds the card in any category).
     public static void MarkCardOnSheet(DetectiveSheet sheet, string cardId, string status)
     {
-        var card = sheet.Characters.FirstOrDefault(c => c.Id == cardId)
-                ?? sheet.Weapons.FirstOrDefault(c => c.Id == cardId)
-                ?? sheet.Locations.FirstOrDefault(c => c.Id == cardId);
+        var card = FindCardOnSheet(sheet, cardId);
         if (card is not null) card.Status = status;
     }
 
-    // --- Helpers ---
+    // Finds a card in any category of a detective sheet.
+    public static DetectiveCard? FindCardOnSheet(DetectiveSheet sheet, string cardId)
+        => sheet.Characters.FirstOrDefault(c => c.Id == cardId)
+        ?? sheet.Weapons.FirstOrDefault(c => c.Id == cardId)
+        ?? sheet.Locations.FirstOrDefault(c => c.Id == cardId);
+
+    // --- Private helpers ---
+
+    private static void SetCellStatus(DetectiveSheet sheet, string cardId, string botId, string cellStatus)
+    {
+        var card = FindCardOnSheet(sheet, cardId);
+        if (card is null) return;
+        var cell = card.PlayerCells.FirstOrDefault(c => c.PlayerId == botId);
+        if (cell is not null) cell.CellStatus = cellStatus;
+    }
+
+    private static bool IsCellNormal(DetectiveSheet sheet, string cardId, string botId)
+    {
+        var card = FindCardOnSheet(sheet, cardId);
+        if (card is null) return false;
+        var cell = card.PlayerCells.FirstOrDefault(c => c.PlayerId == botId);
+        return cell is null || cell.CellStatus == "normal";
+    }
 
     private static GameSecret PickSecret(
         List<MongoCharacter> characters,
@@ -258,32 +379,45 @@ public class GameService
 
     private static DetectiveSheet BuildDetectiveSheet(
         GamePlayer player,
+        List<GamePlayer> allPlayers,
         List<MongoCharacter> characters,
         List<MongoWeapon> weapons,
         List<MongoLocation> locations,
         GameSecret secret)
     {
-        var sheet = new DetectiveSheet
+        var botIds = allPlayers
+            .Where(p => p.IsBot)
+            .OrderBy(p => p.TurnOrder)
+            .Select(p => p.PlayerId)
+            .ToList();
+
+        List<PlayerCell> MakeCells() => player.IsBot
+            ? []
+            : botIds.Select(id => new PlayerCell { PlayerId = id }).ToList();
+
+        return new DetectiveSheet
         {
             Characters = characters.Select(c => new DetectiveCard
             {
                 Id = c.Id,
-                Status = player.Hand.Contains(c.Id) ? "in_hand" : "unknown"
+                Status = player.Hand.Contains(c.Id) ? "in_hand" : "normal",
+                PlayerCells = MakeCells()
             }).ToList(),
 
             Weapons = weapons.Select(w => new DetectiveCard
             {
                 Id = w.Id,
-                Status = player.Hand.Contains(w.Id) ? "in_hand" : "unknown"
+                Status = player.Hand.Contains(w.Id) ? "in_hand" : "normal",
+                PlayerCells = MakeCells()
             }).ToList(),
 
             Locations = locations.Select(l => new DetectiveCard
             {
                 Id = l.Id,
-                Status = player.Hand.Contains(l.Id) ? "in_hand" : "unknown"
+                Status = player.Hand.Contains(l.Id) ? "in_hand" : "normal",
+                PlayerCells = MakeCells()
             }).ToList()
         };
-        return sheet;
     }
 
     private static string GetCardName(

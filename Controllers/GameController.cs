@@ -147,9 +147,16 @@ public class GameController : Controller
             ShownCardId = result.ShownCardId
         });
 
-        // Auto-mark revealed card on human's detective sheet
-        if (result.ShownCardId is not null)
-            _gameService.ApplyCardShownToHuman(game, human.PlayerId, result.ShownCardId);
+        // Auto-update human's detective sheet matrix
+        if (result.RefutedByPlayerId is not null && result.ShownCardId is not null)
+            _gameService.ApplyHumanSuggestionRefuted(
+                game, human.PlayerId,
+                result.RefutedByPlayerId, result.ShownCardId,
+                model.CharacterId, model.WeaponId, model.LocationId);
+        else
+            _gameService.ApplyNoRefutationOutcome(
+                game, human.PlayerId,
+                model.CharacterId, model.WeaponId, model.LocationId);
 
         // Move to "end of human turn" — waiting for EndTurn
         game.TurnPhase = "human_done";
@@ -260,7 +267,15 @@ public class GameController : Controller
         });
 
         if (result.ShownCardId is not null && result.RefutedByPlayerId is not null)
-            _gameService.ApplyBotToBotRefutation(game, result.RefutedByPlayerId, result.ShownCardId);
+            _gameService.ApplyBotToBotRefutation(
+                game, human.PlayerId,
+                bot.PlayerId, result.RefutedByPlayerId,
+                result.ShownCardId,
+                charId, weapId, locId);
+        else
+            _gameService.ApplyNoRefutationOutcome(
+                game, human.PlayerId,
+                charId, weapId, locId);
 
         game.PendingBotIndex = botIndex + 1;
         await _mongo.SaveGameAsync(game);
@@ -273,6 +288,7 @@ public class GameController : Controller
                 WeaponName = weapName,
                 LocationName = locName,
                 RefutedByName = result.RefutedByName,
+                ShownCardName = result.RefutedByPlayerId != human.PlayerId ? result.ShownCardName : null,
                 NoOneRefuted = result.RefutedByPlayerId is null,
                 HumanMustShowCard = false,
                 BotPlayerId = bot.PlayerId
@@ -416,7 +432,7 @@ public class GameController : Controller
         var (game, human, _, _, _) = await LoadGameContext(gameId);
         if (game is null || human is null) return BadRequest();
 
-        var allowed = new[] { "unknown", "suspect", "discarded" };
+        var allowed = new[] { "normal", "suspect", "discarded" };
         if (!allowed.Contains(status)) return BadRequest();
 
         // Don't allow changing "in_hand" cards
@@ -427,6 +443,34 @@ public class GameController : Controller
         if (card is not null && card.Status != "in_hand")
         {
             card.Status = status;
+            await _mongo.SaveGameAsync(game);
+        }
+
+        return RedirectToAction(nameof(Board), new { gameId });
+    }
+
+    // POST /Game/ToggleCellStatus — human updates a per-bot cell on the detective sheet
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ToggleCellStatus(
+        string gameId, string cardId, string botPlayerId, string cellStatus)
+    {
+        var (game, human, _, _, _) = await LoadGameContext(gameId);
+        if (game is null || human is null) return BadRequest();
+
+        var allowedCellStatuses = new[] { "normal", "has_it", "no_has_it", "suspect_has", "suspect_no" };
+        if (!allowedCellStatuses.Contains(cellStatus)) return BadRequest();
+
+        var bot = game.Players.FirstOrDefault(p => p.PlayerId == botPlayerId && p.IsBot);
+        if (bot is null) return BadRequest();
+
+        var card = GameService.FindCardOnSheet(human.DetectiveSheet, cardId);
+        if (card is null) return BadRequest();
+
+        var cell = card.PlayerCells.FirstOrDefault(c => c.PlayerId == botPlayerId);
+        if (cell is not null)
+        {
+            cell.CellStatus = cellStatus;
             await _mongo.SaveGameAsync(game);
         }
 
