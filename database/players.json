@@ -1,32 +1,14 @@
 [
   {
-    "_id": "player_001",
-    "name": "Brayan",
-    "avatarUrl": "/img/avatars/brayan.png",
-    "gamesPlayed": 12,
-    "gamesWon": 4,
-    "winRate": 0.333,
-    "createdAt": "2026-01-10T14:00:00Z",
-    "lastGameAt": "2026-04-30T10:00:00Z"
+  "_id": "player_b41d645ec46a4adfbb935d4d4b4db3d7",
+  "name": "zer0",
+  "avatarUrl": "/img/avatars/default.png",
+  "gamesPlayed": 0,
+  "gamesWon": 0,
+  "winRate": 0,
+  "createdAt": {
+    "$date": "2026-05-10T20:52:54.805Z"
   },
-  {
-    "_id": "player_002",
-    "name": "Ana",
-    "avatarUrl": "/img/avatars/ana.png",
-    "gamesPlayed": 8,
-    "gamesWon": 2,
-    "winRate": 0.25,
-    "createdAt": "2026-02-05T09:30:00Z",
-    "lastGameAt": "2026-04-30T10:00:00Z"
-  },
-  {
-    "_id": "player_003",
-    "name": "Carlos",
-    "avatarUrl": "/img/avatars/carlos.png",
-    "gamesPlayed": 5,
-    "gamesWon": 1,
-    "winRate": 0.20,
-    "createdAt": "2026-03-12T18:20:00Z",
-    "lastGameAt": "2026-04-30T10:00:00Z"
-  }
+  "lastGameAt": null
+}
 ]
