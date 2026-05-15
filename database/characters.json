@@ -1,6 +1,6 @@
 [
   { "_id": "character_1", "name": "Fern Malachite", "imageUrl": "/img/characters/fern_malachite.png" },
-  { "_id": "character_2", "name": "Chrysand Pyrite", "imageUrl": "/img/characters/chrysand_pyrite.png" },
+  { "_id": "character_2", "name": "Chrysant Pyrite", "imageUrl": "/img/characters/chrysant_pyrite.png" },
   { "_id": "character_3", "name": "Hyacinth Sapphire", "imageUrl": "/img/characters/hyacinth_sapphire.png" },
   { "_id": "character_4", "name": "Poppy Ruby", "imageUrl": "/img/characters/poppy_ruby.png" },
   { "_id": "character_5", "name": "Dahlia Onix", "imageUrl": "/img/characters/dahlia_onix.png" },
