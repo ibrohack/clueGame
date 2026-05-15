@@ -112,9 +112,14 @@ public class GameService
         List<MongoLocation> locations)
     {
         var suggested = new HashSet<string> { characterId, weaponId, locationId };
-        var orderedOthers = game.Players
+        var suggester = game.Players.First(p => p.PlayerId == suggestingPlayerId);
+        var allOthers = game.Players
             .Where(p => p.PlayerId != suggestingPlayerId)
             .OrderBy(p => p.TurnOrder)
+            .ToList();
+        var orderedOthers = allOthers
+            .Where(p => p.TurnOrder > suggester.TurnOrder)
+            .Concat(allOthers.Where(p => p.TurnOrder < suggester.TurnOrder))
             .ToList();
 
         foreach (var player in orderedOthers)
@@ -235,6 +240,31 @@ public class GameService
                 card.Status = "suspect";
 
             foreach (var botId in allBotIds)
+            {
+                if (IsCellNormal(sheet, cardId, botId))
+                    SetCellStatus(sheet, cardId, botId, "no_has_it");
+            }
+        }
+    }
+
+    // Called when the human shows a card to a bot (human refutes a bot's suggestion).
+    // Updates the human's matrix sheet: bots that passed before the human → no_has_it.
+    public void ApplyHumanRefutedBotSuggestion(
+        MongoGame game,
+        string humanPlayerId,
+        string suggestingBotId,
+        string suggestedCharId,
+        string suggestedWeapId,
+        string suggestedLocId)
+    {
+        var human = game.Players.FirstOrDefault(p => p.PlayerId == humanPlayerId);
+        if (human is null) return;
+
+        var sheet = human.DetectiveSheet;
+        var botsBeforeHuman = GetBotsBeforeRefuter(game, suggestingBotId, humanPlayerId);
+        foreach (var botId in botsBeforeHuman)
+        {
+            foreach (var cardId in new[] { suggestedCharId, suggestedWeapId, suggestedLocId })
             {
                 if (IsCellNormal(sheet, cardId, botId))
                     SetCellStatus(sheet, cardId, botId, "no_has_it");

@@ -311,6 +311,9 @@ public class GameController : Controller
         if (bot is null) return RedirectToAction(nameof(Board), new { gameId });
 
         _gameService.ApplyCardShownToBot(game, botPlayerId, cardId);
+        _gameService.ApplyHumanRefutedBotSuggestion(
+            game, human.PlayerId, botPlayerId,
+            suggestedCharacterId, suggestedWeaponId, suggestedLocationId);
 
         await _mongo.SaveGuessAsync(new MongoGuess
         {
