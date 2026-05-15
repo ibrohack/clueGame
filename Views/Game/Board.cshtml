@@ -92,6 +92,8 @@
 
     @if (isHumanDone)
     {
+        <a asp-action="Accuse" asp-route-gameId="@game.Id">Make Accusation</a>
+        <text> | </text>
         <form asp-action="EndTurn" method="post" style="display:inline">
             @Html.AntiForgeryToken()
             <input type="hidden" name="gameId" value="@game.Id" />
