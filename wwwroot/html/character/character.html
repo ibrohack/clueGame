@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&amp;family=Noto+Serif:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#eb847b",
+                    "primary-container": "#06402b",
+                    "inverse-primary": "#356850",
+                    "tertiary": "#ffb3ac",
+                    "secondary-fixed": "#ffe088",
+                    "primary-fixed": "#b8efd0",
+                    "on-surface-variant": "#c0c9c1",
+                    "surface-container-highest": "#353535",
+                    "inverse-on-surface": "#313030",
+                    "background": "#131313",
+                    "surface-container-lowest": "#0e0e0e",
+                    "surface-container": "#20201f",
+                    "tertiary-fixed-dim": "#ffb3ac",
+                    "on-secondary-fixed": "#241a00",
+                    "surface-container-low": "#1c1b1b",
+                    "surface-bright": "#393939",
+                    "on-error": "#690005",
+                    "on-background": "#e5e2e1",
+                    "on-tertiary": "#5d1714",
+                    "error": "#ffb4ab",
+                    "tertiary-container": "#671e1b",
+                    "secondary": "#e9c349",
+                    "inverse-surface": "#e5e2e1",
+                    "tertiary-fixed": "#ffdad6",
+                    "primary-fixed-dim": "#9cd2b5",
+                    "secondary-container": "#af8d11",
+                    "on-primary-container": "#77ac90",
+                    "primary": "#9cd2b5",
+                    "on-tertiary-fixed-variant": "#7b2d28",
+                    "on-secondary-fixed-variant": "#574500",
+                    "on-secondary-container": "#342800",
+                    "surface-dim": "#131313",
+                    "surface-tint": "#9cd2b5",
+                    "secondary-fixed-dim": "#e9c349",
+                    "on-tertiary-fixed": "#400204",
+                    "on-error-container": "#ffdad6",
+                    "surface-variant": "#353535",
+                    "on-primary-fixed": "#002114",
+                    "error-container": "#93000a",
+                    "surface": "#131313",
+                    "on-surface": "#e5e2e1",
+                    "outline": "#8a938c",
+                    "on-secondary": "#3c2f00",
+                    "surface-container-high": "#2a2a2a",
+                    "outline-variant": "#404943",
+                    "on-primary-fixed-variant": "#1b503a",
+                    "on-primary": "#003825"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "container-padding": "32px",
+                    "gutter": "24px",
+                    "element-gap": "16px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Manrope"],
+                    "body-md": ["Manrope"],
+                    "label-sm": ["Manrope"],
+                    "headline-lg": ["Noto Serif"],
+                    "headline-xl": ["Noto Serif"],
+                    "headline-md": ["Noto Serif"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-xl": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.wood-texture {
+    background-color: #131313;
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url(https://lh3.googleusercontent.com/aida-public/AB6AXuDq4wzc4QOuvDAFasXHqI5o7cVuyrZQPqHHq4nT4pbXUW0ZgwZSJCb3IDd1wFdo46brvZu9WsYUdVbjWHnfrqfoYMQBy017gsUkw3pGB1FtJHpg1cOTj7mn-YxorAjnWqu3VZ0bwiEmy6eMExWDQXUdyqcY9Y7aQTsjc3fl6Sbhl-ETZu-lDpSZXIYm0cRWfalvbponPPw7AhF2dziZ2tf1zO1jqonkgmc83oOQP8y3kats9mf0grUUwM-eFCUO-yXCULLK2wrh0rM)
+    }
+.brass-border {
+    position: relative;
+    border: 1px solid #e9c349;
+    background-clip: padding-box
+    }
+.brass-border::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border: 1px solid rgba(233, 195, 73, 0.3);
+    pointer-events: none;
+    z-index: -1
+    }
+.ledger-paper {
+    background-color: #20201f;
+    background-image: linear-gradient(#2a2a2a 1px, transparent 1px), linear-gradient(90deg, #2a2a2a 1px, transparent 1px);
+    background-size: 24px 24px
+    }
+.redacted {
+    background-color: #0e0e0e;
+    color: #0e0e0e;
+    user-select: none
+    }</style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md overflow-x-hidden wood-texture">
+<!-- TopAppBar -->
+<header class="bg-surface-container-high border-b border-secondary-container docked full-width top-0 shadow-md z-50">
+<div class="flex justify-between items-center w-full px-container-padding py-base max-w-7xl mx-auto">
+<div class="font-headline-xl text-headline-xl font-bold text-secondary dark:text-secondary tracking-widest">
+                CLUE
+            </div>
+<nav class="hidden md:flex gap-gutter items-center">
+<a class="font-body-md text-body-md text-secondary dark:text-secondary border-b-2 border-secondary pb-1 cursor-pointer active:scale-95 transition-colors duration-300" href="#">Characters</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-secondary-fixed transition-colors duration-300 cursor-pointer active:scale-95" href="#">Weapons</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-secondary-fixed transition-colors duration-300 cursor-pointer active:scale-95" href="#">Locations</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-secondary-fixed transition-colors duration-300 cursor-pointer active:scale-95" href="#">Dashboard</a>
+</nav>
+<button class="bg-primary-container text-secondary px-6 py-2 brass-border hover:bg-on-primary-fixed-variant transition-all font-label-sm uppercase tracking-widest">
+                Log Out
+            </button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-container-padding py-12">
+<!-- Character Dossier Layout -->
+<div class="grid grid-cols-1 gap-gutter items-start">
+<!-- Side Navigation -->
+<!-- Main Content Area: Character Profile -->
+<div class="flex flex-col gap-10">
+<!-- Character Hero Section -->
+<section class="relative bg-surface-container-lowest p-base brass-border shadow-2xl flex flex-col md:flex-row gap-gutter">
+<!-- Portrait Area -->
+<div class="w-full md:w-2/5 relative overflow-hidden group aspect-square">
+<img alt="Character Portrait" class="w-full h-full object-cover filter contrast-125 grayscale-[20%]" src="https://lh3.googleusercontent.com/aida/ADBb0ui7a3n1-W4n_z-vO2Jq0-Hj9hXv_3H8XoV8YjR9E3gL2V1Z6c5B4N3M2_K1L0P9O8I7U6Y5T4R3E2W1Q0Z9X8C7V6B5N4M3"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<span class="bg-primary-container text-secondary px-3 py-1 text-label-sm rounded uppercase tracking-widest border border-secondary/30">Prime Suspect</span>
+</div>
+<!-- Film Grain Overlay -->
+<div class="absolute inset-0 pointer-events-none opacity-10" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBt_NyBg2lgPi52l3O8Yb4WM_b3s8M7i_79UUny0XIRB8AyUXWWAjL-E1HldoOtFdt_xaHwEzsBTZ-x5kjYpHmalbZuaBC2ZnNnmLN8JEH1SM9t-bqglGqd57keOKhZxbnuhwi_HF6WP0EiKijUQuFONd27QuuZMoky7xz8Q0KHF28itSZb3t8PyeY1WzM2JD5h8BW7b5tixUADxSlDzKlyQ3ofLpH4bLbB8rhwLOEwy5VXenCiMygvbRBBV5vwl3Kq0b8glFJ7jq8');"></div>
+</div>
+<!-- Identity Section -->
+<div class="flex-1 flex flex-col justify-center pr-6 py-2">
+<div class="mb-2 flex items-center gap-4">
+<span class="h-px w-12 bg-secondary/50"></span>
+<span class="font-label-sm text-secondary uppercase tracking-[0.2em]">Personnel File</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface mb-4 leading-none">VIVIENNE SCARLETT</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant italic mb-8 max-w-md">
+                            "A woman of considerable mystery and even greater ambition, whose presence in the Tudor mansion is as sharp as the heels she treads upon."
+                        </p>
+<!-- Quick Stats Chips -->
+<div class="flex flex-wrap gap-4">
+<div class="flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-full border border-outline-variant">
+<span class="material-symbols-outlined text-secondary text-[18px]" data-icon="location_on">location_on</span>
+<span class="text-label-sm uppercase">Lounge</span>
+</div>
+<div class="flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-full border border-outline-variant">
+<span class="material-symbols-outlined text-secondary text-[18px]" data-icon="shield_person">shield_person</span>
+<span class="text-label-sm uppercase">Cunning</span>
+</div>
+<div class="flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-full border border-outline-variant">
+<span class="material-symbols-outlined text-secondary text-[18px]" data-icon="military_tech">military_tech</span>
+<span class="text-label-sm uppercase">Confirmed</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Information Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- Characteristic Section (Specialized Ledger Component) -->
+<section class="ledger-paper shadow-xl relative border border-outline-variant/30 p-12">
+<div class="absolute top-0 left-0 w-full h-1 bg-secondary"></div>
+<h3 class="font-headline-md text-headline-md text-secondary mb-6 flex items-center gap-3">
+<span class="material-symbols-outlined" data-icon="checklist">checklist</span>
+                            Characteristic
+                        </h3>
+<div class="">
+<div class="border-b border-outline-variant pb-2 flex justify-between items-end">
+<span class="text-on-surface-variant font-label-sm uppercase">Temperament</span>
+<span class="text-on-surface font-body-md">Coldly Calculated</span>
+</div>
+<div class="border-b border-outline-variant pb-2 flex justify-between items-end">
+<span class="text-on-surface-variant font-label-sm uppercase">Known Associates</span>
+<span class="text-on-surface font-body-md">Rev. Green, Col. Mustard</span>
+</div>
+<div class="border-b border-outline-variant pb-2 flex justify-between items-end">
+<span class="text-on-surface-variant font-label-sm uppercase">Distinguishing Mark</span>
+<span class="text-on-surface font-body-md">Emerald Ring</span>
+</div>
+<div class="border-b border-outline-variant pb-2 flex justify-between items-end">
+<span class="text-on-surface-variant font-label-sm uppercase">Motive (Verified)</span>
+<span class="text-on-surface font-body-md redacted">REDACTED BY ORDER</span>
+</div>
+</div>
+</section>
+<!-- Description Area (Paper Note Aesthetic) -->
+<section class="bg-[#1c1b1b] shadow-xl border-l-4 border-primary relative p-12">
+<h3 class="font-headline-md text-headline-md text-primary mb-6 flex items-center gap-3">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+                            Description
+                        </h3>
+<div class="font-body-md text-on-surface-variant leading-relaxed">
+<p class="">
+                                Miss Scarlett arrived precisely at 8:00 PM, wearing a dress that seemed more suited for a gala than a quiet dinner at the manor. Witnesses noted her immediate interest in the library's contents.
+                            </p>
+<p class="">
+                                Observation 14: Her relationship with the victim was professional yet strained. There are whispers of a financial dispute regarding the <span class="text-secondary italic">Blackwood Trust</span>.
+                            </p>
+<p class="">
+                                Despite her poise, she was seen wiping her hands repeatedly with a silk handkerchief after the power failure in the billiard room.
+                            </p>
+</div>
+</section>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB for solving -->
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform group">
+<span class="material-symbols-outlined text-[32px]" data-icon="mystery">mystery</span>
+<div class="absolute right-20 bg-primary-container text-secondary px-4 py-2 rounded text-label-sm uppercase opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border border-secondary whitespace-nowrap">
+            Final Accusation
+        </div>
+</button>
+</body></html>
