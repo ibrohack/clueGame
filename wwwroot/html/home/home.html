@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tudor Enigma - Case File</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Noto Serif Font -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<!-- Manrope Font -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-container": "#06402b",
+            "tertiary": "#ffb3ac",
+            "background": "#131313",
+            "surface": "#131313",
+            "secondary-fixed": "#ffe088",
+            "surface-variant": "#353535",
+            "secondary": "#e9c349",
+            "on-error-container": "#ffdad6",
+            "surface-dim": "#131313",
+            "on-tertiary-fixed-variant": "#7b2d28",
+            "tertiary-fixed": "#ffdad6",
+            "tertiary-container": "#671e1b",
+            "surface-container-lowest": "#0e0e0e",
+            "outline": "#8a938c",
+            "on-tertiary-fixed": "#400204",
+            "on-surface-variant": "#c0c9c1",
+            "on-tertiary-container": "#eb847b",
+            "secondary-fixed-dim": "#e9c349",
+            "inverse-primary": "#356850",
+            "on-secondary-fixed": "#241a00",
+            "on-secondary": "#3c2f00",
+            "on-primary": "#003825",
+            "surface-tint": "#9cd2b5",
+            "secondary-container": "#af8d11",
+            "on-surface": "#e5e2e1",
+            "on-error": "#690005",
+            "on-background": "#e5e2e1",
+            "primary-fixed-dim": "#9cd2b5",
+            "primary-fixed": "#b8efd0",
+            "surface-bright": "#393939",
+            "surface-container": "#20201f",
+            "on-primary-container": "#77ac90",
+            "tertiary-fixed-dim": "#ffb3ac",
+            "primary": "#9cd2b5",
+            "error-container": "#93000a",
+            "on-primary-fixed-variant": "#1b503a",
+            "outline-variant": "#404943",
+            "inverse-on-surface": "#313030",
+            "on-tertiary": "#5d1714",
+            "surface-container-low": "#1c1b1b",
+            "on-secondary-container": "#342800",
+            "inverse-surface": "#e5e2e1",
+            "surface-container-high": "#2a2a2a",
+            "on-secondary-fixed-variant": "#574500",
+            "error": "#ffb4ab",
+            "on-primary-fixed": "#002114",
+            "surface-container-highest": "#353535"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "fontFamily": {
+            "body-md": ["Manrope", "sans-serif"],
+            "body-lg": ["Manrope", "sans-serif"],
+            "label-sm": ["Manrope", "sans-serif"],
+            "headline-md": ["Noto Serif", "serif"],
+            "headline-xl": ["Noto Serif", "serif"],
+            "headline-lg": ["Noto Serif", "serif"]
+          }
+        },
+      },
+    }
+  </script>
+<style data-purpose="custom-layout">
+    body {
+      background-color: #131313;
+      color: #e5e2e1;
+      font-family: "Manrope", sans-serif;
+    }
+    .headline-font {
+      font-family: "Noto Serif", serif;
+    }
+    .case-file-bg {
+      background-color: #131313;
+    }
+    .polaroid-card {
+      background-color: #e5e2e1; /* Off-white for contrast */
+      padding: 8px 8px 32px 8px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .polaroid-card:hover {
+      transform: scale(1.05) rotate(0deg) !important;
+      z-index: 10;
+    }
+    /* Subtle tilts for the "case file" look */
+    .tilt-left { transform: rotate(-2deg) }
+    .tilt-right { transform: rotate(1.5deg) }
+    .tilt-slight { transform: rotate(0.5deg) }
+    
+    .textured-overlay {
+      background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCaOm1CR7ei-f74k-rDQQ9VUqgbxzIqPRFYoGJr7rRbr6hzJwsrqAA2elqrXmqZUk5vSPPCJn4sphemhjwNivoB9BhcsL-MyCMHhhYJA5HKNQHJMUVSye0HR1DOjrdXtetT8EN5n7i0LQcih6Up5y7WzKGTJkpBOVDVV_lVUTwdv_jG_E0pWftUu1nx6yz2b8NeAorNbyrxn__TM3vYHqfSpD2TBfrskKYTyg0iBJHqG7iQBvv3yxNyJ6yyS2kOVSN-XOyX6vgH4Iw);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="case-file-bg min-h-screen relative overflow-x-hidden">
+<div class="fixed inset-0 textured-overlay opacity-10 z-50"></div>
+<!-- BEGIN: MainHeader -->
+<header class="border-b border-surface-variant/30 bg-surface/90 backdrop-blur-md sticky top-0 z-40" data-purpose="site-navigation">
+<nav class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between"><!-- Brand Left -->
+<div class="flex items-center gap-2">
+<a class="text-2xl font-bold tracking-widest text-secondary headline-font uppercase" data-purpose="brand-logo" href="#">CLUE</a>
+</div>
+<!-- Center Links -->
+<div class="hidden md:flex items-center gap-8 text-[12px] uppercase tracking-widest text-on-surface-variant font-semibold">
+<a class="hover:text-secondary transition-colors" href="#characters-grid">Characters</a>
+<a class="hover:text-secondary transition-colors" href="#weapons-grid">Weapons</a>
+<a class="hover:text-secondary transition-colors" href="#locations-grid">Locations</a>
+<a class="hover:text-secondary transition-colors" href="#">Dashboard</a>
+</div>
+<!-- Right Logout -->
+<div class="flex items-center text-[12px] uppercase tracking-widest text-on-surface-variant font-semibold">
+<a class="hover:text-secondary transition-colors" href="#">Log Out</a>
+</div></nav>
+</header>
+<!-- END: MainHeader -->
+<main class="max-w-4xl mx-auto px-6 py-12 relative z-10">
+<!-- BEGIN: HeroSection -->
+<section class="mb-24 text-center" data-purpose="hero-content">
+<h1 class="text-8xl md:text-9xl font-bold mb-6 tracking-tighter uppercase opacity-90 drop-shadow-2xl headline-font text-secondary">
+        CLUE
+      </h1>
+<div class="max-w-xl mx-auto mb-10">
+<div class="bg-surface-container-low border border-outline-variant/30 p-8 rounded-DEFAULT shadow-inner relative" data-purpose="description-area">
+<div class="absolute top-3 left-3 w-2 h-2 rounded-full bg-error/40"></div>
+<p class="text-lg text-on-surface-variant italic leading-relaxed headline-font">
+            "The rain won't stop, and neither will the questions. Tudor Mansion holds secrets in every shadow. Six guests, one victim, and a trail that leads straight into the abyss of the human heart."
+          </p>
+</div>
+</div>
+<button class="bg-primary-container hover:brightness-110 text-secondary border border-secondary/20 px-12 py-4 rounded-DEFAULT uppercase tracking-[0.2em] font-bold transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(6,64,43,0.3)]" data-purpose="join-button">
+        Join Investigation
+      </button>
+</section>
+<!-- END: HeroSection -->
+<!-- BEGIN: CharactersSection -->
+<section class="mb-24" data-purpose="characters-grid" id="characters-grid">
+<h2 class="text-xl font-bold mb-10 uppercase tracking-[0.3em] border-l-4 border-primary-container pl-4 headline-font text-secondary">Characters</h2>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
+<div class="polaroid-card tilt-left w-52 h-64" data-purpose="character-card">
+<img alt="Miss Scarlet" class="w-full h-44 object-cover grayscale brightness-90 contrast-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKskrab6jF7WtAWhsXlmg7-gjPuh8ITVNFlyVmPu5gHBIQTBQw7YDZDjbXtl5PLf1vv6Ad3azpoWXRnMYSZjKF-I-wm-v71ymYCGEg6ycf2ShSaCh6yS1Nq61JU098wOf2gUPmZ6UbCboBJvks_MlSVf1KjS5tTYvyXDmKWQvtUIrIg5qeeaIzt0guIIyIEiWrjn99p_SAiBRLqgyThwM0dnSFLo33KmVBwShkCVXOnHql4LG7Q7HLT6kvd_orU3RI1tQiyq-0J5I"/>
+<p class="text-[10px] uppercase tracking-tighter text-black/40 mt-3 font-bold text-center">Case File #001</p>
+</div>
+<div class="polaroid-card tilt-right w-52 h-64" data-purpose="character-card">
+<img alt="Col Mustard" class="w-full h-44 object-cover grayscale brightness-90 contrast-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVmPF2MH__GsBqELFhg1fB-3rwAbIKbzkrHEcBtB2ouUBJ7u-ZHblQl3A0_6yRLrU0JCb4rxQrbQ8lnwn275wBApPzeYdb-HfwM84kTWUDCo7qsu3as4fiWdt6tQTbGXStRJPRxOmBaWS5XUzSEZXtHoKlWL3fc_7nVPYYEVu-z2wlWRvz6iBXPh3qNkMJdqJpwG7tqZ41HxbsaPSgJgFPPsUo4I-J9iQonB5vHCAJpqnFC9m4vjMSYCsuLLStAyROL6kZK7lyQ_I"/>
+<p class="text-[10px] uppercase tracking-tighter text-black/40 mt-3 font-bold text-center">Case File #002</p>
+</div>
+<div class="polaroid-card tilt-slight w-52 h-64" data-purpose="character-card">
+<img alt="Mrs White" class="w-full h-44 object-cover grayscale brightness-90 contrast-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDccqKw2UOSMfjmvGVP_BH3136ybDIeKQm-Xrhjj7YAHyZ0tx03uNbG_dFhkACOcb-6MxVmaHGrTeeTmGcv4lI1nHbaLbJ3GUdSiuBvsN_GtnsPfzJDjmf8Oy1MuwyDKsPvxTzR3EgNSEoeXGMbPAYNOjyoy1bCHpTBNtX3hhU00vaFFg5byI31WeWoTCI0ahwwq7OlqC83hV4NTii6dteM0y1o9r4M3SrG9hy8HllYpyvPeV2fEnAduSo4t_Jq1XaGBzvnyudv3TI"/>
+<p class="text-[10px] uppercase tracking-tighter text-black/40 mt-3 font-bold text-center">Case File #003</p>
+</div>
+<div class="polaroid-card tilt-right w-52 h-64" data-purpose="character-card">
+<img alt="Mr Green" class="w-full h-44 object-cover grayscale brightness-90 contrast-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARgpJqLjxrPf7_Yc6BgXEqxhG5XswWpoLs8wrqKI0OvAUSHWlVvKbYATH0WRm8Y2fk7j1zuzlYfGfnHd24Qx_uNA5ftQEgGnkOQEHm9kn6VQpy4V0o8Bv3oYwfSIkB3sbUv48T4a7CbAXv4RS_B7Fr7aTop18l2MfOniuHgUQWkBK0gRjTwflOBnMXIJyt_yPoRv5Jc6BiejXU3hDhmPaZUhUCZTjRdC_KgQ4j3XI6DJtUXrfmhMh0y5_tdWvocgJvvX7d3PPeR_c"/>
+<p class="text-[10px] uppercase tracking-tighter text-black/40 mt-3 font-bold text-center">Case File #004</p>
+</div>
+<div class="polaroid-card tilt-left w-52 h-64" data-purpose="character-card">
+<img alt="Mrs Peacock" class="w-full h-44 object-cover grayscale brightness-90 contrast-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmDLDtlVsHTWQEWGSZg9Ce4GE6NqEBWr9TsXQg-L2u_s-NwcfWvUkyXuKWVRNP2MUcni5iLYOnKzqw9h3uLocmokYjp7xgRZdcZ6bZRkZoqSVX4ivwSiPRbgvySBJ2jrj9u-nJYubV6W31CddsZhCnx4isORrWJropBMFa-XJxFLQTSYS6Jolt64uPtEULGselS6zLvmIR0U8OUQoVePEFJvpKEdMGBxSpuDiAK-hJXNjK_zxFFN-AAMXhfx9CLrnn8uUz70eLvso"/>
+<p class="text-[10px] uppercase tracking-tighter text-black/40 mt-3 font-bold text-center">Case File #005</p>
+</div>
+<div class="polaroid-card tilt-slight w-52 h-64" data-purpose="character-card">
+<img alt="Prof Plum" class="w-full h-44 object-cover grayscale brightness-90 contrast-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwRH8ieQGzYBpFFipPd8eQLFa36le3TMjpE6mhW3nU6aiRRKFxSWGchOS0tLnebAZkQvATLT5UwrQted8DYOra9wnev_xqTjAqbmTCVjC65gfDwt_i2pEfioCKEMhdq1gBgQnVdvBJKc09sr-0cTqTxgMRTMYMKgbhXbfpIcMtrCbJstCMVNdZhcC2fpbEYgjAL1FBbukS7b4cO6bVEZN1jBE-2b1rnXg3MfPDUndqeQTx400JoFZAExtE-RKsi-_I17RZfYZlXdk"/>
+<p class="text-[10px] uppercase tracking-tighter text-black/40 mt-3 font-bold text-center">Case File #006</p>
+</div>
+</div>
+</section>
+<!-- END: CharactersSection -->
+<!-- BEGIN: WeaponsSection -->
+<section class="mb-24" data-purpose="weapons-grid" id="weapons-grid">
+<h2 class="text-xl font-bold mb-10 uppercase tracking-[0.3em] border-l-4 border-primary-container pl-4 headline-font text-secondary">Evidence Locker</h2>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
+<div class="polaroid-card tilt-right w-52 h-64" data-purpose="weapon-card">
+<img alt="Revolver" class="w-full h-44 object-cover grayscale sepia brightness-75 contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhdjos0gyWo4EpuDahydvvokn8lbElkSiu1iRNWzCITfIbCpBEwJpdSP6sMpaoiUIGfiUX5LtutFdI8V2pyXnPj215-LmM-4ruGeeU7xvKO-aKMfrO3OUhDYdBt2hbtUlkDzYr6zL_JveEy9z0fkMT9w-4klW1qBbTHhJwstZEAc2WliptzABlAv7EC0G8vJqLte_ItcEqm7KzK7Zape1VO3yq8a-MR2t45d0HQRItJtyANJRIRD_ICrSeKgCHaUx3SLY8p0MsJCo"/>
+</div>
+<div class="polaroid-card tilt-left w-52 h-64" data-purpose="weapon-card">
+<img alt="Dagger" class="w-full h-44 object-cover grayscale sepia brightness-75 contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2u0m9iG5T59Sp6D12LDHgqndaDGxT59qY-mfIVwnSfeHTypgIoJur1wAeVNwr0tE6NvZXxp17nYHkL2PKoVIJLJkrAbl8-ZI2QBRicocZcTxHV598lgLgFC50IRA7ITu8zbykQHhGfjhmE5LO8Ne4N4f6Jti8y_O_LdIBJhYyX1mEgSNwCB7pzfSNjjoyto7X6WywcqRKAEyPXxY_o0E6beOxrjP3UXOZpOOVmBrm8x6SxgqWaHPu0Hz89JEasKJOi-LZ9TtQWJE"/>
+</div>
+<div class="polaroid-card tilt-slight w-52 h-64" data-purpose="weapon-card">
+<img alt="Lead Pipe" class="w-full h-44 object-cover grayscale sepia brightness-75 contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpXUBLFhWhkL-mvz3Gn7dsuxTamAKsr7poCOYJ9WnfrpkA6fPZE3r4oSqY6ArGqd8Dv67RnstZxKrNeC2Hwz2vY0b-4GRV0Fu7XHavlfwFPnKgzaWbObly7n7NzSJxv_1PbU8l6DCRZhrrOnITAVRcyHIFwKqwORAx4gXZkbm_xo2H6T-5tmJcGFlpyMjlDYvNrGl_BKCxpyvj_zu7F147Lqk3rb6SVclj68m-pQyscjxjFdZHf0jTwOGE2lfnbf-1vAr0PL28PRE"/>
+</div>
+<div class="polaroid-card tilt-left w-52 h-64" data-purpose="weapon-card">
+<img alt="Rope" class="w-full h-44 object-cover grayscale sepia brightness-75 contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV6yxLoayTdmIt9Rs7WSeGkTAqpuvD1AN3Jm8uSBAMf_jDZHdvtyqxPl9LAGgrE7_MRGjxSyY4wJDAqc_A90SUIG53UM0KcK2FQn5CBwKN81lIJd-9ovUQOwQWB7u7a5EHEg4tPODXA-y0TW__MkjszcVOLIl1GGG6FvBkFgM8ab9JQqxF3eGLfnhLBFI4EP3eyPPRh4IrNtbAOc2UGlCbzCivJdM-45t4GrghVSu3P8tqVJ2qCLyRFbgrjzoY-TaO2SKb2eLOd1g"/>
+</div>
+<div class="polaroid-card tilt-right w-52 h-64" data-purpose="weapon-card">
+<img alt="Candlestick" class="w-full h-44 object-cover grayscale sepia brightness-75 contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiSCfGdlw7I_4w8cVIcnvX556eXnVEst_QxlvhkO5TabAreKF5g5gvasoaWltrytl_vQoUztNV6VNs0YTh6gQVLRcAZ9yMJDVzeu1ox9eLrmY50daFqm4iHu61L7mbtgoucKILaE9ic2Bv6PcUYQPLJ1LpS1hP6mYRrE4iN9mduZ2M8arqSlDPSpWyiYrnoHoT8WBNhd7FgvQvGfL87g2ONMjSBTlwQlDoIN3VT9HcZEwB1Mp6A8GNMtdZfMuRGbo-F3LHT0ww3QI"/>
+</div>
+<div class="polaroid-card tilt-slight w-52 h-64" data-purpose="weapon-card">
+<img alt="Wrench" class="w-full h-44 object-cover grayscale sepia brightness-75 contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBDgGzBO3LIp3GAqO_YQUcenqYe67F8w5mHfW7TG3a_FsqAQriJh04mGhogznOwD9TECMSMDesqaLnpJ_o0rI72JrgsQq1BeXTebXjp-GvEsC-ZbWObtktlxXcewK9Y6z4w3XxXigEjUv9ATRL-ARzy8zktG6ZmfNdeBMJ2MXeIjQMIW9vzX2uY3V4wkXoiQxt21YI1FtFzqv1rs7MBadUf2FO8cdAdTzy5IQXCyqMd6qc3bMkwH6TkuoDpdoqGZKD-1TLZEr_jbQ"/>
+</div>
+</div>
+</section>
+<!-- END: WeaponsSection -->
+<!-- BEGIN: LocationsSection -->
+<section class="mb-24" data-purpose="locations-grid" id="locations-grid">
+<h2 class="text-xl font-bold mb-10 uppercase tracking-[0.3em] border-l-4 border-primary-container pl-4 headline-font text-secondary">Site Plans</h2>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
+<div class="polaroid-card tilt-slight w-52 h-64" data-purpose="location-card">
+<img alt="Library" class="w-full h-44 object-cover grayscale contrast-150 brightness-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3kVewHyN3P80pQryTL18tWOPzdCHu5C7zcdZYbldXZ9G8H0uyJNJPhEOOoApnIZ9k5OPRC95ZwoG7U4RzEuuqDqA6kgmbu6T_8c8YUrCBsSm6NJ0pfNLopwddk68q0cAitJbFV92sCS17Jrdlu0QJ8CrVfMOp-q0e-VtIRbDn9i4MPBWXwFyUfgBzHDgzJxlmfh9yHJMuA_oTfTPjoGciWB_LhP9dZcI65Y8kSbppsFskgowykAgvJlMVTwgjD6KEydOaL8HdvPs"/>
+</div>
+<div class="polaroid-card tilt-right w-52 h-64" data-purpose="location-card">
+<img alt="Kitchen" class="w-full h-44 object-cover grayscale contrast-150 brightness-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqgQGsoz__jKw_V0iBOPQ7D7weWivkrz0CScbZv-MdO8MFWgiK2ziLXpGndXklEBdQSI8KCq1IDyAUMfhgHuovw-MAJ9Tu6KoBkpyR12P5LD0s4Mtl4a5YyGcg40iBdCiJzbxglEygyXEbGx275p6CAbY-8E6lkWr4rA_nrS0UgnCvJTYsyh0A50dg6hWD08GytLL_az_-AqGtWr7lwadLywo-hcqlRIbHS_OrSx5ChrTIy_AHB5qhFGUR_6z0b_WFyB8TlgZ_Q2w"/>
+</div>
+<div class="polaroid-card tilt-left w-52 h-64" data-purpose="location-card">
+<img alt="Ballroom" class="w-full h-44 object-cover grayscale contrast-150 brightness-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZGtkQtv5gGvsPLYq-0aIkdCA11AI3FgguvLx_j_jOOm7l5eioKYNyBgFUkHnFA0jAKeiRIoEdovpfe6-vvNLTxaXRnZ9SkNm8zc96IZLwygRNA8zoZ7nCy3shx0UHlfLVIFT1JmgNzp5WvgqdSCj-ak1VsyDivbGjQ64GMcNBIGygv3Td4qTgzDabp1suppCuMziKqaWABWwWty3e9YyNpghSZWEURNGGmRBvC18JgfTxiuRhsVughGjXp8UPBRAyLMZ3ubYueBY"/>
+</div>
+<div class="polaroid-card tilt-left w-52 h-64" data-purpose="location-card">
+<img alt="Study" class="w-full h-44 object-cover grayscale contrast-150 brightness-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgne_Z_O5VWUp-mYxLut8mAk_woDu_Nwhjwm4Dzy3MELdn_AHSo8pO6fayKGsAUIOhEiIfCxyl5ruB4zLAPEiv8qhnxPDFbZFXb2CqQR-mtmk5qtmYQ7NMIgD6K-UeltgilYxBwlQVXXKRZO0R0eKHRixMeL97J-S_vjgNvGwtNfg8GZj25b-viAS-3f8BECB5AS8nAoYiMfQQdpLxnY6rY8uESJnMlI_N076xJS6KEkjo4P595i-2XIY17RFGAm5SlCplt2qW_qM"/>
+</div>
+<div class="polaroid-card tilt-slight w-52 h-64" data-purpose="location-card">
+<img alt="Hall" class="w-full h-44 object-cover grayscale contrast-150 brightness-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC12zVzuOkrUTUcupSsx0NDJseiZsyKZ-brk5fbNZYKI7MFlystoFHGW3B0LK4A4QZbsGUfFag6ZRxYKL-ZHk4NBpACh-nVT4LBkdhLLVVlJASNaK8SWKSzS0T6wFw0LF9tRxKO4Imv5dVEWAe8nTvCIFdvJld0SSuJqz7lLLUEK8F7PQ7sMVL-2fsHlfU88PBtQvH6hvd1g_rU-HvdJoOp51Zilb6amWZnZAHfqM-scWQrXdYv09i3im00VXDW61bNpKTAzPg9dPQ"/>
+</div>
+<div class="polaroid-card tilt-right w-52 h-64" data-purpose="location-card">
+<img alt="Lounge" class="w-full h-44 object-cover grayscale contrast-150 brightness-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5iBRkpM7wVWrWdlHjh4egcX26ESamWbzHh2aBQU6_2bxjwkDvCRrZp75sf79Oh37l4H5FN8Ki_N7p8ZJpocFXcfNIgQ9VFZVDocxED0RDy9fMaOGaB-8oz3yaNgLUCiWKqY-a8zzRxQqByGRqhb7jJGRgRc2seqcTZk3P1RoIorvnu2d_4E_NexGl8yaO0a_ZQxktdxeN1WJAP9cd4Lxh6tjpnfALe1jUs0hNYNVYGUYIAuuPjDKrinFA-OICXt30CNBY2vp1JUA"/>
+</div>
+<div class="polaroid-card tilt-right w-52 h-64" data-purpose="location-card">
+<img alt="Dining Room" class="w-full h-44 object-cover grayscale contrast-150 brightness-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnjobZqNeJIu-CJpi43ATPoJZXbWv1smg-ctsw7YkThFmI_z1CSiHlDBn9SDWk427FSeZhBMqeT5L28jR_IlWrg_rLwKKyzJU1kqpKOzvWC_cxe7Cpk9AdWEEwq_m2s6HiA4AXScVtckX0-XhkzPNvHAtCfvkozBY7sFiTcmIJQkHa_bnLiQJEUZ4LK-HaGI7-vbwlmFKPnmByjO3xMy_nRtotNZ77VhcY6wtD4OgCzQyuNeajH6e78vGfM5KzKYAlW-CRC63hGdo"/>
+</div>
+<div class="polaroid-card tilt-left w-52 h-64" data-purpose="location-card">
+<img alt="Conservatory" class="w-full h-44 object-cover grayscale contrast-150 brightness-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkfLJIQZWjl2XpvPKEQfwPWR5yVj0DOY3q4tqKkyVEsQC5fArYJKTexMa9RcASx1mHkMDZkxERdFz285JWfZSkgiWBA6Ou7LHACyBAKTmDYUYXKueM4cP9CRncXb-ZxVtltodADitAhZY841w1CeGc0eC5iPVGXMm1dqb3IXsIqpOioL_5-pOP8hR20QOr7bpogQGzLmMasFT6cCDV0xypc3qrTiVNimVl9X9iZfspDmlJrBTjojkVD8IowmH6djvrU44oLtz2pl4"/>
+</div>
+<div class="polaroid-card tilt-slight w-52 h-64" data-purpose="location-card">
+<img alt="Billiard Room" class="w-full h-44 object-cover grayscale contrast-150 brightness-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq4BRf964C2RaedhOtFcNBy-cnKyBiWszRf4Nvad9kIxEl9p0UWgszvwq3wjMJZM7bHINZf4v4tTuOqticjy8LYrwbe0XiX0jqupVOWb2QisuuAHAx9WdQl2qsWU2qDPqO2CQRYl0aGc7CfR1JUV63cSP0Tfk5EehOnTNoV_rGFySpMAqQKvHuEcd9X69siHS9bmj5w8c3_JMS5Tvs0n9OUzU0S9mU_-cLooMUtkC-pVpDlpjv7Mkhlh4Sc4HnbT-5i79b7Tohml4"/>
+</div>
+</div>
+</section>
+<!-- END: LocationsSection -->
+</main>
+<footer class="bg-surface-container border-t border-outline-variant/20 py-12 text-center text-on-surface-variant text-[11px] tracking-[0.4em] uppercase headline-font">
+<p>© 1949 Tudor Manor Investigations. All Rights Reserved.</p>
+</footer>
+</body></html>

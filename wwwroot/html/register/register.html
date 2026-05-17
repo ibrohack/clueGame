@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Manrope:wght@400;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error-container": "#93000a",
+                      "on-tertiary-container": "#eb847b",
+                      "surface-container-low": "#1c1b1b",
+                      "secondary-container": "#af8d11",
+                      "secondary": "#e9c349",
+                      "tertiary": "#ffb3ac",
+                      "primary-container": "#06402b",
+                      "error": "#ffb4ab",
+                      "surface-container": "#20201f",
+                      "on-tertiary-fixed": "#400204",
+                      "inverse-on-surface": "#313030",
+                      "on-secondary-fixed-variant": "#574500",
+                      "on-secondary-container": "#342800",
+                      "tertiary-fixed-dim": "#ffb3ac",
+                      "surface-container-high": "#2a2a2a",
+                      "outline": "#8a938c",
+                      "surface-container-lowest": "#0e0e0e",
+                      "surface-bright": "#393939",
+                      "on-surface-variant": "#c0c9c1",
+                      "background": "#131313",
+                      "surface-dim": "#131313",
+                      "on-secondary-fixed": "#241a00",
+                      "secondary-fixed-dim": "#e9c349",
+                      "surface": "#131313",
+                      "inverse-primary": "#356850",
+                      "surface-variant": "#353535",
+                      "on-surface": "#e5e2e1",
+                      "on-primary-fixed-variant": "#1b503a",
+                      "outline-variant": "#404943",
+                      "on-secondary": "#3c2f00",
+                      "tertiary-container": "#671e1b",
+                      "on-tertiary": "#5d1714",
+                      "primary-fixed": "#b8efd0",
+                      "inverse-surface": "#e5e2e1",
+                      "on-tertiary-fixed-variant": "#7b2d28",
+                      "primary": "#9cd2b5",
+                      "on-primary": "#003825",
+                      "secondary-fixed": "#ffe088",
+                      "primary-fixed-dim": "#9cd2b5",
+                      "on-error": "#690005",
+                      "on-primary-container": "#77ac90",
+                      "tertiary-fixed": "#ffdad6",
+                      "on-primary-fixed": "#002114",
+                      "surface-tint": "#9cd2b5",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-highest": "#353535",
+                      "on-background": "#e5e2e1"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "element-gap": "16px",
+                      "container-padding": "32px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Noto Serif"],
+                      "label-sm": ["Manrope"],
+                      "headline-md": ["Noto Serif"],
+                      "body-lg": ["Manrope"],
+                      "body-md": ["Manrope"],
+                      "headline-xl": ["Noto Serif"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-xl": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .brass-border {
+            border: 1px solid transparent;
+            background: linear-gradient(to right, #131313, #131313) padding-box,
+                        linear-gradient(135deg, #e9c349 0%, #af8d11 50%, #e9c349 100%) border-box;
+        }
+        .emerald-glow {
+            box-shadow: inset 0 1px 3px rgba(156, 210, 181, 0.2);
+        }
+        .wood-texture {
+            background-color: #131313;
+            background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+        .dossier-card {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface wood-texture min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 border-b border-outline-variant bg-surface/90 backdrop-blur-md shadow-md flex justify-between items-center px-gutter py-base">
+<div class="flex items-center gap-base">
+<span class="font-headline-lg text-headline-lg text-secondary tracking-tight">CLUE</span>
+</div>
+<nav class="hidden lg:flex items-center gap-gutter absolute left-1/2 -translate-x-1/2">
+<a class="text-on-surface-variant font-label-sm uppercase hover:text-secondary transition-colors duration-300" href="#">Characters</a>
+<a class="text-on-surface-variant font-label-sm uppercase hover:text-secondary transition-colors duration-300" href="#">Weapons</a>
+<a class="text-on-surface-variant font-label-sm uppercase hover:text-secondary transition-colors duration-300" href="#">Locations</a>
+</nav>
+<nav class="hidden md:flex items-center gap-gutter">
+<a class="text-on-surface-variant font-label-sm uppercase hover:text-primary transition-colors duration-300 cursor-pointer" href="#">Login</a>
+<a class="text-secondary font-bold font-label-sm uppercase transition-colors duration-300 cursor-pointer" href="#">Register</a>
+</nav>
+</header>
+<!-- Main Content: Registration Dossier -->
+<main class="flex-grow flex items-center justify-center px-gutter py-32">
+<div class="max-w-2xl w-full">
+<!-- Right Side: Registration Form -->
+<div class="bg-surface-container-low dossier-card rounded-lg p-container-padding brass-border relative overflow-hidden">
+<!-- Watermark Background -->
+<div class="absolute top-0 right-0 p-gutter opacity-10 pointer-events-none">
+<span class="font-headline-xl text-on-surface opacity-20">TOP SECRET</span>
+</div>
+<div class="relative z-10">
+<div class="mb-gutter border-b border-outline-variant pb-base text-center">
+<h1 class="font-headline-xl text-headline-xl text-secondary mb-2 uppercase tracking-tighter">New Detective</h1>
+<p class="font-body-md text-on-surface-variant italic">Complete su expediente para acceder a los archivos del caso #402.</p>
+</div>
+<form class="space-y-element-gap">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-element-gap">
+<!-- UserName -->
+<div class="space-y-2">
+<label class="font-headline-md text-label-sm text-secondary uppercase block" for="username">UserName</label>
+<div class="relative">
+<input class="w-full bg-surface-container-highest border-none rounded-sm px-4 py-3 text-on-surface font-body-md focus:ring-2 focus:ring-primary shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]" id="username" placeholder="Codename..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-3 text-outline text-[20px]">person_search</span>
+</div>
+</div>
+<!-- DisplayName -->
+<div class="space-y-2">
+<label class="font-headline-md text-label-sm text-secondary uppercase block" for="displayname">DisplayName</label>
+<input class="w-full bg-surface-container-highest border-none rounded-sm px-4 py-3 text-on-surface font-body-md focus:ring-2 focus:ring-primary shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]" id="displayname" placeholder="Nombre Real..." type="text"/>
+</div>
+</div>
+<!-- Email -->
+<div class="space-y-2">
+<label class="font-headline-md text-label-sm text-secondary uppercase block" for="email">Email</label>
+<input class="w-full bg-surface-container-highest border-none rounded-sm px-4 py-3 text-on-surface font-body-md focus:ring-2 focus:ring-primary shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]" id="email" placeholder="agente@blackwood.com" type="email"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-element-gap">
+<!-- Password -->
+<div class="space-y-2">
+<label class="font-headline-md text-label-sm text-secondary uppercase block" for="password">Password</label>
+<input class="w-full bg-surface-container-highest border-none rounded-sm px-4 py-3 text-on-surface font-body-md focus:ring-2 focus:ring-primary shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]" id="password" placeholder="••••••••" type="password"/>
+</div>
+<!-- ConfirmPassword -->
+<div class="space-y-2">
+<label class="font-headline-md text-label-sm text-secondary uppercase block" for="confirmpassword">ConfirmPassword</label>
+<input class="w-full bg-surface-container-highest border-none rounded-sm px-4 py-3 text-on-surface font-body-md focus:ring-2 focus:ring-primary shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]" id="confirmpassword" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<div class="pt-base">
+<button class="w-full py-4 bg-primary-container text-secondary font-headline-md border border-secondary uppercase tracking-widest emerald-glow hover:bg-primary-container/80 transition-all duration-300 active:scale-[0.98]" type="submit">
+                                Registrarse
+                            </button>
+</div>
+</form>
+<div class="mt-gutter text-center">
+<p class="font-body-md text-on-surface-variant">
+                            ¿Ya tiene acceso? <a class="text-primary hover:underline decoration-secondary transition-all" href="#">Iniciar Sesión</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-container-padding bg-surface-container-lowest border-t border-outline-variant">
+<div class="flex flex-col md:flex-row justify-between items-center px-gutter gap-element-gap">
+<div class="flex flex-col items-center md:items-start">
+<span class="font-headline-md text-headline-md text-secondary">TUDOR ENIGMA</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1 uppercase tracking-tighter">© 1948 Blackwood Estate. All records classified.</p>
+</div>
+<div class="flex gap-gutter">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-all opacity-80 hover:opacity-100 uppercase" href="#">Archives</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-all opacity-80 hover:opacity-100 uppercase" href="#">The Yard</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-all opacity-80 hover:opacity-100 uppercase" href="#">Privacy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-all opacity-80 hover:opacity-100 uppercase" href="#">Encryption</a>
+</div>
+</div>
+</footer>
+</body></html>
