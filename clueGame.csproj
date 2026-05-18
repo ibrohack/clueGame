@@ -25,4 +25,18 @@
   <PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="10.0.7" />
   <PackageReference Update="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.7" />
 </ItemGroup>
+
+  <!-- Install npm deps once (only when node_modules is absent) -->
+  <Target Name="NpmInstall" BeforeTargets="Build"
+          Condition="!Exists('$(MSBuildProjectDirectory)\node_modules')">
+    <Message Text="Running npm install for Tailwind CSS..." Importance="high" />
+    <Exec Command="npm install" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
+  <!-- Compile Tailwind CSS before every build -->
+  <Target Name="BuildTailwind" BeforeTargets="Build" DependsOnTargets="NpmInstall">
+    <Message Text="Compiling Tailwind CSS..." Importance="high" />
+    <Exec Command="npm run build:css" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
 </Project>

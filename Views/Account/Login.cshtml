@@ -3,40 +3,136 @@
     ViewData["Title"] = "Iniciar sesión";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <h2 class="text-center mb-4">Iniciar sesión</h2>
+@section Styles {
+<style>
+    .dossier-texture {
+        background-image: linear-gradient(to bottom right, rgba(255,255,255,0.02), transparent);
+        position: relative;
+    }
+    .dossier-texture::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        opacity: 0.03;
+        pointer-events: none;
+    }
+    .inner-glow-primary { box-shadow: inset 0 1px 2px rgba(156,210,181,0.3); }
+    .metallic-border {
+        border: 1px solid transparent;
+        background: linear-gradient(to bottom, #131313, #131313) padding-box,
+                    linear-gradient(135deg, #af8d11, #e9c349, #574500) border-box;
+    }
+</style>
+}
 
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<main class="flex items-center justify-center px-6 relative overflow-hidden"
+      style="min-height: calc(100vh - 64px - 100px); padding-top: 48px; padding-bottom: 48px; background-color:#131313;">
 
-        <form asp-action="Login" asp-controller="Account" method="post">
-            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+    <div class="w-full z-10" style="max-width:480px;">
+        <div class="dossier-texture metallic-border rounded-lg overflow-hidden"
+             style="background:#1c1b1b; box-shadow:0 8px 32px rgba(0,0,0,0.6);">
 
-            <div class="mb-3">
-                <label asp-for="UserNameOrEmail" class="form-label"></label>
-                <input asp-for="UserNameOrEmail" class="form-control" placeholder="Tu usuario o correo electrónico" />
-                <span asp-validation-for="UserNameOrEmail" class="text-danger"></span>
+            <!-- Decorative top edge -->
+            <div class="h-2" style="background:linear-gradient(to right, #06402b, #9cd2b5, #06402b);"></div>
+
+            <div class="px-8 py-12">
+
+                <!-- Title -->
+                <div class="text-center mb-10">
+                    <span class="block mb-2 font-semibold uppercase"
+                          style="color:#e9c349; font-size:12px; letter-spacing:0.2em; font-family:Manrope,sans-serif;">
+                        Acceso Clasificado
+                    </span>
+                    <h2 class="headline-font" style="font-family:'Noto Serif',serif; font-size:48px; font-weight:700; letter-spacing:-0.02em; line-height:1.2; color:#e5e2e1;">
+                        Iniciar sesión
+                    </h2>
+                    <div class="mx-auto mt-4" style="width:64px; height:1px; background:rgba(233,195,73,0.5);"></div>
+                </div>
+
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly"
+                     class="mb-6 px-4 py-3 rounded text-xs"
+                     style="background:rgba(147,0,10,0.2); border:1px solid rgba(255,180,171,0.3); color:#ffb4ab;"></div>
+
+                <form asp-action="Login" asp-controller="Account" method="post" class="space-y-6">
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+                    <!-- Username / Email -->
+                    <div class="space-y-2">
+                        <label asp-for="UserNameOrEmail"
+                               class="block font-semibold uppercase"
+                               style="color:#c0c9c1; font-size:12px; letter-spacing:0.1em; font-family:Manrope,sans-serif;"></label>
+                        <div class="relative">
+                            <input asp-for="UserNameOrEmail"
+                                   class="w-full rounded px-4 py-3 outline-none transition-all"
+                                   placeholder="Tu usuario o correo electrónico"
+                                   style="background:#0e0e0e; border:1px solid #404943; color:#e5e2e1; font-family:Manrope,sans-serif; font-size:16px; box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);"
+                                   onfocus="this.style.borderColor='#9cd2b5'; this.style.boxShadow='inset 0 2px 4px rgba(0,0,0,0.5), 0 0 0 1px #9cd2b5';"
+                                   onblur="this.style.borderColor='#404943'; this.style.boxShadow='inset 0 2px 4px rgba(0,0,0,0.5)';" />
+                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2"
+                                  style="color:#8a938c; font-size:20px;">person</span>
+                        </div>
+                        <span asp-validation-for="UserNameOrEmail" class="text-xs" style="color:#ffb4ab;"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="space-y-2">
+                        <label asp-for="Password"
+                               class="block font-semibold uppercase"
+                               style="color:#c0c9c1; font-size:12px; letter-spacing:0.1em; font-family:Manrope,sans-serif;"></label>
+                        <div class="relative">
+                            <input asp-for="Password"
+                                   class="w-full rounded px-4 py-3 outline-none transition-all"
+                                   placeholder="Tu contraseña"
+                                   style="background:#0e0e0e; border:1px solid #404943; color:#e5e2e1; font-family:Manrope,sans-serif; font-size:16px; box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);"
+                                   onfocus="this.style.borderColor='#9cd2b5'; this.style.boxShadow='inset 0 2px 4px rgba(0,0,0,0.5), 0 0 0 1px #9cd2b5';"
+                                   onblur="this.style.borderColor='#404943'; this.style.boxShadow='inset 0 2px 4px rgba(0,0,0,0.5)';" />
+                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2"
+                                  style="color:#8a938c; font-size:20px;">lock</span>
+                        </div>
+                        <span asp-validation-for="Password" class="text-xs" style="color:#ffb4ab;"></span>
+                    </div>
+
+                    <!-- Remember me -->
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input asp-for="RememberMe"
+                                   class="w-5 h-5 rounded cursor-pointer"
+                                   style="accent-color:#9cd2b5; background:#0e0e0e; border:1px solid #404943;" />
+                            <span style="color:#c0c9c1; font-family:Manrope,sans-serif; font-size:16px;">Recordarme</span>
+                        </label>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="pt-4">
+                        <button type="submit"
+                                class="w-full py-4 font-semibold uppercase relative overflow-hidden group transition-all duration-300 active:scale-95 rounded-lg"
+                                style="background:#06402b; color:#e9c349; border:1px solid #e9c349; font-family:'Noto Serif',serif; font-size:24px; letter-spacing:0.05em; box-shadow:inset 0 1px 2px rgba(156,210,181,0.3);">
+                            <span class="relative z-10">Iniciar sesión</span>
+                            <div class="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
+                                 style="background:linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);"></div>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Footer link -->
+                <div class="mt-10 pt-8 text-center" style="border-top:1px solid rgba(64,73,67,0.3);">
+                    <p style="color:#c0c9c1; font-family:Manrope,sans-serif; font-size:16px;">
+                        ¿No tienes cuenta?
+                        <a asp-controller="Account" asp-action="Register"
+                           class="font-bold ml-1 transition-colors"
+                           style="color:#e9c349; text-decoration:none;"
+                           onmouseover="this.style.color='#9cd2b5'" onmouseout="this.style.color='#e9c349'">
+                            Regístrate
+                        </a>
+                    </p>
+                </div>
+
             </div>
-
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" placeholder="Tu contraseña" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3 form-check">
-                <input asp-for="RememberMe" class="form-check-input" />
-                <label asp-for="RememberMe" class="form-check-label"></label>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
-        </form>
-
-        <div class="text-center mt-3">
-            <p>¿No tienes cuenta? <a asp-controller="Account" asp-action="Register">Regístrate</a></p>
         </div>
     </div>
-</div>
+</main>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

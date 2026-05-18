@@ -3,51 +3,158 @@
     ViewData["Title"] = "Registro";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <h2 class="text-center mb-4">Crear cuenta</h2>
+@section Styles {
+<style>
+    .brass-border {
+        border: 1px solid transparent;
+        background: linear-gradient(to right, #131313, #131313) padding-box,
+                    linear-gradient(135deg, #e9c349 0%, #af8d11 50%, #e9c349 100%) border-box;
+    }
+    .dossier-card { box-shadow: 0 8px 16px rgba(0,0,0,0.5); }
+    .wood-texture {
+        background-color: #131313;
+        background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+        background-size: 40px 40px;
+    }
+</style>
+}
 
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<main class="flex items-center justify-center px-6 wood-texture"
+      style="min-height: calc(100vh - 64px - 100px); padding-top: 48px; padding-bottom: 48px;">
 
-        <form asp-action="Register" asp-controller="Account" method="post">
-            <div class="mb-3">
-                <label asp-for="UserName" class="form-label"></label>
-                <input asp-for="UserName" class="form-control" placeholder="Nombre de usuario para login" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
+    <div class="w-full" style="max-width:672px;">
+
+        <div class="brass-border dossier-card rounded-lg relative overflow-hidden"
+             style="background:#1c1b1b; padding:32px;">
+
+            <!-- TOP SECRET watermark -->
+            <div class="absolute top-0 right-0 pointer-events-none select-none" style="padding:24px; opacity:0.07;">
+                <span class="headline-font font-bold" style="font-family:'Noto Serif',serif; font-size:48px; color:#e5e2e1;">TOP SECRET</span>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="DisplayName" class="form-label"></label>
-                <input asp-for="DisplayName" class="form-control" placeholder="Nombre visible en el juego" />
-                <span asp-validation-for="DisplayName" class="text-danger"></span>
+            <div class="relative z-10">
+
+                <!-- Header -->
+                <div class="mb-6 pb-2 text-center" style="border-bottom:1px solid #404943;">
+                    <h1 class="headline-font uppercase mb-2"
+                        style="font-family:'Noto Serif',serif; font-size:48px; font-weight:700; letter-spacing:-0.02em; line-height:1.2; color:#e9c349;">
+                        New Detective
+                    </h1>
+                    <p class="italic" style="color:#c0c9c1; font-family:Manrope,sans-serif; font-size:16px;">
+                        Complete su expediente para acceder a los archivos del caso #402.
+                    </p>
+                </div>
+
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly"
+                     class="mb-5 px-4 py-3 rounded text-xs"
+                     style="background:rgba(147,0,10,0.2); border:1px solid rgba(255,180,171,0.3); color:#ffb4ab;"></div>
+
+                <form asp-action="Register" asp-controller="Account" method="post" class="space-y-4">
+
+                    <!-- UserName + DisplayName row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label asp-for="UserName"
+                                   class="block font-semibold uppercase"
+                                   style="color:#e9c349; font-size:12px; letter-spacing:0.1em; font-family:Manrope,sans-serif;"></label>
+                            <div class="relative">
+                                <input asp-for="UserName"
+                                       class="w-full rounded-sm px-4 py-3 outline-none"
+                                       placeholder="Codename..."
+                                       style="background:#353535; border:none; color:#e5e2e1; font-family:Manrope,sans-serif; font-size:16px; box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);"
+                                       onfocus="this.style.outline='2px solid #9cd2b5'; this.style.outlineOffset='0px';"
+                                       onblur="this.style.outline='none';" />
+                                <span class="material-symbols-outlined absolute right-3 top-3"
+                                      style="color:#8a938c; font-size:20px;">person_search</span>
+                            </div>
+                            <span asp-validation-for="UserName" class="text-xs" style="color:#ffb4ab;"></span>
+                        </div>
+                        <div class="space-y-2">
+                            <label asp-for="DisplayName"
+                                   class="block font-semibold uppercase"
+                                   style="color:#e9c349; font-size:12px; letter-spacing:0.1em; font-family:Manrope,sans-serif;"></label>
+                            <input asp-for="DisplayName"
+                                   class="w-full rounded-sm px-4 py-3 outline-none"
+                                   placeholder="Nombre Real..."
+                                   style="background:#353535; border:none; color:#e5e2e1; font-family:Manrope,sans-serif; font-size:16px; box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);"
+                                   onfocus="this.style.outline='2px solid #9cd2b5'; this.style.outlineOffset='0px';"
+                                   onblur="this.style.outline='none';" />
+                            <span asp-validation-for="DisplayName" class="text-xs" style="color:#ffb4ab;"></span>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="space-y-2">
+                        <label asp-for="Email"
+                               class="block font-semibold uppercase"
+                               style="color:#e9c349; font-size:12px; letter-spacing:0.1em; font-family:Manrope,sans-serif;"></label>
+                        <input asp-for="Email"
+                               class="w-full rounded-sm px-4 py-3 outline-none"
+                               placeholder="agente@blackwood.com"
+                               style="background:#353535; border:none; color:#e5e2e1; font-family:Manrope,sans-serif; font-size:16px; box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);"
+                               onfocus="this.style.outline='2px solid #9cd2b5'; this.style.outlineOffset='0px';"
+                               onblur="this.style.outline='none';" />
+                        <span asp-validation-for="Email" class="text-xs" style="color:#ffb4ab;"></span>
+                    </div>
+
+                    <!-- Password + ConfirmPassword row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label asp-for="Password"
+                                   class="block font-semibold uppercase"
+                                   style="color:#e9c349; font-size:12px; letter-spacing:0.1em; font-family:Manrope,sans-serif;"></label>
+                            <input asp-for="Password"
+                                   class="w-full rounded-sm px-4 py-3 outline-none"
+                                   placeholder="••••••••"
+                                   style="background:#353535; border:none; color:#e5e2e1; font-family:Manrope,sans-serif; font-size:16px; box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);"
+                                   onfocus="this.style.outline='2px solid #9cd2b5'; this.style.outlineOffset='0px';"
+                                   onblur="this.style.outline='none';" />
+                            <span asp-validation-for="Password" class="text-xs" style="color:#ffb4ab;"></span>
+                        </div>
+                        <div class="space-y-2">
+                            <label asp-for="ConfirmPassword"
+                                   class="block font-semibold uppercase"
+                                   style="color:#e9c349; font-size:12px; letter-spacing:0.1em; font-family:Manrope,sans-serif;"></label>
+                            <input asp-for="ConfirmPassword"
+                                   class="w-full rounded-sm px-4 py-3 outline-none"
+                                   placeholder="••••••••"
+                                   style="background:#353535; border:none; color:#e5e2e1; font-family:Manrope,sans-serif; font-size:16px; box-shadow:inset 0 2px 4px rgba(0,0,0,0.5);"
+                                   onfocus="this.style.outline='2px solid #9cd2b5'; this.style.outlineOffset='0px';"
+                                   onblur="this.style.outline='none';" />
+                            <span asp-validation-for="ConfirmPassword" class="text-xs" style="color:#ffb4ab;"></span>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="pt-2">
+                        <button type="submit"
+                                class="w-full py-4 uppercase font-semibold tracking-widest transition-all duration-300 active:scale-95"
+                                style="background:#06402b; color:#e9c349; border:1px solid #e9c349; font-family:'Noto Serif',serif; font-size:24px; box-shadow:inset 0 1px 3px rgba(156,210,181,0.2);"
+                                onmouseover="this.style.background='rgba(6,64,43,0.8)'"
+                                onmouseout="this.style.background='#06402b'">
+                            Registrarse
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Login link -->
+                <div class="mt-6 text-center">
+                    <p style="color:#c0c9c1; font-family:Manrope,sans-serif; font-size:16px;">
+                        ¿Ya tiene acceso?
+                        <a asp-controller="Account" asp-action="Login"
+                           style="color:#9cd2b5; text-decoration:none;"
+                           onmouseover="this.style.textDecoration='underline'; this.style.textDecorationColor='#e9c349';"
+                           onmouseout="this.style.textDecoration='none';">
+                            Iniciar Sesión
+                        </a>
+                    </p>
+                </div>
+
             </div>
-
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" placeholder="correo@ejemplo.com" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" placeholder="Mínimo 6 caracteres" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="ConfirmPassword" class="form-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" placeholder="Repite la contraseña" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
-        </form>
-
-        <div class="text-center mt-3">
-            <p>¿Ya tienes una cuenta? <a asp-controller="Account" asp-action="Login">Inicia sesión</a></p>
         </div>
     </div>
-</div>
+</main>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

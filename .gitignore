@@ -24,3 +24,9 @@ Thumbs.db
 .env
 .env.local
 clueGame.csproj.lscache
+
+# Node / npm
+node_modules/
+
+# Tailwind generated output (rebuilt by dotnet build via npm run build:css)
+wwwroot/css/app.css
