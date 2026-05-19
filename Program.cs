@@ -54,6 +54,13 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+// Seed lore data into MongoDB (idempotent — skips already-seeded documents)
+using (var scope = app.Services.CreateScope())
+{
+    var mongo = scope.ServiceProvider.GetRequiredService<MongoDbService>();
+    await new clueGame.Services.LoreSeeder(mongo).SeedAsync();
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -70,6 +77,11 @@ app.UseAuthorization();
 app.UseSession();
 
 app.MapStaticAssets();
+
+// Catalog detail pages — must be registered before the default route
+app.MapControllerRoute("catalog-character", "Characters/{id}", new { controller = "Catalog", action = "Character" });
+app.MapControllerRoute("catalog-weapon",    "Weapons/{id}",    new { controller = "Catalog", action = "Weapon" });
+app.MapControllerRoute("catalog-location",  "Locations/{id}",  new { controller = "Catalog", action = "Location" });
 
 app.MapControllerRoute(
     name: "default",

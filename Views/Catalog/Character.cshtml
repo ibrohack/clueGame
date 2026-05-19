@@ -1,0 +1,164 @@
+@model clueGame.Models.Mongo.MongoCharacter
+@{
+    ViewData["Title"] = Model.Name + " — Dossier";
+}
+
+@section Styles {
+<style>
+.brass-border {
+    position: relative;
+    border: 1px solid #e9c349;
+    background-clip: padding-box;
+}
+.brass-border::after {
+    content: "";
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    border: 1px solid rgba(233,195,73,0.3);
+    pointer-events: none;
+    z-index: -1;
+}
+.ledger-paper {
+    background-color: #20201f;
+    background-image: linear-gradient(#2a2a2a 1px, transparent 1px),
+                      linear-gradient(90deg, #2a2a2a 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+.redacted {
+    background-color: #0e0e0e;
+    color: #0e0e0e;
+    user-select: none;
+    padding: 0 6px;
+    border-radius: 2px;
+}
+</style>
+}
+
+<main class="max-w-7xl mx-auto px-8 py-12">
+    <div class="flex flex-col gap-10">
+
+        <!-- Hero: portrait + identity -->
+        <section class="relative bg-surface-container-lowest p-2 brass-border shadow-2xl flex flex-col md:flex-row gap-6">
+
+            <!-- Portrait -->
+            <div class="w-full md:w-2/5 relative overflow-hidden aspect-square">
+                <img alt="@Model.Name"
+                     class="w-full h-full object-cover"
+                     style="filter: contrast(1.25) grayscale(20%);"
+                     src="@Model.ImageUrl" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                <div class="absolute bottom-4 left-4 right-4">
+                    <span class="bg-primary-container text-secondary px-3 py-1 text-[11px] rounded uppercase tracking-widest border border-secondary/30">
+                        @(Model.Status ?? "Person of Interest")
+                    </span>
+                </div>
+            </div>
+
+            <!-- Identity -->
+            <div class="flex-1 flex flex-col justify-center pr-6 py-4">
+                <div class="mb-2 flex items-center gap-4">
+                    <span class="h-px w-12 bg-secondary/50"></span>
+                    <span class="font-label-sm text-secondary uppercase tracking-[0.2em]">Personnel File</span>
+                </div>
+                <h1 class="font-headline-xl text-headline-xl text-on-surface mb-4 leading-none uppercase">@Model.Name</h1>
+                @if (!string.IsNullOrEmpty(Model.Quote))
+                {
+                    <p class="font-body-lg text-body-lg text-on-surface-variant italic mb-8 max-w-md">"@Model.Quote"</p>
+                }
+                <div class="flex flex-wrap gap-3">
+                    @if (!string.IsNullOrEmpty(Model.Location))
+                    {
+                        <div class="flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-full border border-outline-variant">
+                            <span class="material-symbols-outlined text-secondary text-[18px]">location_on</span>
+                            <span class="font-label-sm uppercase">@Model.Location</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Temperament))
+                    {
+                        <div class="flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-full border border-outline-variant">
+                            <span class="material-symbols-outlined text-secondary text-[18px]">shield_person</span>
+                            <span class="font-label-sm uppercase">@Model.Temperament</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Status))
+                    {
+                        <div class="flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-full border border-outline-variant">
+                            <span class="material-symbols-outlined text-secondary text-[18px]">military_tech</span>
+                            <span class="font-label-sm uppercase">@Model.Status</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <!-- Information grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- Characteristics -->
+            <section class="ledger-paper shadow-xl relative border border-outline-variant/30 p-12">
+                <div class="absolute top-0 left-0 w-full h-1 bg-secondary"></div>
+                <h3 class="font-headline-md text-headline-md text-secondary mb-6 flex items-center gap-3">
+                    <span class="material-symbols-outlined">checklist</span>
+                    Characteristics
+                </h3>
+                <div class="flex flex-col gap-3">
+                    @if (!string.IsNullOrEmpty(Model.Temperament))
+                    {
+                        <div class="border-b border-outline-variant pb-2 flex justify-between items-end gap-4">
+                            <span class="font-label-sm text-on-surface-variant uppercase">Temperament</span>
+                            <span class="font-body-md text-on-surface text-right">@Model.Temperament</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.KnownAssociates))
+                    {
+                        <div class="border-b border-outline-variant pb-2 flex justify-between items-end gap-4">
+                            <span class="font-label-sm text-on-surface-variant uppercase">Known Associates</span>
+                            <span class="font-body-md text-on-surface text-right">@Model.KnownAssociates</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.DistinguishingMark))
+                    {
+                        <div class="border-b border-outline-variant pb-2 flex justify-between items-end gap-4">
+                            <span class="font-label-sm text-on-surface-variant uppercase">Distinguishing Mark</span>
+                            <span class="font-body-md text-on-surface text-right">@Model.DistinguishingMark</span>
+                        </div>
+                    }
+                    <div class="border-b border-outline-variant pb-2 flex justify-between items-end gap-4">
+                        <span class="font-label-sm text-on-surface-variant uppercase">Motive (Verified)</span>
+                        <span class="font-body-md redacted">@(Model.Motive ?? "CLASSIFIED")</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Description -->
+            <section class="bg-surface-container-low shadow-xl border-l-4 border-primary relative p-12">
+                <h3 class="font-headline-md text-headline-md text-primary mb-6 flex items-center gap-3">
+                    <span class="material-symbols-outlined">description</span>
+                    Description
+                </h3>
+                <div class="font-body-md text-on-surface-variant leading-relaxed flex flex-col gap-4">
+                    @if (Model.Description?.Count > 0)
+                    {
+                        @foreach (var para in Model.Description)
+                        {
+                            <p>@para</p>
+                        }
+                    }
+                    else
+                    {
+                        <p class="italic">No file description available.</p>
+                    }
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+
+<!-- FAB -->
+<a asp-controller="Game" asp-action="Index"
+   class="fixed bottom-8 right-8 w-16 h-16 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform group">
+    <span class="material-symbols-outlined text-[32px]">mystery</span>
+    <div class="absolute right-20 bg-primary-container text-secondary px-4 py-2 rounded text-label-sm uppercase opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border border-secondary whitespace-nowrap">
+        Play Game
+    </div>
+</a>

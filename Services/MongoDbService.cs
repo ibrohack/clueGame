@@ -15,6 +15,8 @@ public class MongoDbService
         _db = client.GetDatabase(databaseName);
     }
 
+    internal IMongoDatabase Database => _db;
+
     // --- Lookup collections (read-only master data) ---
 
     public async Task<List<MongoCharacter>> GetAllCharactersAsync()
@@ -28,6 +30,18 @@ public class MongoDbService
     public async Task<List<MongoLocation>> GetAllLocationsAsync()
         => await _db.GetCollection<MongoLocation>("locations")
                     .Find(_ => true).ToListAsync();
+
+    public async Task<MongoCharacter?> GetCharacterByIdAsync(string id)
+        => await _db.GetCollection<MongoCharacter>("characters")
+                    .Find(c => c.Id == id).FirstOrDefaultAsync();
+
+    public async Task<MongoWeapon?> GetWeaponByIdAsync(string id)
+        => await _db.GetCollection<MongoWeapon>("weapons")
+                    .Find(w => w.Id == id).FirstOrDefaultAsync();
+
+    public async Task<MongoLocation?> GetLocationByIdAsync(string id)
+        => await _db.GetCollection<MongoLocation>("locations")
+                    .Find(l => l.Id == id).FirstOrDefaultAsync();
 
     // --- Players ---
 
