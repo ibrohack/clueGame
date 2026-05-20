@@ -1,57 +1,133 @@
 @model clueGame.Models.ViewModels.NewGameViewModel
 @{
-    ViewData["Title"] = "New Game";
+    ViewData["Title"] = "New Investigation";
 }
 
-<h2>Start a New Game</h2>
-
-<form asp-action="Create" method="post" style="max-width:700px">
-    @Html.AntiForgeryToken()
-
-    <div asp-validation-summary="All" class="text-danger"></div>
-
-    <div style="margin-bottom:1.5rem">
-        <label asp-for="BotCount">Number of bots (2–5)</label>
-        <select asp-for="BotCount">
-            <option value="2">2 bots (3 players total)</option>
-            <option value="3" selected>3 bots (4 players total)</option>
-            <option value="4">4 bots (5 players total)</option>
-            <option value="5">5 bots (6 players total)</option>
-        </select>
-        <span asp-validation-for="BotCount" class="text-danger"></span>
-    </div>
-
-    <div style="margin-bottom:1.5rem">
-        <p><strong>Choose your character:</strong></p>
-        <div style="display:flex;flex-wrap:wrap;gap:1rem">
-            @foreach (var character in Model.AvailableCharacters)
-            {
-                <label style="cursor:pointer;text-align:center;border:2px solid transparent;border-radius:8px;padding:0.5rem;transition:border-color 0.2s"
-                       class="character-card">
-                    <input type="radio" name="SelectedCharacterId" value="@character.Id"
-                           style="display:none" class="char-radio"
-                           @(Model.SelectedCharacterId == character.Id ? "checked" : "") />
-                    @if (!string.IsNullOrEmpty(character.ImageUrl))
-                    {
-                        <img src="@character.ImageUrl" alt="@character.Name"
-                             style="width:80px;height:80px;object-fit:cover;border-radius:6px;display:block" />
-                    }
-                    <span style="display:block;margin-top:0.3rem;font-size:0.85rem">@character.Name</span>
-                </label>
-            }
-        </div>
-        <span asp-validation-for="SelectedCharacterId" class="text-danger"></span>
-    </div>
-
-    <button type="submit">Start Game</button>
-</form>
-
+@section Styles {
 <style>
+    .character-card {
+        background: #1c1b1b;
+        border: 2px solid #404943;
+        border-radius: 0.25rem;
+        padding: 12px;
+        cursor: pointer;
+        text-align: center;
+        transition: border-color 0.2s, transform 0.2s;
+    }
+    .character-card:hover { border-color: rgba(233,195,73,0.6); transform: translateY(-2px); }
     .character-card:has(.char-radio:checked) {
-        border-color: #0d6efd;
-        background-color: #e7f1ff;
+        border-color: #e9c349;
+        background: rgba(6,64,43,0.3);
+        box-shadow: 0 0 12px rgba(233,195,73,0.2);
     }
-    .character-card:hover {
-        border-color: #6ea8fe;
+    .select-styled {
+        background: #0e0e0e;
+        border: 1px solid #404943;
+        color: #e5e2e1;
+        font-family: Manrope, sans-serif;
+        font-size: 16px;
+        padding: 10px 14px;
+        width: 100%;
+        border-radius: 0.25rem;
+        appearance: none;
+        cursor: pointer;
+        outline: none;
     }
+    .select-styled:focus { border-color: #9cd2b5; box-shadow: 0 0 0 1px #9cd2b5; }
 </style>
+}
+
+<div style="background:#131313; min-height:calc(100vh - 64px - 100px); padding:48px 24px;">
+    <div class="max-w-3xl mx-auto">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <p class="uppercase tracking-[0.3em] mb-2" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#9cd2b5;">Case File Opening</p>
+            <h1 style="font-family:'Noto Serif',serif; font-size:48px; font-weight:700; color:#e9c349; letter-spacing:-0.02em; line-height:1.2; margin-bottom:8px;">
+                New Investigation
+            </h1>
+            <p class="italic" style="font-family:Manrope,sans-serif; font-size:18px; color:#c0c9c1; line-height:1.6;">
+                Choose your cover and assemble your team before entering the mansion.
+            </p>
+        </div>
+
+        <!-- Form -->
+        <div class="relative p-8" style="background:#1c1b1b; border:1px solid #404943; box-shadow:0 8px 32px rgba(0,0,0,0.5);">
+            <!-- Corner ornaments -->
+            <div class="absolute top-0 left-0 w-6 h-6" style="border-top:2px solid rgba(233,195,73,0.4); border-left:2px solid rgba(233,195,73,0.4);"></div>
+            <div class="absolute top-0 right-0 w-6 h-6" style="border-top:2px solid rgba(233,195,73,0.4); border-right:2px solid rgba(233,195,73,0.4);"></div>
+            <div class="absolute bottom-0 left-0 w-6 h-6" style="border-bottom:2px solid rgba(233,195,73,0.4); border-left:2px solid rgba(233,195,73,0.4);"></div>
+            <div class="absolute bottom-0 right-0 w-6 h-6" style="border-bottom:2px solid rgba(233,195,73,0.4); border-right:2px solid rgba(233,195,73,0.4);"></div>
+
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="All"
+                     class="mb-6 px-4 py-3 rounded text-xs"
+                     style="background:rgba(147,0,10,0.2); border:1px solid rgba(255,180,171,0.3); color:#ffb4ab;"></div>
+
+                <!-- Bot count -->
+                <div class="mb-8">
+                    <label asp-for="BotCount"
+                           class="block uppercase tracking-widest mb-3"
+                           style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#e9c349; letter-spacing:0.1em;">
+                        Adversaries (bots)
+                    </label>
+                    <div class="relative max-w-xs">
+                        <select asp-for="BotCount" class="select-styled">
+                            <option value="2">2 bots (3 players total)</option>
+                            <option value="3" selected>3 bots (4 players total)</option>
+                            <option value="4">4 bots (5 players total)</option>
+                            <option value="5">5 bots (6 players total)</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none"
+                              style="color:#8a938c; font-size:18px;">expand_more</span>
+                    </div>
+                    <span asp-validation-for="BotCount" class="text-xs" style="color:#ffb4ab; font-family:Manrope,sans-serif;"></span>
+                </div>
+
+                <!-- Character selection -->
+                <div class="mb-8">
+                    <p class="uppercase tracking-widest mb-4" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#e9c349; letter-spacing:0.1em;">
+                        Choose your character
+                    </p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        @foreach (var character in Model.AvailableCharacters)
+                        {
+                            <label class="character-card">
+                                <input type="radio" name="SelectedCharacterId" value="@character.Id"
+                                       class="char-radio" style="display:none;"
+                                       @(Model.SelectedCharacterId == character.Id ? "checked" : "") />
+                                @if (!string.IsNullOrEmpty(character.ImageUrl))
+                                {
+                                    <img src="@character.ImageUrl" alt="@character.Name"
+                                         style="width:100%; height:96px; object-fit:cover; border-radius:2px; filter:grayscale(30%) contrast(1.1);" />
+                                }
+                                <p class="mt-2 font-bold uppercase tracking-wider" style="font-family:Manrope,sans-serif; font-size:10px; color:#c0c9c1;">@character.Name</p>
+                            </label>
+                        }
+                    </div>
+                    <span asp-validation-for="SelectedCharacterId" class="text-xs" style="color:#ffb4ab; font-family:Manrope,sans-serif;"></span>
+                </div>
+
+                <!-- Submit -->
+                <div class="flex items-center justify-between pt-4" style="border-top:1px solid #404943;">
+                    <a asp-controller="Home" asp-action="Index"
+                       style="font-family:Manrope,sans-serif; font-size:14px; color:#8a938c; text-decoration:none;"
+                       onmouseover="this.style.color='#c0c9c1'" onmouseout="this.style.color='#8a938c';">
+                        ← Back to Home
+                    </a>
+                    <button type="submit"
+                            class="flex items-center gap-3 px-10 py-4 font-bold uppercase tracking-widest transition-all active:scale-95"
+                            style="background:#06402b; color:#e9c349; border:1px solid rgba(233,195,73,0.4); font-family:'Noto Serif',serif; font-size:18px; border-radius:0.125rem; box-shadow:0 0 20px rgba(6,64,43,0.3); cursor:pointer;"
+                            onmouseover="this.style.background='rgba(6,64,43,0.8)'"
+                            onmouseout="this.style.background='#06402b'">
+                        <span class="material-symbols-outlined" style="font-size:20px;">play_arrow</span>
+                        Start Investigation
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

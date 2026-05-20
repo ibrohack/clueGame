@@ -1,342 +1,558 @@
 @model clueGame.Models.ViewModels.BoardViewModel
 @{
-    ViewData["Title"] = "Game Board";
+    ViewData["Title"] = "Detective's Ledger";
     var game = Model.Game;
     var human = Model.HumanPlayer;
     var isHumanTurn = game.TurnPhase == "human_suggestion";
     var isHumanDone = game.TurnPhase == "human_done";
-    var isBotTurns = game.TurnPhase == "bot_turns";
+    var isBotTurns  = game.TurnPhase == "bot_turns";
 
     var matrix = Model.BuildMatrix();
 
-    string RowCss(string s) => s switch
+    string RowBg(string s) => s switch
     {
-        "in_hand"   => "background:#c8e6c9",
-        "discarded" => "background:#e0e0e0",
-        "suspect"   => "background:#fff9c4",
+        "in_hand"   => "background:rgba(6,64,43,0.3)",
+        "discarded" => "background:rgba(64,73,67,0.2)",
+        "suspect"   => "background:rgba(233,195,73,0.08)",
         _           => ""
     };
 
-    string CellCss(string s) => s switch
+    string CellIcon(string s) => s switch
     {
-        "has_it"      => "background:#a5d6a7",
-        "no_has_it"   => "background:#ef9a9a",
-        "suspect_has" => "background:#c8e6c9;opacity:.8",
-        "suspect_no"  => "background:#ffcdd2;opacity:.8",
+        "has_it"      => "check",
+        "no_has_it"   => "close",
+        "suspect_has" => "help",
+        "suspect_no"  => "do_not_disturb_on",
+        _             => ""
+    };
+
+    string CellColor(string s) => s switch
+    {
+        "has_it"      => "#9cd2b5",
+        "no_has_it"   => "#ffb4ab",
+        "suspect_has" => "rgba(156,210,181,0.6)",
+        "suspect_no"  => "rgba(255,180,171,0.6)",
         _             => ""
     };
 }
 
-<h2>Game Board</h2>
+@section Styles {
+<style>
+    body { overflow: hidden; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .icon-fill { font-variation-settings: 'FILL' 1; }
 
-<p>
-    <strong>Your character:</strong>
-    @Model.Characters.FirstOrDefault(c => c.Id == human.CharacterId)?.Name
-    &nbsp;|&nbsp;
-    <strong>Phase:</strong> @game.TurnPhase
-    &nbsp;|&nbsp;
-    <strong>Players:</strong> @string.Join(", ", game.Players.Select(p => p.Name + (p.IsBot ? " (bot)" : " (you)")))
-</p>
-
-@* ── Suggestion result ── *@
-@if (Model.LastSuggestionResult is { } sr)
-{
-    <div style="border:1px solid #999;padding:8px;margin-bottom:12px">
-        <strong>Your suggestion:</strong>
-        @sr.CharacterName + @sr.WeaponName + @sr.LocationName
-        <br />
-        @if (sr.NoOneRefuted)
-        {
-            <span>Nobody could refute your suggestion.</span>
-        }
-        else
-        {
-            <span><strong>@sr.RefutedByName</strong> showed you: <strong>@sr.ShownCardName</strong></span>
-        }
-    </div>
+    .ledger-texture {
+        background-image: radial-gradient(#ffffff05 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .metallic-text {
+        background: linear-gradient(135deg, #e9c349 0%, #af8d11 50%, #e9c349 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .select-cell {
+        background: transparent;
+        border: none;
+        color: #c0c9c1;
+        font-family: Manrope, sans-serif;
+        font-size: 11px;
+        width: 100%;
+        cursor: pointer;
+        outline: none;
+        padding: 2px;
+    }
+    .select-cell:focus { outline: 1px solid #e9c349; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #131313; }
+    ::-webkit-scrollbar-thumb { background: #1b503a; border: 1px solid #404943; }
+    .select-styled {
+        background: #0e0e0e;
+        border: 1px solid #404943;
+        color: #e5e2e1;
+        font-family: Manrope, sans-serif;
+        font-size: 14px;
+        padding: 8px 12px;
+        width: 100%;
+        border-radius: 0.25rem;
+        appearance: none;
+        cursor: pointer;
+        outline: none;
+    }
+    .select-styled:focus { border-color: #9cd2b5; }
+</style>
 }
 
-@* ── Bot turn summary ── *@
-@if (Model.CurrentBotTurn is { } bt)
-{
-    <div style="border:1px solid #aaa;padding:8px;margin-bottom:12px">
-        <strong>@bt.BotName's turn:</strong>
-        @if (!string.IsNullOrEmpty(bt.CharacterName))
-        {
-            <span>Suggested @bt.CharacterName + @bt.WeaponName at @bt.LocationName.</span>
-        }
-        <br />
-        @if (bt.NoOneRefuted)
-        {
-            <span>Nobody refuted.</span>
-        }
-        else
-        {
-            <span>Refuted by <strong>@bt.RefutedByName</strong>.</span>
-            @if (!string.IsNullOrEmpty(bt.ShownCardName))
+<div class="flex" style="height: calc(100vh - 64px);">
+
+    <!-- Sidebar -->
+    <nav class="flex-shrink-0 flex flex-col z-40"
+         style="width:256px; background:#042016; border-right:2px solid rgba(120,80,0,0.4); box-shadow:4px 0 20px rgba(0,0,0,0.8);">
+
+        <div class="p-6 pt-8">
+            <p class="font-bold tracking-widest text-xs uppercase mb-1" style="color:#e9c349; font-family:Manrope,sans-serif;">Current Case</p>
+            <p style="font-family:Manrope,sans-serif; font-size:10px; color:rgba(209,250,229,0.5);">
+                Playing as: @(Model.Characters.FirstOrDefault(c => c.Id == human.CharacterId)?.Name ?? "Unknown")
+            </p>
+        </div>
+
+        <div class="flex-grow flex flex-col">
+            <div class="flex items-center gap-3 px-6 py-4 border-l-4"
+                 style="background:rgba(0,0,0,0.4); color:#e9c349; border-color:#e9c349; font-family:Manrope,sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:0.1em;">
+                <span class="material-symbols-outlined icon-fill" style="font-size:18px;">edit_note</span>
+                Detective Ledger
+            </div>
+            <a asp-action="Accuse" asp-route-gameId="@game.Id"
+               class="flex items-center gap-3 px-6 py-4 transition-all"
+               style="color:rgba(209,250,229,0.7); font-family:Manrope,sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; text-decoration:none;"
+               onmouseover="this.style.background='rgba(6,64,43,0.5)'; this.style.color='white';"
+               onmouseout="this.style.background=''; this.style.color='rgba(209,250,229,0.7)';">
+                <span class="material-symbols-outlined" style="font-size:18px;">vpn_key</span>
+                Secret Passages
+            </a>
+        </div>
+
+        <!-- Sidebar actions -->
+        <div class="p-6" style="border-top:1px solid rgba(120,80,0,0.4);">
+            <a asp-action="Accuse" asp-route-gameId="@game.Id"
+               class="flex items-center justify-center gap-2 w-full py-3 px-4 font-bold text-xs uppercase tracking-widest rounded transition-all"
+               style="background:#e9c349; color:#1a1000; text-decoration:none; box-shadow:0 0 15px rgba(245,158,11,0.4);"
+               onmouseover="this.style.background='#f5d060';" onmouseout="this.style.background='#e9c349';">
+                <span class="material-symbols-outlined icon-fill" style="font-size:16px;">gavel</span>
+                Make Accusation
+            </a>
+
+            <form asp-action="Abandon" method="post" class="mt-3"
+                  onsubmit="return confirm('Abandon this game?')">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="gameId" value="@game.Id" />
+                <button type="submit"
+                        class="w-full py-2 text-xs uppercase tracking-widest font-semibold transition-all"
+                        style="background:transparent; border:1px solid rgba(255,180,171,0.3); color:rgba(255,180,171,0.7); font-family:Manrope,sans-serif; border-radius:0.125rem; cursor:pointer;"
+                        onmouseover="this.style.borderColor='#ffb4ab'; this.style.color='#ffb4ab';"
+                        onmouseout="this.style.borderColor='rgba(255,180,171,0.3)'; this.style.color='rgba(255,180,171,0.7)';">
+                    Abandon Game
+                </button>
+            </form>
+        </div>
+
+    </nav>
+
+    <!-- Main content -->
+    <main class="flex-1 overflow-y-auto ledger-texture" style="background:#131313;">
+        <div class="max-w-6xl mx-auto px-8 py-8">
+
+            <!-- Header -->
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h1 class="metallic-text uppercase tracking-tight"
+                        style="font-family:'Noto Serif',serif; font-size:48px; font-weight:700; line-height:1.2; letter-spacing:-0.02em;">
+                        The Detective's Ledger
+                    </h1>
+                    <p class="italic mt-2" style="font-family:Manrope,sans-serif; font-size:18px; color:#c0c9c1; max-width:560px; line-height:1.6;">
+                        "Eliminate the impossible, and whatever remains, however improbable, must be the truth."
+                    </p>
+                </div>
+                <!-- Phase badge -->
+                <div class="flex-shrink-0 px-4 py-2 rounded text-center"
+                     style="border:1px solid #404943; background:#20201f; min-width:140px;">
+                    <p class="uppercase tracking-widest mb-1" style="font-family:Manrope,sans-serif; font-size:10px; color:#8a938c;">Phase</p>
+                    <p class="font-bold uppercase" style="font-family:Manrope,sans-serif; font-size:12px; color:#e9c349;">@game.TurnPhase.Replace("_", " ")</p>
+                </div>
+            </div>
+
+            @* ── Suggestion result ── *@
+            @if (Model.LastSuggestionResult is { } sr)
             {
-                <span> Showed: <strong>@bt.ShownCardName</strong>.</span>
+                <div class="mb-6 p-4 rounded-lg" style="background:#1c1b1b; border:1px solid rgba(156,210,181,0.3);">
+                    <p class="uppercase tracking-widest mb-2" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#9cd2b5;">Your Suggestion Result</p>
+                    <p style="font-family:Manrope,sans-serif; font-size:16px; color:#e5e2e1;">
+                        <span style="color:#c0c9c1;">Suggested:</span>
+                        <strong>@sr.CharacterName</strong> with <strong>@sr.WeaponName</strong> at <strong>@sr.LocationName</strong>
+                    </p>
+                    @if (sr.NoOneRefuted)
+                    {
+                        <p class="mt-2 italic" style="color:#e9c349; font-family:Manrope,sans-serif; font-size:14px;">Nobody could refute your suggestion.</p>
+                    }
+                    else
+                    {
+                        <p class="mt-2" style="font-family:Manrope,sans-serif; font-size:14px; color:#c0c9c1;">
+                            <strong style="color:#9cd2b5;">@sr.RefutedByName</strong> showed you: <strong style="color:#e9c349;">@sr.ShownCardName</strong>
+                        </p>
+                    }
+                </div>
             }
-        }
-    </div>
-}
 
-@* ── Action panel ── *@
-<div style="margin-bottom:16px">
-    @if (isHumanTurn)
-    {
-        <a asp-action="Accuse" asp-route-gameId="@game.Id">Make Accusation</a>
-        <text> | </text>
-        <a href="#suggest-form">Make Suggestion ↓</a>
-    }
+            @* ── Bot turn summary ── *@
+            @if (Model.CurrentBotTurn is { } bt)
+            {
+                <div class="mb-6 p-4 rounded-lg" style="background:#1c1b1b; border:1px solid rgba(255,180,171,0.2);">
+                    <p class="uppercase tracking-widest mb-2" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#ffb3ac;">@bt.BotName's Turn</p>
+                    @if (!string.IsNullOrEmpty(bt.CharacterName))
+                    {
+                        <p style="font-family:Manrope,sans-serif; font-size:16px; color:#e5e2e1;">
+                            Suggested <strong>@bt.CharacterName</strong> with <strong>@bt.WeaponName</strong> at <strong>@bt.LocationName</strong>.
+                        </p>
+                    }
+                    @if (bt.NoOneRefuted)
+                    {
+                        <p class="mt-1 italic" style="font-family:Manrope,sans-serif; font-size:14px; color:#c0c9c1;">Nobody refuted.</p>
+                    }
+                    else
+                    {
+                        <p class="mt-1" style="font-family:Manrope,sans-serif; font-size:14px; color:#c0c9c1;">
+                            Refuted by <strong style="color:#9cd2b5;">@bt.RefutedByName</strong>.
+                            @if (!string.IsNullOrEmpty(bt.ShownCardName))
+                            {
+                                <span> Showed: <strong style="color:#e9c349;">@bt.ShownCardName</strong>.</span>
+                            }
+                        </p>
+                    }
+                </div>
+            }
 
-    @if (isHumanDone)
-    {
-        <a asp-action="Accuse" asp-route-gameId="@game.Id">Make Accusation</a>
-        <text> | </text>
-        <form asp-action="EndTurn" method="post" style="display:inline">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="gameId" value="@game.Id" />
-            <button type="submit">End Turn (start bot turns)</button>
-        </form>
-    }
+            @* ── Action buttons ── *@
+            <div class="flex flex-wrap gap-3 mb-8">
+                @if (isHumanDone)
+                {
+                    <form asp-action="EndTurn" method="post" class="inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="gameId" value="@game.Id" />
+                        <button type="submit"
+                                class="flex items-center gap-2 px-6 py-3 font-bold text-xs uppercase tracking-widest transition-all active:scale-95"
+                                style="background:#06402b; color:#e9c349; border:1px solid rgba(233,195,73,0.4); font-family:Manrope,sans-serif; border-radius:0.125rem; cursor:pointer;"
+                                onmouseover="this.style.background='rgba(6,64,43,0.8)';"
+                                onmouseout="this.style.background='#06402b';">
+                            <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+                            End Turn
+                        </button>
+                    </form>
+                }
 
-    @if (isBotTurns)
-    {
-        <form asp-action="NextBot" method="post" style="display:inline">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="gameId" value="@game.Id" />
-            <input type="hidden" name="botIndex" value="@game.PendingBotIndex" />
-            <button type="submit">Next Bot Turn →</button>
-        </form>
-    }
+                @if (isBotTurns)
+                {
+                    <form asp-action="NextBot" method="post" class="inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="gameId" value="@game.Id" />
+                        <input type="hidden" name="botIndex" value="@game.PendingBotIndex" />
+                        <button type="submit"
+                                class="flex items-center gap-2 px-6 py-3 font-bold text-xs uppercase tracking-widest transition-all active:scale-95"
+                                style="background:#06402b; color:#e9c349; border:1px solid rgba(233,195,73,0.4); font-family:Manrope,sans-serif; border-radius:0.125rem; cursor:pointer;"
+                                onmouseover="this.style.background='rgba(6,64,43,0.8)';"
+                                onmouseout="this.style.background='#06402b';">
+                            <span class="material-symbols-outlined" style="font-size:16px;">skip_next</span>
+                            Next Bot Turn
+                        </button>
+                    </form>
+                }
+            </div>
 
-    &nbsp;|&nbsp;
-    <form asp-action="Abandon" method="post" style="display:inline"
-          onsubmit="return confirm('Abandon this game?')">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="gameId" value="@game.Id" />
-        <button type="submit">Abandon Game</button>
-    </form>
+            @* ── Detective Sheet Table ── *@
+            <div class="relative p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+                 style="background:#1c1b1b; border:1px solid #404943; margin-bottom:32px;">
+                <!-- Corner ornaments -->
+                <div class="absolute top-0 left-0 w-8 h-8" style="border-top:2px solid rgba(233,195,73,0.5); border-left:2px solid rgba(233,195,73,0.5);"></div>
+                <div class="absolute top-0 right-0 w-8 h-8" style="border-top:2px solid rgba(233,195,73,0.5); border-right:2px solid rgba(233,195,73,0.5);"></div>
+                <div class="absolute bottom-0 left-0 w-8 h-8" style="border-bottom:2px solid rgba(233,195,73,0.5); border-left:2px solid rgba(233,195,73,0.5);"></div>
+                <div class="absolute bottom-0 right-0 w-8 h-8" style="border-bottom:2px solid rgba(233,195,73,0.5); border-right:2px solid rgba(233,195,73,0.5);"></div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr style="border-bottom:2px solid #404943;">
+                                <th class="py-4 px-4" style="font-family:'Noto Serif',serif; font-size:24px; font-weight:600; color:#e9c349; border-right:1px solid #404943; width:200px;">
+                                    Card
+                                </th>
+                                <th class="py-4 px-3 text-center" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; letter-spacing:0.1em; color:#c0c9c1; border-right:1px solid rgba(64,73,67,0.3); min-width:80px;">
+                                    Me
+                                </th>
+                                @foreach (var botName in matrix.BotNames)
+                                {
+                                    <th class="py-4 px-3 text-center" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; letter-spacing:0.1em; color:#c0c9c1; border-right:1px solid rgba(64,73,67,0.3); min-width:80px;">
+                                        @botName
+                                    </th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @* Suspects *@
+                            <tr style="background:rgba(6,64,43,0.2);">
+                                <td colspan="@(2 + matrix.BotPlayerIds.Count)" class="py-2 px-4"
+                                    style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; letter-spacing:0.2em; color:#9cd2b5; text-transform:uppercase; border-bottom:1px solid rgba(64,73,67,0.5);">
+                                    Suspects
+                                </td>
+                            </tr>
+                            @foreach (var row in matrix.CharacterRows)
+                            {
+                                <tr class="transition-colors" style="border-bottom:1px solid rgba(64,73,67,0.2); @RowBg(row.RowStatus)"
+                                    onmouseover="this.style.background='rgba(32,32,31,1)'" onmouseout="this.style.background=''">
+                                    <td class="py-3 px-4" style="font-family:Manrope,sans-serif; font-size:16px; color:#e5e2e1; border-right:1px solid rgba(64,73,67,0.3);">
+                                        <strong>@row.CardName</strong>
+                                    </td>
+                                    <td class="text-center px-2" style="border-right:1px solid rgba(64,73,67,0.1); min-width:80px;">
+                                        @if (row.RowStatus == "in_hand")
+                                        {
+                                            <span class="text-xs font-bold uppercase tracking-widest" style="color:#9cd2b5; font-family:Manrope,sans-serif;">MY CARD</span>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="ToggleCardStatus" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="gameId" value="@matrix.GameId" />
+                                                <input type="hidden" name="cardId" value="@row.CardId" />
+                                                <select name="status" onchange="this.form.submit()" class="select-cell">
+                                                    <option value="normal"    selected="@(row.RowStatus == "normal"    ? "selected" : null)">—</option>
+                                                    <option value="suspect"   selected="@(row.RowStatus == "suspect"   ? "selected" : null)">?</option>
+                                                    <option value="discarded" selected="@(row.RowStatus == "discarded" ? "selected" : null)">SEEN</option>
+                                                </select>
+                                            </form>
+                                        }
+                                    </td>
+                                    @for (int bi = 0; bi < matrix.BotPlayerIds.Count; bi++)
+                                    {
+                                        var botId = matrix.BotPlayerIds[bi];
+                                        var cell  = row.BotCells.ElementAtOrDefault(bi);
+                                        var cs    = cell?.CellStatus ?? "normal";
+                                        <td class="text-center px-2" style="border-right:1px solid rgba(64,73,67,0.1); min-width:80px;">
+                                            <form asp-action="ToggleCellStatus" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="gameId" value="@matrix.GameId" />
+                                                <input type="hidden" name="cardId" value="@row.CardId" />
+                                                <input type="hidden" name="botPlayerId" value="@botId" />
+                                                @if (!string.IsNullOrEmpty(CellIcon(cs)))
+                                                {
+                                                    <span class="material-symbols-outlined" style="font-size:18px; color:@CellColor(cs);">@CellIcon(cs)</span>
+                                                }
+                                                <select name="cellStatus" onchange="this.form.submit()" class="select-cell" style="font-size:10px;">
+                                                    <option value="normal"      selected="@(cs == "normal"      ? "selected" : null)">—</option>
+                                                    <option value="has_it"      selected="@(cs == "has_it"      ? "selected" : null)">HAS</option>
+                                                    <option value="no_has_it"   selected="@(cs == "no_has_it"   ? "selected" : null)">NO</option>
+                                                    <option value="suspect_has" selected="@(cs == "suspect_has" ? "selected" : null)">?HAS</option>
+                                                    <option value="suspect_no"  selected="@(cs == "suspect_no"  ? "selected" : null)">?NO</option>
+                                                </select>
+                                            </form>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+
+                            @* Weapons *@
+                            <tr style="background:rgba(103,30,27,0.1);">
+                                <td colspan="@(2 + matrix.BotPlayerIds.Count)" class="py-2 px-4"
+                                    style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; letter-spacing:0.2em; color:#ffb3ac; text-transform:uppercase; border-bottom:1px solid rgba(64,73,67,0.5);">
+                                    Weapons
+                                </td>
+                            </tr>
+                            @foreach (var row in matrix.WeaponRows)
+                            {
+                                <tr class="transition-colors" style="border-bottom:1px solid rgba(64,73,67,0.2); @RowBg(row.RowStatus)"
+                                    onmouseover="this.style.background='rgba(32,32,31,1)'" onmouseout="this.style.background=''">
+                                    <td class="py-3 px-4" style="font-family:Manrope,sans-serif; font-size:16px; color:#e5e2e1; border-right:1px solid rgba(64,73,67,0.3);">
+                                        <strong>@row.CardName</strong>
+                                    </td>
+                                    <td class="text-center px-2" style="border-right:1px solid rgba(64,73,67,0.1); min-width:80px;">
+                                        @if (row.RowStatus == "in_hand")
+                                        {
+                                            <span class="text-xs font-bold uppercase tracking-widest" style="color:#9cd2b5; font-family:Manrope,sans-serif;">MY CARD</span>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="ToggleCardStatus" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="gameId" value="@matrix.GameId" />
+                                                <input type="hidden" name="cardId" value="@row.CardId" />
+                                                <select name="status" onchange="this.form.submit()" class="select-cell">
+                                                    <option value="normal"    selected="@(row.RowStatus == "normal"    ? "selected" : null)">—</option>
+                                                    <option value="suspect"   selected="@(row.RowStatus == "suspect"   ? "selected" : null)">?</option>
+                                                    <option value="discarded" selected="@(row.RowStatus == "discarded" ? "selected" : null)">SEEN</option>
+                                                </select>
+                                            </form>
+                                        }
+                                    </td>
+                                    @for (int bi = 0; bi < matrix.BotPlayerIds.Count; bi++)
+                                    {
+                                        var botId = matrix.BotPlayerIds[bi];
+                                        var cell  = row.BotCells.ElementAtOrDefault(bi);
+                                        var cs    = cell?.CellStatus ?? "normal";
+                                        <td class="text-center px-2" style="border-right:1px solid rgba(64,73,67,0.1); min-width:80px;">
+                                            <form asp-action="ToggleCellStatus" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="gameId" value="@matrix.GameId" />
+                                                <input type="hidden" name="cardId" value="@row.CardId" />
+                                                <input type="hidden" name="botPlayerId" value="@botId" />
+                                                @if (!string.IsNullOrEmpty(CellIcon(cs)))
+                                                {
+                                                    <span class="material-symbols-outlined" style="font-size:18px; color:@CellColor(cs);">@CellIcon(cs)</span>
+                                                }
+                                                <select name="cellStatus" onchange="this.form.submit()" class="select-cell" style="font-size:10px;">
+                                                    <option value="normal"      selected="@(cs == "normal"      ? "selected" : null)">—</option>
+                                                    <option value="has_it"      selected="@(cs == "has_it"      ? "selected" : null)">HAS</option>
+                                                    <option value="no_has_it"   selected="@(cs == "no_has_it"   ? "selected" : null)">NO</option>
+                                                    <option value="suspect_has" selected="@(cs == "suspect_has" ? "selected" : null)">?HAS</option>
+                                                    <option value="suspect_no"  selected="@(cs == "suspect_no"  ? "selected" : null)">?NO</option>
+                                                </select>
+                                            </form>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+
+                            @* Locations *@
+                            <tr style="background:rgba(175,141,17,0.1);">
+                                <td colspan="@(2 + matrix.BotPlayerIds.Count)" class="py-2 px-4"
+                                    style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; letter-spacing:0.2em; color:#e9c349; text-transform:uppercase; border-bottom:1px solid rgba(64,73,67,0.5);">
+                                    Locations
+                                </td>
+                            </tr>
+                            @foreach (var row in matrix.LocationRows)
+                            {
+                                <tr class="transition-colors" style="border-bottom:1px solid rgba(64,73,67,0.2); @RowBg(row.RowStatus)"
+                                    onmouseover="this.style.background='rgba(32,32,31,1)'" onmouseout="this.style.background=''">
+                                    <td class="py-3 px-4" style="font-family:Manrope,sans-serif; font-size:16px; color:#e5e2e1; border-right:1px solid rgba(64,73,67,0.3);">
+                                        <strong>@row.CardName</strong>
+                                    </td>
+                                    <td class="text-center px-2" style="border-right:1px solid rgba(64,73,67,0.1); min-width:80px;">
+                                        @if (row.RowStatus == "in_hand")
+                                        {
+                                            <span class="text-xs font-bold uppercase tracking-widest" style="color:#9cd2b5; font-family:Manrope,sans-serif;">MY CARD</span>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="ToggleCardStatus" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="gameId" value="@matrix.GameId" />
+                                                <input type="hidden" name="cardId" value="@row.CardId" />
+                                                <select name="status" onchange="this.form.submit()" class="select-cell">
+                                                    <option value="normal"    selected="@(row.RowStatus == "normal"    ? "selected" : null)">—</option>
+                                                    <option value="suspect"   selected="@(row.RowStatus == "suspect"   ? "selected" : null)">?</option>
+                                                    <option value="discarded" selected="@(row.RowStatus == "discarded" ? "selected" : null)">SEEN</option>
+                                                </select>
+                                            </form>
+                                        }
+                                    </td>
+                                    @for (int bi = 0; bi < matrix.BotPlayerIds.Count; bi++)
+                                    {
+                                        var botId = matrix.BotPlayerIds[bi];
+                                        var cell  = row.BotCells.ElementAtOrDefault(bi);
+                                        var cs    = cell?.CellStatus ?? "normal";
+                                        <td class="text-center px-2" style="border-right:1px solid rgba(64,73,67,0.1); min-width:80px;">
+                                            <form asp-action="ToggleCellStatus" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="gameId" value="@matrix.GameId" />
+                                                <input type="hidden" name="cardId" value="@row.CardId" />
+                                                <input type="hidden" name="botPlayerId" value="@botId" />
+                                                @if (!string.IsNullOrEmpty(CellIcon(cs)))
+                                                {
+                                                    <span class="material-symbols-outlined" style="font-size:18px; color:@CellColor(cs);">@CellIcon(cs)</span>
+                                                }
+                                                <select name="cellStatus" onchange="this.form.submit()" class="select-cell" style="font-size:10px;">
+                                                    <option value="normal"      selected="@(cs == "normal"      ? "selected" : null)">—</option>
+                                                    <option value="has_it"      selected="@(cs == "has_it"      ? "selected" : null)">HAS</option>
+                                                    <option value="no_has_it"   selected="@(cs == "no_has_it"   ? "selected" : null)">NO</option>
+                                                    <option value="suspect_has" selected="@(cs == "suspect_has" ? "selected" : null)">?HAS</option>
+                                                    <option value="suspect_no"  selected="@(cs == "suspect_no"  ? "selected" : null)">?NO</option>
+                                                </select>
+                                            </form>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @* ── Footer widgets ── *@
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="p-5 shadow-lg" style="background:#2a2a2a; border:1px solid rgba(64,73,67,0.3);">
+                    <h3 class="uppercase mb-3" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#9cd2b5; letter-spacing:0.1em;">Latest Clue</h3>
+                    @if (Model.LastSuggestionResult is { } lsr)
+                    {
+                        <p class="italic" style="font-family:Manrope,sans-serif; font-size:16px; color:#c0c9c1; line-height:1.6;">
+                            "@lsr.CharacterName suggested with @lsr.WeaponName at @lsr.LocationName."
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="italic" style="font-family:Manrope,sans-serif; font-size:16px; color:#c0c9c1;">No suggestion yet this round.</p>
+                    }
+                </div>
+                <div class="p-5 shadow-lg" style="background:#2a2a2a; border:1px solid rgba(64,73,67,0.3);">
+                    <h3 class="uppercase mb-3" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#9cd2b5; letter-spacing:0.1em;">Players</h3>
+                    <div class="flex flex-col gap-1">
+                        @foreach (var p in game.Players)
+                        {
+                            <p style="font-family:Manrope,sans-serif; font-size:14px; color:#c0c9c1;">
+                                @p.Name <span style="color:#8a938c;">(@(p.IsBot ? "bot" : "you"))</span>
+                            </p>
+                        }
+                    </div>
+                </div>
+                <div class="p-5 shadow-lg" style="background:#2a2a2a; border:1px solid rgba(64,73,67,0.3);">
+                    <h3 class="uppercase mb-3" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#9cd2b5; letter-spacing:0.1em;">Current Phase</h3>
+                    <p class="font-bold uppercase mb-3" style="font-family:'Noto Serif',serif; font-size:18px; color:#e9c349;">
+                        @game.TurnPhase.Replace("_", " ")
+                    </p>
+                    @if (isHumanTurn)
+                    {
+                        <p class="italic text-sm" style="font-family:Manrope,sans-serif; color:#c0c9c1;">Make a suggestion below.</p>
+                    }
+                </div>
+            </div>
+
+            @* ── Suggestion form ── *@
+            @if (isHumanTurn)
+            {
+                <div class="p-6 mb-8" style="background:#1c1b1b; border:1px solid rgba(156,210,181,0.3);">
+                    <h3 class="uppercase mb-6" style="font-family:'Noto Serif',serif; font-size:24px; font-weight:600; color:#9cd2b5;">Make a Suggestion</h3>
+                    <form asp-action="Suggest" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="GameId" value="@game.Id" />
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="space-y-2">
+                                <label class="block uppercase tracking-widest" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#c0c9c1;">Suspect</label>
+                                <select name="CharacterId" class="select-styled">
+                                    @foreach (var c in Model.Characters)
+                                    {
+                                        <option value="@c.Id">@c.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block uppercase tracking-widest" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#c0c9c1;">Weapon</label>
+                                <select name="WeaponId" class="select-styled">
+                                    @foreach (var w in Model.Weapons)
+                                    {
+                                        <option value="@w.Id">@w.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block uppercase tracking-widest" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#c0c9c1;">Location</label>
+                                <select name="LocationId" class="select-styled">
+                                    @foreach (var l in Model.Locations)
+                                    {
+                                        <option value="@l.Id">@l.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit"
+                                class="flex items-center gap-2 px-8 py-3 font-bold uppercase tracking-widest transition-all active:scale-95"
+                                style="background:#06402b; color:#e9c349; border:1px solid rgba(233,195,73,0.4); font-family:'Noto Serif',serif; font-size:18px; border-radius:0.125rem; cursor:pointer;"
+                                onmouseover="this.style.background='rgba(6,64,43,0.8)';"
+                                onmouseout="this.style.background='#06402b';">
+                            <span class="material-symbols-outlined" style="font-size:20px;">search</span>
+                            Submit Suggestion
+                        </button>
+                    </form>
+                </div>
+            }
+
+        </div>
+    </main>
+
 </div>
-
-@* ── Detective Sheet Matrix ── *@
-<h3>Detective Sheet</h3>
-
-<table border="1" cellpadding="0"
-       style="border-collapse:collapse;margin-bottom:24px;table-layout:fixed">
-    <colgroup>
-        <col style="width:150px" />
-        <col style="width:90px" />
-        @foreach (var _ in matrix.BotNames)
-        {
-            <col style="width:80px" />
-        }
-    </colgroup>
-    <thead>
-        <tr style="background:#f5f5f5">
-            <th style="padding:4px 6px">Card</th>
-            <th style="padding:4px 6px">Me</th>
-            @foreach (var botName in matrix.BotNames)
-            {
-                <th style="padding:4px 6px;font-size:.85rem">@botName</th>
-            }
-        </tr>
-    </thead>
-    <tbody>
-
-        @* ── Suspects ── *@
-        <tr style="background:#ddd">
-            <th colspan="@(2 + matrix.BotPlayerIds.Count)" style="text-align:left;padding:4px 6px">Suspects</th>
-        </tr>
-        @foreach (var row in matrix.CharacterRows)
-        {
-            <tr style="@RowCss(row.RowStatus)">
-                <td style="padding:4px 6px;white-space:nowrap"><strong>@row.CardName</strong></td>
-                <td style="text-align:center;min-width:90px;padding:2px">
-                    @if (row.RowStatus == "in_hand")
-                    {
-                        <span style="font-weight:bold">MY CARD</span>
-                    }
-                    else
-                    {
-                        <form asp-action="ToggleCardStatus" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="gameId" value="@matrix.GameId" />
-                            <input type="hidden" name="cardId" value="@row.CardId" />
-                            <select name="status" onchange="this.form.submit()" style="width:100%">
-                                <option value="normal"    selected="@(row.RowStatus == "normal"    ? "selected" : null)">—</option>
-                                <option value="suspect"   selected="@(row.RowStatus == "suspect"   ? "selected" : null)">?</option>
-                                <option value="discarded" selected="@(row.RowStatus == "discarded" ? "selected" : null)">SEEN</option>
-                            </select>
-                        </form>
-                    }
-                </td>
-                @for (int bi = 0; bi < matrix.BotPlayerIds.Count; bi++)
-                {
-                    var botId = matrix.BotPlayerIds[bi];
-                    var cell = row.BotCells.ElementAtOrDefault(bi);
-                    var cs = cell?.CellStatus ?? "normal";
-                    <td style="text-align:center;min-width:75px;padding:2px;@CellCss(cs)">
-                        <form asp-action="ToggleCellStatus" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="gameId" value="@matrix.GameId" />
-                            <input type="hidden" name="cardId" value="@row.CardId" />
-                            <input type="hidden" name="botPlayerId" value="@botId" />
-                            <select name="cellStatus" onchange="this.form.submit()" style="width:100%">
-                                <option value="normal"      selected="@(cs == "normal"      ? "selected" : null)">—</option>
-                                <option value="has_it"      selected="@(cs == "has_it"      ? "selected" : null)">HAS</option>
-                                <option value="no_has_it"   selected="@(cs == "no_has_it"   ? "selected" : null)">NO</option>
-                                <option value="suspect_has" selected="@(cs == "suspect_has" ? "selected" : null)">?HAS</option>
-                                <option value="suspect_no"  selected="@(cs == "suspect_no"  ? "selected" : null)">?NO</option>
-                            </select>
-                        </form>
-                    </td>
-                }
-            </tr>
-        }
-
-        @* ── Weapons ── *@
-        <tr style="background:#ddd">
-            <th colspan="@(2 + matrix.BotPlayerIds.Count)" style="text-align:left;padding:4px 6px">Weapons</th>
-        </tr>
-        @foreach (var row in matrix.WeaponRows)
-        {
-            <tr style="@RowCss(row.RowStatus)">
-                <td style="padding:4px 6px;white-space:nowrap"><strong>@row.CardName</strong></td>
-                <td style="text-align:center;min-width:90px;padding:2px">
-                    @if (row.RowStatus == "in_hand")
-                    {
-                        <span style="font-weight:bold">MY CARD</span>
-                    }
-                    else
-                    {
-                        <form asp-action="ToggleCardStatus" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="gameId" value="@matrix.GameId" />
-                            <input type="hidden" name="cardId" value="@row.CardId" />
-                            <select name="status" onchange="this.form.submit()" style="width:100%">
-                                <option value="normal"    selected="@(row.RowStatus == "normal"    ? "selected" : null)">—</option>
-                                <option value="suspect"   selected="@(row.RowStatus == "suspect"   ? "selected" : null)">?</option>
-                                <option value="discarded" selected="@(row.RowStatus == "discarded" ? "selected" : null)">SEEN</option>
-                            </select>
-                        </form>
-                    }
-                </td>
-                @for (int bi = 0; bi < matrix.BotPlayerIds.Count; bi++)
-                {
-                    var botId = matrix.BotPlayerIds[bi];
-                    var cell = row.BotCells.ElementAtOrDefault(bi);
-                    var cs = cell?.CellStatus ?? "normal";
-                    <td style="text-align:center;min-width:75px;padding:2px;@CellCss(cs)">
-                        <form asp-action="ToggleCellStatus" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="gameId" value="@matrix.GameId" />
-                            <input type="hidden" name="cardId" value="@row.CardId" />
-                            <input type="hidden" name="botPlayerId" value="@botId" />
-                            <select name="cellStatus" onchange="this.form.submit()" style="width:100%">
-                                <option value="normal"      selected="@(cs == "normal"      ? "selected" : null)">—</option>
-                                <option value="has_it"      selected="@(cs == "has_it"      ? "selected" : null)">HAS</option>
-                                <option value="no_has_it"   selected="@(cs == "no_has_it"   ? "selected" : null)">NO</option>
-                                <option value="suspect_has" selected="@(cs == "suspect_has" ? "selected" : null)">?HAS</option>
-                                <option value="suspect_no"  selected="@(cs == "suspect_no"  ? "selected" : null)">?NO</option>
-                            </select>
-                        </form>
-                    </td>
-                }
-            </tr>
-        }
-
-        @* ── Locations ── *@
-        <tr style="background:#ddd">
-            <th colspan="@(2 + matrix.BotPlayerIds.Count)" style="text-align:left;padding:4px 6px">Locations</th>
-        </tr>
-        @foreach (var row in matrix.LocationRows)
-        {
-            <tr style="@RowCss(row.RowStatus)">
-                <td style="padding:4px 6px;white-space:nowrap"><strong>@row.CardName</strong></td>
-                <td style="text-align:center;min-width:90px;padding:2px">
-                    @if (row.RowStatus == "in_hand")
-                    {
-                        <span style="font-weight:bold">MY CARD</span>
-                    }
-                    else
-                    {
-                        <form asp-action="ToggleCardStatus" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="gameId" value="@matrix.GameId" />
-                            <input type="hidden" name="cardId" value="@row.CardId" />
-                            <select name="status" onchange="this.form.submit()" style="width:100%">
-                                <option value="normal"    selected="@(row.RowStatus == "normal"    ? "selected" : null)">—</option>
-                                <option value="suspect"   selected="@(row.RowStatus == "suspect"   ? "selected" : null)">?</option>
-                                <option value="discarded" selected="@(row.RowStatus == "discarded" ? "selected" : null)">SEEN</option>
-                            </select>
-                        </form>
-                    }
-                </td>
-                @for (int bi = 0; bi < matrix.BotPlayerIds.Count; bi++)
-                {
-                    var botId = matrix.BotPlayerIds[bi];
-                    var cell = row.BotCells.ElementAtOrDefault(bi);
-                    var cs = cell?.CellStatus ?? "normal";
-                    <td style="text-align:center;min-width:75px;padding:2px;@CellCss(cs)">
-                        <form asp-action="ToggleCellStatus" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="gameId" value="@matrix.GameId" />
-                            <input type="hidden" name="cardId" value="@row.CardId" />
-                            <input type="hidden" name="botPlayerId" value="@botId" />
-                            <select name="cellStatus" onchange="this.form.submit()" style="width:100%">
-                                <option value="normal"      selected="@(cs == "normal"      ? "selected" : null)">—</option>
-                                <option value="has_it"      selected="@(cs == "has_it"      ? "selected" : null)">HAS</option>
-                                <option value="no_has_it"   selected="@(cs == "no_has_it"   ? "selected" : null)">NO</option>
-                                <option value="suspect_has" selected="@(cs == "suspect_has" ? "selected" : null)">?HAS</option>
-                                <option value="suspect_no"  selected="@(cs == "suspect_no"  ? "selected" : null)">?NO</option>
-                            </select>
-                        </form>
-                    </td>
-                }
-            </tr>
-        }
-
-    </tbody>
-</table>
-
-@* ── Suggestion form ── *@
-@if (isHumanTurn)
-{
-    <h3 id="suggest-form">Make a Suggestion</h3>
-    <form asp-action="Suggest" method="post" style="max-width:400px">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="GameId" value="@game.Id" />
-
-        <div>
-            <label>Suspect</label>
-            <select name="CharacterId">
-                @foreach (var c in Model.Characters)
-                {
-                    <option value="@c.Id">@c.Name</option>
-                }
-            </select>
-        </div>
-        <div>
-            <label>Weapon</label>
-            <select name="WeaponId">
-                @foreach (var w in Model.Weapons)
-                {
-                    <option value="@w.Id">@w.Name</option>
-                }
-            </select>
-        </div>
-        <div>
-            <label>Location</label>
-            <select name="LocationId">
-                @foreach (var l in Model.Locations)
-                {
-                    <option value="@l.Id">@l.Name</option>
-                }
-            </select>
-        </div>
-        <br />
-        <button type="submit">Submit Suggestion</button>
-    </form>
-}

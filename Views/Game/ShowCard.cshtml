@@ -3,34 +3,83 @@
     ViewData["Title"] = "Show a Card";
 }
 
-<h2>Show a Card to @Model.BotName</h2>
-
-<p>
-    <strong>@Model.BotName</strong> suggested:
-    <strong>@Model.CharacterName</strong> with <strong>@Model.WeaponName</strong>
-    at <strong>@Model.LocationName</strong>.
-</p>
-<p>You hold one or more of these cards. Choose which one to reveal:</p>
-
-<form asp-action="ShowCard" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="gameId" value="@Model.GameId" />
-    <input type="hidden" name="botPlayerId" value="@Model.BotPlayerId" />
-    <input type="hidden" name="botIndex" value="@Model.BotIndex" />
-    <input type="hidden" name="suggestedCharacterId" value="@Model.SuggestedCharacterId" />
-    <input type="hidden" name="suggestedWeaponId" value="@Model.SuggestedWeaponId" />
-    <input type="hidden" name="suggestedLocationId" value="@Model.SuggestedLocationId" />
-
-    @foreach (var (id, name) in Model.MatchingCards)
-    {
-        <div>
-            <label>
-                <input type="radio" name="cardId" value="@id" required />
-                @name
-            </label>
-        </div>
+@section Styles {
+<style>
+    .card-option:has(input[type=radio]:checked) {
+        border-color: #e9c349;
+        background: rgba(6,64,43,0.3);
+        box-shadow: 0 0 12px rgba(233,195,73,0.2);
     }
+    .card-option:hover { border-color: rgba(233,195,73,0.5); }
+</style>
+}
 
-    <br />
-    <button type="submit">Show Selected Card</button>
-</form>
+<div style="background:#131313; min-height:calc(100vh - 64px - 100px); display:flex; align-items:center; justify-content:center; padding:48px 24px;">
+    <div class="max-w-xl w-full mx-auto">
+
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <div class="mx-auto mb-4 w-14 h-14 rounded-full flex items-center justify-center"
+                 style="background:rgba(255,180,171,0.1); border:2px solid rgba(255,180,171,0.4);">
+                <span class="material-symbols-outlined" style="font-size:28px; color:#ffb3ac; font-variation-settings:'FILL' 1;">visibility</span>
+            </div>
+            <h1 style="font-family:'Noto Serif',serif; font-size:36px; font-weight:700; color:#e5e2e1; line-height:1.2; margin-bottom:8px;">
+                Witness Testimony
+            </h1>
+            <p style="font-family:Manrope,sans-serif; font-size:16px; color:#c0c9c1; line-height:1.6;">
+                Show a card to <strong style="color:#ffb3ac;">@Model.BotName</strong>
+            </p>
+        </div>
+
+        <!-- Suggestion context -->
+        <div class="mb-6 p-4 rounded-lg" style="background:#20201f; border:1px solid rgba(255,180,171,0.2);">
+            <p class="uppercase tracking-widest mb-2" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#ffb3ac;">Their Suggestion</p>
+            <p style="font-family:Manrope,sans-serif; font-size:16px; color:#e5e2e1; line-height:1.6;">
+                <strong>@Model.BotName</strong> suggested
+                <strong style="color:#9cd2b5;">@Model.CharacterName</strong>
+                with <strong style="color:#ffb3ac;">@Model.WeaponName</strong>
+                at <strong style="color:#e9c349;">@Model.LocationName</strong>.
+            </p>
+        </div>
+
+        <p class="mb-4" style="font-family:Manrope,sans-serif; font-size:14px; color:#8a938c;">
+            You hold one or more of these cards. Choose which one to reveal:
+        </p>
+
+        <!-- Card selection form -->
+        <div class="p-6" style="background:#1c1b1b; border:1px solid #404943; box-shadow:0 8px 24px rgba(0,0,0,0.4);">
+            <form asp-action="ShowCard" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="gameId" value="@Model.GameId" />
+                <input type="hidden" name="botPlayerId" value="@Model.BotPlayerId" />
+                <input type="hidden" name="botIndex" value="@Model.BotIndex" />
+                <input type="hidden" name="suggestedCharacterId" value="@Model.SuggestedCharacterId" />
+                <input type="hidden" name="suggestedWeaponId" value="@Model.SuggestedWeaponId" />
+                <input type="hidden" name="suggestedLocationId" value="@Model.SuggestedLocationId" />
+
+                <div class="flex flex-col gap-3 mb-6">
+                    @foreach (var (id, name) in Model.MatchingCards)
+                    {
+                        <label class="card-option flex items-center gap-4 p-4 rounded cursor-pointer transition-all"
+                               style="background:#20201f; border:2px solid #404943;">
+                            <input type="radio" name="cardId" value="@id" required
+                                   style="accent-color:#e9c349; width:18px; height:18px;" />
+                            <span class="material-symbols-outlined" style="color:#c0c9c1; font-size:20px;">playing_cards</span>
+                            <span style="font-family:Manrope,sans-serif; font-size:16px; font-weight:600; color:#e5e2e1;">@name</span>
+                        </label>
+                    }
+                </div>
+
+                <button type="submit"
+                        class="w-full flex items-center justify-center gap-3 py-4 font-bold uppercase tracking-widest transition-all active:scale-95"
+                        style="background:rgba(103,30,27,0.4); color:#ffb3ac; border:1px solid rgba(255,180,171,0.4); font-family:'Noto Serif',serif; font-size:18px; border-radius:0.125rem; cursor:pointer;"
+                        onmouseover="this.style.background='rgba(103,30,27,0.6)';"
+                        onmouseout="this.style.background='rgba(103,30,27,0.4)';">
+                    <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+                    Reveal Card
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>

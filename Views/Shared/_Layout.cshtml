@@ -12,8 +12,6 @@
     <!-- Tailwind compiled CSS -->
     <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
 
-    <!-- Bootstrap (kept for game views) -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/clueGame.styles.css" asp-append-version="true" />
 
@@ -123,6 +121,9 @@
 
                 @if (User.Identity?.IsAuthenticated == true)
                 {
+                    <a asp-controller="Home" asp-action="Dashboard"
+                       class="hover:text-secondary transition-colors duration-200"
+                       style="color: #c0c9c1;">Dashboard</a>
                     <a asp-controller="Game" asp-action="Index"
                        class="hover:text-secondary transition-colors duration-200"
                        style="color: #9cd2b5;">Play Game</a>
@@ -198,7 +199,8 @@
             </div>
             @if (User.Identity?.IsAuthenticated == true)
             {
-                <div class="pt-2 border-t" style="border-color:#404943;">
+                <div class="pt-2 border-t space-y-2" style="border-color:#404943;">
+                    <a asp-controller="Home" asp-action="Dashboard" class="block" style="color:#c0c9c1;">Dashboard</a>
                     <a asp-controller="Game" asp-action="Index" class="block" style="color:#9cd2b5;">Play Game</a>
                 </div>
                 <div class="flex items-center justify-between pt-1">
@@ -242,7 +244,6 @@
     <!-- ==================== END FOOTER ==================== -->
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>

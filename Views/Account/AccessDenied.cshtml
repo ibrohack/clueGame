@@ -2,10 +2,33 @@
     ViewData["Title"] = "Acceso denegado";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-6 text-center">
-        <h2 class="text-danger mb-3">Acceso denegado</h2>
-        <p>No tienes permisos para acceder a esta página.</p>
-        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Volver al inicio</a>
+<div style="background:#131313; min-height:calc(100vh - 64px - 100px); display:flex; align-items:center; justify-content:center; padding:48px 24px;">
+    <div class="max-w-lg w-full mx-auto text-center">
+
+        <!-- Icon -->
+        <div class="mx-auto mb-6 w-20 h-20 rounded-full flex items-center justify-center"
+             style="background:rgba(147,0,10,0.2); border:2px solid rgba(255,180,171,0.4); box-shadow:0 0 30px rgba(255,180,171,0.1);">
+            <span class="material-symbols-outlined" style="font-size:40px; color:#ffb4ab; font-variation-settings:'FILL' 1;">lock</span>
+        </div>
+
+        <p class="uppercase tracking-[0.3em] mb-3" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#ffb4ab;">
+            Clearance Required
+        </p>
+        <h1 style="font-family:'Noto Serif',serif; font-size:clamp(32px,6vw,48px); font-weight:700; color:#ffb4ab; letter-spacing:-0.02em; line-height:1.2; margin-bottom:16px;">
+            Acceso Denegado
+        </h1>
+        <p class="mb-10 italic" style="font-family:Manrope,sans-serif; font-size:18px; color:#c0c9c1; line-height:1.6;">
+            No tienes permisos para acceder a esta página. Esta sección es clasificada.
+        </p>
+
+        <a asp-controller="Home" asp-action="Index"
+           class="inline-flex items-center gap-3 px-10 py-4 font-bold uppercase tracking-widest transition-all active:scale-95"
+           style="background:transparent; color:#e9c349; border:2px solid rgba(233,195,73,0.4); font-family:'Noto Serif',serif; font-size:18px; border-radius:0.125rem; text-decoration:none;"
+           onmouseover="this.style.background='rgba(6,64,43,0.2)'; this.style.borderColor='#e9c349';"
+           onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(233,195,73,0.4)';">
+            <span class="material-symbols-outlined" style="font-size:20px;">home</span>
+            Volver al Inicio
+        </a>
+
     </div>
 </div>

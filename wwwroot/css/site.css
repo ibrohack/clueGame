@@ -6,17 +6,16 @@ html {
     min-height: 100%;
 }
 
-/* Suppress Bootstrap's white/blue focus ring — views apply their own */
-.btn:focus, .btn:active:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 1px #9cd2b5 !important;
-    border-color: #9cd2b5 !important;
-    outline: none;
-}
-
-/* Bootstrap form validation colours adapted for dark theme */
-.text-danger,
+/* Form validation colours for dark theme (used by jquery-validation) */
 .field-validation-error,
 .validation-summary-errors li {
-    color: #ffb4ab !important;
+    color: #ffb4ab;
     font-size: 12px;
+}
+
+/* Validation input states */
+input.input-validation-error,
+select.input-validation-error {
+    border-color: #ffb4ab !important;
+    outline-color: #ffb4ab;
 }

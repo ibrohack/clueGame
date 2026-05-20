@@ -100,6 +100,13 @@ public class MongoDbService
         => await _db.GetCollection<MongoGame>("games")
                     .Find(g => g.Id == gameId).FirstOrDefaultAsync();
 
+    public async Task<List<MongoGame>> GetFinishedGamesForPlayerAsync(string playerId, int limit = 10)
+        => await _db.GetCollection<MongoGame>("games")
+                    .Find(g => g.IsFinished && g.Players.Any(p => p.PlayerId == playerId && !p.IsBot))
+                    .SortByDescending(g => g.CreatedAt)
+                    .Limit(limit)
+                    .ToListAsync();
+
     // --- Guesses ---
 
     public async Task SaveGuessAsync(MongoGuess guess)

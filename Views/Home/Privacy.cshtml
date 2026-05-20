@@ -1,6 +1,42 @@
-﻿@{
+@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div style="background:#131313; min-height:calc(100vh - 64px - 100px); padding:48px 24px;">
+    <div class="max-w-2xl mx-auto">
+
+        <!-- Header -->
+        <div class="mb-8 pb-6" style="border-bottom:1px solid #404943;">
+            <p class="uppercase tracking-[0.3em] mb-2" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#8a938c;">
+                Classified Document
+            </p>
+            <h1 style="font-family:'Noto Serif',serif; font-size:48px; font-weight:700; color:#e9c349; letter-spacing:-0.02em; line-height:1.2;">
+                Privacy Policy
+            </h1>
+        </div>
+
+        <!-- Content card -->
+        <div class="p-8" style="background:#1c1b1b; border:1px solid #404943; box-shadow:0 8px 24px rgba(0,0,0,0.4);">
+            <div style="font-family:Manrope,sans-serif; font-size:16px; color:#c0c9c1; line-height:1.8;">
+                <p class="mb-4">
+                    Use this page to detail your site's privacy policy. All information collected by Blackwood Estate investigations is classified and handled with the utmost discretion.
+                </p>
+                <p class="mb-4">
+                    Your personal data — including your name, email address, and game records — is stored securely and will never be shared with third parties outside the investigation.
+                </p>
+                <p>
+                    For inquiries regarding your data, contact the Blackwood Estate Records Office.
+                </p>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <a asp-controller="Home" asp-action="Index"
+               style="font-family:Manrope,sans-serif; font-size:14px; color:#8a938c; text-decoration:none;"
+               onmouseover="this.style.color='#c0c9c1'" onmouseout="this.style.color='#8a938c'">
+                ← Back to Home
+            </a>
+        </div>
+
+    </div>
+</div>

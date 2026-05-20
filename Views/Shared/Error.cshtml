@@ -1,25 +1,51 @@
-﻿@model ErrorViewModel
+@model ErrorViewModel
 @{
     ViewData["Title"] = "Error";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<div style="background:#131313; min-height:calc(100vh - 64px - 100px); display:flex; align-items:center; justify-content:center; padding:48px 24px;">
+    <div class="max-w-lg w-full mx-auto text-center">
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
+        <!-- Icon -->
+        <div class="mx-auto mb-6 w-20 h-20 rounded-full flex items-center justify-center"
+             style="background:rgba(147,0,10,0.2); border:2px solid rgba(255,180,171,0.3); box-shadow:0 0 30px rgba(255,180,171,0.08);">
+            <span class="material-symbols-outlined" style="font-size:40px; color:#ffb4ab; font-variation-settings:'FILL' 1;">error</span>
+        </div>
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-    It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-    and restarting the app.
-</p>
+        <p class="uppercase tracking-[0.3em] mb-3" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#ffb4ab;">
+            Case File Error
+        </p>
+        <h1 style="font-family:'Noto Serif',serif; font-size:48px; font-weight:700; color:#ffb4ab; letter-spacing:-0.02em; line-height:1.2; margin-bottom:16px;">
+            Something went wrong.
+        </h1>
+        <p class="mb-8 italic" style="font-family:Manrope,sans-serif; font-size:18px; color:#c0c9c1; line-height:1.6;">
+            An error occurred while processing your request. The investigation cannot continue at this time.
+        </p>
+
+        @if (Model.ShowRequestId)
+        {
+            <div class="mb-8 p-4 rounded text-left" style="background:#0e0e0e; border:1px solid #404943;">
+                <p class="uppercase tracking-widest mb-2" style="font-family:Manrope,sans-serif; font-size:11px; color:#8a938c;">Request ID</p>
+                <code style="font-family:monospace; font-size:14px; color:#c0c9c1; word-break:break-all;">@Model.RequestId</code>
+            </div>
+        }
+
+        <div class="mb-8 p-4 rounded text-left" style="background:#1c1b1b; border:1px solid #404943;">
+            <p class="uppercase tracking-widest mb-2" style="font-family:Manrope,sans-serif; font-size:11px; color:#8a938c;">Development Note</p>
+            <p style="font-family:Manrope,sans-serif; font-size:14px; color:#c0c9c1; line-height:1.6;">
+                Swapping to <strong style="color:#e9c349;">Development</strong> environment will display more detailed error information.
+                Set the <strong style="color:#9cd2b5;">ASPNETCORE_ENVIRONMENT</strong> variable to <code>Development</code> and restart.
+            </p>
+        </div>
+
+        <a asp-controller="Home" asp-action="Index"
+           class="inline-flex items-center gap-3 px-10 py-4 font-bold uppercase tracking-widest transition-all active:scale-95"
+           style="background:#06402b; color:#e9c349; border:1px solid rgba(233,195,73,0.4); font-family:'Noto Serif',serif; font-size:18px; border-radius:0.125rem; text-decoration:none;"
+           onmouseover="this.style.background='rgba(6,64,43,0.8)'"
+           onmouseout="this.style.background='#06402b'">
+            <span class="material-symbols-outlined" style="font-size:20px;">home</span>
+            Return Home
+        </a>
+
+    </div>
+</div>

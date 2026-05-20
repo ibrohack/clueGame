@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Make Accusation - Cluedo: Manor Mystery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&amp;family=Noto+Serif:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#77ac90",
+                        "on-secondary-container": "#342800",
+                        "surface-container-highest": "#353535",
+                        "on-error": "#690005",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-dim": "#131313",
+                        "surface-container-high": "#2a2a2a",
+                        "on-primary": "#003825",
+                        "tertiary-fixed": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#7b2d28",
+                        "primary-fixed": "#b8efd0",
+                        "on-background": "#e5e2e1",
+                        "outline-variant": "#404943",
+                        "inverse-on-surface": "#313030",
+                        "surface-container-low": "#1c1b1b",
+                        "outline": "#8a938c",
+                        "on-primary-fixed": "#002114",
+                        "tertiary": "#ffb3ac",
+                        "inverse-primary": "#356850",
+                        "surface-variant": "#353535",
+                        "on-secondary-fixed": "#241a00",
+                        "on-error-container": "#ffdad6",
+                        "surface": "#131313",
+                        "background": "#131313",
+                        "on-primary-fixed-variant": "#1b503a",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#9cd2b5",
+                        "on-tertiary": "#5d1714",
+                        "error": "#ffb4ab",
+                        "primary": "#9cd2b5",
+                        "secondary": "#e9c349",
+                        "on-surface": "#e5e2e1",
+                        "surface-container": "#20201f",
+                        "surface-bright": "#393939",
+                        "inverse-surface": "#e5e2e1",
+                        "secondary-fixed-dim": "#e9c349",
+                        "secondary-container": "#af8d11",
+                        "on-surface-variant": "#c0c9c1",
+                        "on-tertiary-fixed": "#400204",
+                        "on-secondary-fixed-variant": "#574500",
+                        "tertiary-fixed-dim": "#ffb3ac",
+                        "tertiary-container": "#671e1b",
+                        "primary-container": "#06402b",
+                        "secondary-fixed": "#ffe088",
+                        "on-tertiary-container": "#eb847b",
+                        "surface-tint": "#9cd2b5",
+                        "on-secondary": "#3c2f00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-padding": "32px",
+                        "base": "8px",
+                        "element-gap": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Noto Serif"],
+                        "headline-md": ["Noto Serif"],
+                        "label-sm": ["Manrope"],
+                        "headline-xl": ["Noto Serif"],
+                        "body-lg": ["Manrope"],
+                        "body-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "headline-xl": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Custom scrollbar for immersive feel */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--tw-colors-surface-container); }
+        ::-webkit-scrollbar-thumb { background: var(--tw-colors-outline-variant); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--tw-colors-outline); }
+    </style>
+</head>
+<body class="bg-background text-on-background flex h-screen overflow-hidden font-body-md text-body-md selection:bg-primary selection:text-on-primary">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-[#06402B] dark:bg-[#042016] text-amber-500 font-serif text-sm uppercase tracking-wider h-screen w-64 border-r-2 border-amber-900/40 shadow-2xl fixed left-0 top-0 flex flex-col z-40 flex-shrink-0">
+<!-- Header -->
+<div class="p-6 border-b border-amber-900/40 mb-4">
+<div class="flex items-center gap-4 mb-2">
+<div class="w-10 h-10 rounded-full bg-stone-800 border border-amber-500 flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined icon-fill text-amber-500">local_police</span>
+</div>
+<div>
+<h2 class="text-amber-500 font-bold tracking-widest text-xs">Case File #1949</h2>
+<p class="text-emerald-100/50 text-[10px] tracking-normal capitalize">The Boddy Murder</p>
+</div>
+</div>
+</div>
+<!-- Main Navigation -->
+<div class="flex-1 flex flex-col">
+<!-- Inactive Tabs (as this is a specific action screen) -->
+<a class="text-emerald-100/70 py-4 px-6 flex items-center gap-3 hover:bg-emerald-900/50 hover:text-white transition-all hover:translate-x-1 duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="map">map</span>
+                Mansion Map
+            </a>
+<a class="text-emerald-100/70 py-4 px-6 flex items-center gap-3 hover:bg-emerald-900/50 hover:text-white transition-all hover:translate-x-1 duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="edit_note">edit_note</span>
+                Detective Ledger
+            </a>
+<a class="text-emerald-100/70 py-4 px-6 flex items-center gap-3 hover:bg-emerald-900/50 hover:text-white transition-all hover:translate-x-1 duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="inventory_2">inventory_2</span>
+                Evidence Bag
+            </a>
+<a class="text-emerald-100/70 py-4 px-6 flex items-center gap-3 hover:bg-emerald-900/50 hover:text-white transition-all hover:translate-x-1 duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="vpn_key">vpn_key</span>
+                Secret Passages
+            </a>
+</div>
+<!-- CTA Section (Active Context) -->
+<div class="p-6 mt-auto">
+<button class="w-full bg-amber-500 text-stone-950 font-bold py-3 px-4 rounded shadow-[0_0_15px_rgba(245,158,11,0.4)] hover:bg-amber-400 transition-colors duration-300 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined icon-fill">gavel</span>
+                Make Accusation
+            </button>
+</div>
+<!-- Footer Navigation -->
+<div class="border-t border-amber-900/40">
+<a class="text-emerald-100/70 py-4 px-6 flex items-center gap-3 hover:bg-emerald-900/50 hover:text-white transition-all hover:translate-x-1 duration-200 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="menu_book">menu_book</span>
+                Rules
+            </a>
+</div>
+</nav>
+<!-- Main Workspace Area -->
+<main class="flex-1 flex flex-col min-w-0 ml-64 bg-surface-container-lowest relative z-0">
+<!-- Ambient Spotlight Effect -->
+<div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-surface-container-high/20 via-surface-container-lowest to-surface-container-lowest pointer-events-none z-0"></div>
+<!-- TopAppBar (Shared Component) -->
+<header class="flex justify-between items-center w-full px-6 py-4 z-50 bg-stone-950 dark:bg-black font-serif tracking-tight top-0 border-b-2 border-amber-700/50 dark:border-amber-600/30 shadow-[0_4px_20px_rgba(0,0,0,0.8)] relative">
+<div class="flex items-center gap-4">
+<h1 class="text-2xl font-bold text-amber-500 dark:text-amber-400 uppercase tracking-widest">Cluedo: Manor Mystery</h1>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-stone-400 hover:text-emerald-400 transition-colors duration-300 cursor-pointer active:scale-95 flex items-center justify-center">
+<span class="material-symbols-outlined text-[28px]" data-icon="help">help</span>
+</button>
+<button class="text-stone-400 hover:text-emerald-400 transition-colors duration-300 cursor-pointer active:scale-95 flex items-center justify-center">
+<span class="material-symbols-outlined text-[28px]" data-icon="settings">settings</span>
+</button>
+<!-- Avatar placeholder based on profile_image_alt -->
+<div class="w-10 h-10 rounded-full border border-amber-700/50 overflow-hidden ml-2 cursor-pointer">
+<img alt="Current character avatar" class="w-full h-full object-cover grayscale opacity-80" data-alt="A close-up portrait of an aristocratic woman in 1940s attire, her expression unreadable. The image is rendered in black and white with a heavy vintage film grain, characteristic of a classic noir film still. Dramatic, high-contrast lighting casts deep shadows across half her face, emphasizing the tense, secretive mood of the mystery setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAWyVLsOQ25JKTxNUMCczmXnQMpL2i_uDqK3ZKmH-KGz6E5jySvU3W9PizcoBZWchiJ21xvPJXfwBYfwaDg3moVm5AzWMeduigEA5QOQmJ3k97c7TXMstIhcDim5XeDXF_Hy0JJFhKGCUCA590oJrOEJ4oxZfXhoAFeMXL2KUoJdHkFMYRBdKe0a18c0geF0UAlCzzI-gLXfntBYzupYxekbXD70rKgsN8Fzz2OHXkS-Z7cJMyTMKFYJzDGPp49pWZp-Q8sZkyJ9Y"/>
+</div>
+</div>
+</header>
+<!-- Canvas Content -->
+<div class="flex-1 overflow-y-auto px-container-padding py-12 relative z-10">
+<div class="max-w-6xl mx-auto grid grid-cols-12 gap-gutter">
+<!-- Page Header -->
+<div class="col-span-12 mb-8 text-center flex flex-col items-center">
+<div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary-container/20 border-2 border-secondary/50 mb-4 shadow-[0_0_20px_rgba(233,195,73,0.15)]">
+<span class="material-symbols-outlined text-[32px] text-secondary icon-fill">gavel</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface mb-2 tracking-tight">Formal Accusation</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                        Assemble your final theory. Select the Suspect, Weapon, and Room. Be certain; once an accusation is made, it cannot be unsaid.
+                    </p>
+</div>
+<!-- Card Selection Bento Grid -->
+<div class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-element-gap mt-4">
+<!-- Suspect Selection -->
+<section class="bg-surface-container rounded-xl border border-outline-variant p-6 flex flex-col shadow-xl relative overflow-hidden group">
+<!-- Subtle background texture/gradient -->
+<div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary-container/20 to-transparent pointer-events-none"></div>
+<div class="flex justify-between items-center mb-6 relative z-10">
+<h3 class="font-headline-md text-headline-md text-primary">The Suspect</h3>
+<span class="material-symbols-outlined text-outline">person_search</span>
+</div>
+<!-- Selected Card Display -->
+<div class="flex-1 flex flex-col items-center justify-center p-4 bg-surface rounded-lg border-2 border-secondary shadow-[0_4px_15px_rgba(0,0,0,0.5)] relative cursor-pointer hover:border-secondary-fixed transition-colors">
+<div class="absolute inset-0 bg-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"></div>
+<div class="w-32 h-40 rounded border border-outline-variant overflow-hidden mb-4 relative">
+<img alt="Selected Suspect" class="w-full h-full object-cover sepia-[.3] contrast-125" data-alt="A portrait of an aristocratic older gentleman in a tailored 1940s tweed suit, looking suspiciously over his shoulder. The image is styled as a vintage photograph with a subtle film grain overlay, sitting on a dark wooden desk. The lighting is cinematic and moody, with deep shadows characteristic of a modern noir aesthetic. The color palette relies on muted earth tones, deep blacks, and subtle hints of gold reflecting off his monocle. The atmosphere is tense, secretive, and luxurious." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIXdjUaajCvikBAw3yCWsOTyin8U86zeRJOae0JKor5FnpW-ADBIoaBOBFN336hQ_wxMki84piERptyXqPwiRHcvi_C3DYSOygbCY7QCnQuNmHwYfD0C8OGZHV6wl-tKjd8-nnZJKlTOVfam5TdsD4yOCM0cPyr9QF4MpFnU6xsbazmUv0nBqGiIIOv-LC9L9TEjX35rF2DL49ZTh1Ekmagt0vR6wi0sJJMgGWnLpNYiaB3Jvet4uIdhvqTHAuwA2OwXqFBGV9SZA"/>
+<!-- Tape visual detail -->
+<div class="absolute -top-2 left-1/2 transform -translate-x-1/2 w-12 h-4 bg-white/20 backdrop-blur-sm rotate-[-2deg] opacity-60"></div>
+</div>
+<h4 class="font-headline-lg text-[20px] text-on-surface text-center tracking-wide">Col. Mustard</h4>
+<p class="font-label-sm text-label-sm text-secondary uppercase mt-2 border border-secondary/30 px-2 py-1 rounded bg-secondary/10">Selected</p>
+</div>
+<button class="mt-4 w-full py-2 border border-outline hover:border-on-surface text-on-surface-variant hover:text-on-surface rounded font-label-sm text-label-sm uppercase tracking-widest transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">swap_horiz</span> Change
+                        </button>
+</section>
+<!-- Weapon Selection -->
+<section class="bg-surface-container rounded-xl border border-outline-variant p-6 flex flex-col shadow-xl relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-error-container/10 to-transparent pointer-events-none"></div>
+<div class="flex justify-between items-center mb-6 relative z-10">
+<h3 class="font-headline-md text-headline-md text-error">The Weapon</h3>
+<span class="material-symbols-outlined text-outline">hardware</span>
+</div>
+<!-- Selected Card Display -->
+<div class="flex-1 flex flex-col items-center justify-center p-4 bg-surface rounded-lg border-2 border-secondary shadow-[0_4px_15px_rgba(0,0,0,0.5)] relative cursor-pointer hover:border-secondary-fixed transition-colors">
+<div class="absolute inset-0 bg-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"></div>
+<div class="w-32 h-40 rounded border border-outline-variant overflow-hidden mb-4 relative bg-surface-container-highest flex items-center justify-center">
+<img alt="Selected Weapon" class="w-full h-full object-cover grayscale contrast-150" data-alt="A gleaming vintage silver revolver resting on a piece of dark emerald green velvet cloth. The scene is illuminated by a stark, dramatic spotlight cutting through a dark, shadowy background, typical of a modern noir mystery setting. The polished metal of the gun reflects the stark light, creating high-contrast highlights against the deep shadows. The visual style is highly tactile and skeuomorphic, emphasizing the heavy, cold texture of the weapon and the soft luxury of the velvet." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9JS1Wahe1Gt4EWU8bmrneQgRLEYlwauvAauaGFyZvbWkvLXZXt2oZj2YrJzzEQGHjcd-3aOBJ6lFcUnfm7kjk9310xGFS74y5Yct-P_BShJwRvHR00Ej0bSoGIgVec2cqwoyFIK2zUqQYGMZW3Efge3XRUMreTF8jsLKHke1uMSVtbNWNisYR0Y6riXSIdsh988E6pmcrHXcJkUbR18rWpr8nXc-E_eNf14DY69JvYIr7_MSuqnPa26wiMVbImkjiQ6o6FaxvF9w"/>
+</div>
+<h4 class="font-headline-lg text-[20px] text-on-surface text-center tracking-wide">Revolver</h4>
+<p class="font-label-sm text-label-sm text-secondary uppercase mt-2 border border-secondary/30 px-2 py-1 rounded bg-secondary/10">Selected</p>
+</div>
+<button class="mt-4 w-full py-2 border border-outline hover:border-on-surface text-on-surface-variant hover:text-on-surface rounded font-label-sm text-label-sm uppercase tracking-widest transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">swap_horiz</span> Change
+                        </button>
+</section>
+<!-- Room Selection -->
+<section class="bg-surface-container rounded-xl border border-outline-variant p-6 flex flex-col shadow-xl relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-secondary-container/10 to-transparent pointer-events-none"></div>
+<div class="flex justify-between items-center mb-6 relative z-10">
+<h3 class="font-headline-md text-headline-md text-secondary">The Room</h3>
+<span class="material-symbols-outlined text-outline">meeting_room</span>
+</div>
+<!-- Selected Card Display -->
+<div class="flex-1 flex flex-col items-center justify-center p-4 bg-surface rounded-lg border-2 border-secondary shadow-[0_4px_15px_rgba(0,0,0,0.5)] relative cursor-pointer hover:border-secondary-fixed transition-colors">
+<div class="absolute inset-0 bg-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"></div>
+<div class="w-32 h-40 rounded border border-outline-variant overflow-hidden mb-4 relative">
+<img alt="Selected Room" class="w-full h-full object-cover sepia-[.4] contrast-[1.1]" data-alt="An interior view of a luxurious, mid-century British manor library. The room is lined with dark, polished mahogany bookshelves filled with antique leather-bound volumes. A heavy, ornate desk sits in the center, dimly lit by a solitary, warm brass reading lamp that casts long, dramatic shadows across the room. The overall atmosphere is oppressive yet wealthy, heavily stylized in a modern noir aesthetic with a color palette of deep browns, rich golds, and pervasive inky blacks. The tension of a hidden secret permeates the space." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVkQzdeUeUaY-MXgC7zj51d6OhF7o9OQgxw4tFE4xRW7AZSiZ3QOO11o1j9mRkQBxPL0rvOecjlJZhwJTFLd-claXC9HZaQzC4bFzJylI8NIzGN0fkPAHviZ6er_oJHy7yZdr56WycbL121rBy6F_oZTAfuQKh4kLujOT0C7iCSyA_gAxoitnuBcOZjD1nSDwquJwmiGhbcKxwVLxHxFyBakhrNfep4YDukQ0nXU_PgmoBBgE1ozgeWJkz2F33ovvlLDyirZgAP_0"/>
+</div>
+<h4 class="font-headline-lg text-[20px] text-on-surface text-center tracking-wide">Library</h4>
+<p class="font-label-sm text-label-sm text-secondary uppercase mt-2 border border-secondary/30 px-2 py-1 rounded bg-secondary/10">Selected</p>
+</div>
+<button class="mt-4 w-full py-2 border border-outline hover:border-on-surface text-on-surface-variant hover:text-on-surface rounded font-label-sm text-label-sm uppercase tracking-widest transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">swap_horiz</span> Change
+                        </button>
+</section>
+</div>
+<!-- Action Section -->
+<div class="col-span-12 flex flex-col items-center mt-16 pb-12">
+<!-- Warning Panel -->
+<div class="bg-error-container/10 border border-error/50 px-6 py-4 rounded-lg flex items-center gap-4 mb-8 max-w-lg w-full backdrop-blur-sm shadow-[0_0_20px_rgba(255,180,171,0.05)]">
+<span class="material-symbols-outlined text-error text-3xl icon-fill">warning</span>
+<div>
+<h4 class="font-label-sm text-label-sm text-error uppercase tracking-widest mb-1">Critical Warning</h4>
+<p class="font-body-md text-body-md text-on-error-container">
+                                If you are wrong, you lose the game and can no longer make suggestions.
+                            </p>
+</div>
+</div>
+<!-- Dramatic CTA -->
+<button class="relative group cursor-pointer active:scale-[0.98] transition-transform">
+<!-- Glow effect -->
+<div class="absolute -inset-1 bg-gradient-to-r from-secondary-container via-secondary to-secondary-container rounded-full blur opacity-40 group-hover:opacity-70 transition duration-500"></div>
+<!-- Actual Button -->
+<div class="relative bg-surface-container-lowest border-2 border-secondary rounded-full px-16 py-6 flex items-center gap-4 overflow-hidden">
+<!-- Inner subtle glow -->
+<div class="absolute inset-0 bg-gradient-to-t from-transparent to-secondary/10 pointer-events-none"></div>
+<span class="material-symbols-outlined text-secondary text-[32px] z-10">campaign</span>
+<span class="font-headline-lg text-headline-lg text-secondary tracking-wide z-10">MAKE ACCUSATION</span>
+</div>
+</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>
