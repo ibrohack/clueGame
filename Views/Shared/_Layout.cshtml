@@ -16,209 +16,151 @@
     <link rel="stylesheet" href="~/clueGame.styles.css" asp-append-version="true" />
 
     @await RenderSectionAsync("Styles", required: false)
+
 </head>
 <body>
 
     <!-- ==================== NAVBAR ==================== -->
-    <header class="border-b border-surface-variant/30 bg-surface/95 backdrop-blur-md sticky top-0 z-40"
-            style="border-bottom: 1px solid rgba(64,73,67,0.4);">
-        <nav class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
+    <header class="site-header">
+        <nav class="nav-inner">
 
             <!-- Brand -->
-            <div class="flex-shrink-0">
-                <a asp-controller="Home" asp-action="Index"
-                   class="text-2xl font-bold tracking-widest headline-font uppercase"
-                   style="color: #e9c349;">CLUE</a>
-            </div>
+            <a asp-controller="Home" asp-action="Index" class="nav-brand">CLUE</a>
 
             <!-- Center links (desktop) -->
-            <div class="hidden md:flex items-center gap-6 text-[11px] uppercase tracking-widest font-semibold"
-                 style="color: #c0c9c1;">
+            <div class="nav-center">
 
                 <!-- Characters dropdown -->
-                <div class="group relative">
-                    <button class="flex items-center gap-1 hover:text-secondary transition-colors duration-200 py-5"
-                            style="color: inherit;">
+                <div class="nav-group">
+                    <button class="nav-trigger" type="button">
                         Characters
-                        <span class="material-symbols-outlined text-[14px] transition-transform duration-200 group-hover:rotate-180">expand_more</span>
+                        <span class="material-symbols-outlined nav-chevron">expand_more</span>
                     </button>
-                    <div class="absolute left-1/2 -translate-x-1/2 top-full pt-0 hidden group-hover:block z-50">
-                        <div class="rounded-lg py-2 min-w-44 shadow-2xl border mt-0"
-                             style="background:#20201f; border-color:#404943;">
-                            <a href="/Characters/character_2" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors hover:bg-surface-container-high"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Chrysant Pyrite</a>
-                            <a href="/Characters/character_5" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors hover:bg-surface-container-high"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Dahlia Onix</a>
-                            <a href="/Characters/character_1" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors hover:bg-surface-container-high"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Fern Malachite</a>
-                            <a href="/Characters/character_6" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors hover:bg-surface-container-high"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Gardenia Quartz</a>
-                            <a href="/Characters/character_3" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors hover:bg-surface-container-high"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Hyacinth Sapphire</a>
-                            <a href="/Characters/character_4" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors hover:bg-surface-container-high"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Poppy Ruby</a>
-                        </div>
+                    <div class="nav-dropdown">
+                        <a href="/Characters/character_2">Chrysant Pyrite</a>
+                        <a href="/Characters/character_5">Dahlia Onix</a>
+                        <a href="/Characters/character_1">Fern Malachite</a>
+                        <a href="/Characters/character_6">Gardenia Quartz</a>
+                        <a href="/Characters/character_3">Hyacinth Sapphire</a>
+                        <a href="/Characters/character_4">Poppy Ruby</a>
                     </div>
                 </div>
 
                 <!-- Weapons dropdown -->
-                <div class="group relative">
-                    <button class="flex items-center gap-1 hover:text-secondary transition-colors duration-200 py-5"
-                            style="color: inherit;">
+                <div class="nav-group">
+                    <button class="nav-trigger" type="button">
                         Weapons
-                        <span class="material-symbols-outlined text-[14px] transition-transform duration-200 group-hover:rotate-180">expand_more</span>
+                        <span class="material-symbols-outlined nav-chevron">expand_more</span>
                     </button>
-                    <div class="absolute left-1/2 -translate-x-1/2 top-full pt-0 hidden group-hover:block z-50">
-                        <div class="rounded-lg py-2 min-w-44 shadow-2xl border"
-                             style="background:#20201f; border-color:#404943;">
-                            <a href="/Weapons/weapon_5" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Chain Saw</a>
-                            <a href="/Weapons/weapon_2" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Dumbbell</a>
-                            <a href="/Weapons/weapon_3" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Flowerpot</a>
-                            <a href="/Weapons/weapon_1" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Mower</a>
-                            <a href="/Weapons/weapon_4" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Plastic Bag</a>
-                            <a href="/Weapons/weapon_6" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Rat Poison</a>
-                        </div>
+                    <div class="nav-dropdown">
+                        <a href="/Weapons/weapon_5">Chain Saw</a>
+                        <a href="/Weapons/weapon_2">Dumbbell</a>
+                        <a href="/Weapons/weapon_3">Flowerpot</a>
+                        <a href="/Weapons/weapon_1">Mower</a>
+                        <a href="/Weapons/weapon_4">Plastic Bag</a>
+                        <a href="/Weapons/weapon_6">Rat Poison</a>
                     </div>
                 </div>
 
                 <!-- Locations dropdown -->
-                <div class="group relative">
-                    <button class="flex items-center gap-1 hover:text-secondary transition-colors duration-200 py-5"
-                            style="color: inherit;">
+                <div class="nav-group">
+                    <button class="nav-trigger" type="button">
                         Locations
-                        <span class="material-symbols-outlined text-[14px] transition-transform duration-200 group-hover:rotate-180">expand_more</span>
+                        <span class="material-symbols-outlined nav-chevron">expand_more</span>
                     </button>
-                    <div class="absolute left-1/2 -translate-x-1/2 top-full pt-0 hidden group-hover:block z-50">
-                        <div class="rounded-lg py-2 min-w-44 shadow-2xl border"
-                             style="background:#20201f; border-color:#404943;">
-                            <a href="/Locations/location_4" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Basement</a>
-                            <a href="/Locations/location_1" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Cinema</a>
-                            <a href="/Locations/location_7" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Elevator</a>
-                            <a href="/Locations/location_6" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Garden</a>
-                            <a href="/Locations/location_2" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Gym</a>
-                            <a href="/Locations/location_8" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Helipad</a>
-                            <a href="/Locations/location_9" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Panic Room</a>
-                            <a href="/Locations/location_5" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Solarium</a>
-                            <a href="/Locations/location_3" class="block px-4 py-2 text-[11px] uppercase tracking-widest transition-colors"
-                               style="color:#c0c9c1;" onmouseover="this.style.color='#e9c349'" onmouseout="this.style.color='#c0c9c1'">Swimming Pool</a>
-                        </div>
+                    <div class="nav-dropdown">
+                        <a href="/Locations/location_4">Basement</a>
+                        <a href="/Locations/location_1">Cinema</a>
+                        <a href="/Locations/location_7">Elevator</a>
+                        <a href="/Locations/location_6">Garden</a>
+                        <a href="/Locations/location_2">Gym</a>
+                        <a href="/Locations/location_8">Helipad</a>
+                        <a href="/Locations/location_9">Panic Room</a>
+                        <a href="/Locations/location_5">Solarium</a>
+                        <a href="/Locations/location_3">Swimming Pool</a>
                     </div>
                 </div>
 
                 @if (User.Identity?.IsAuthenticated == true)
                 {
-                    <a asp-controller="Home" asp-action="Dashboard"
-                       class="hover:text-secondary transition-colors duration-200"
-                       style="color: #c0c9c1;">Dashboard</a>
-                    <a asp-controller="Game" asp-action="Index"
-                       class="hover:text-secondary transition-colors duration-200"
-                       style="color: #9cd2b5;">Play Game</a>
+                    <a asp-controller="Home" asp-action="Dashboard" class="nav-link">Dashboard</a>
+                    <a asp-controller="Game" asp-action="Index" class="nav-link-green">Play Game</a>
                 }
             </div>
 
             <!-- Right: auth links -->
-            <div class="hidden md:flex items-center gap-5 text-[11px] uppercase tracking-widest font-semibold flex-shrink-0">
+            <div class="nav-right">
                 @if (User.Identity?.IsAuthenticated == true)
                 {
-                    <span style="color: #c0c9c1;">@User.Identity.Name</span>
-                    <form asp-controller="Account" asp-action="Logout" method="post" class="m-0 p-0">
-                        <button type="submit"
-                                class="hover:text-secondary transition-colors duration-200 bg-transparent border-0 p-0 cursor-pointer"
-                                style="color: #c0c9c1; font-size: 11px; letter-spacing: 0.1em; font-family: Manrope, sans-serif; font-weight: 600; text-transform: uppercase;">
-                            Log Out
-                        </button>
+                    <span class="nav-username">@User.Identity.Name</span>
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;padding:0;">
+                        <button type="submit" class="nav-logout">Log Out</button>
                     </form>
                 }
                 else
                 {
-                    <a asp-controller="Account" asp-action="Login"
-                       class="hover:text-secondary transition-colors duration-200"
-                       style="color: #9cd2b5;">Login</a>
-                    <a asp-controller="Account" asp-action="Register"
-                       class="font-bold hover:text-primary transition-colors duration-200"
-                       style="color: #e9c349;">Register</a>
+                    <a asp-controller="Account" asp-action="Login" class="nav-link-green">Login</a>
+                    <a asp-controller="Account" asp-action="Register" class="nav-link-gold">Register</a>
                 }
             </div>
 
             <!-- Mobile hamburger -->
-            <button id="hamburger-btn"
-                    class="md:hidden flex flex-col gap-1.5 p-2 rounded"
-                    aria-label="Toggle navigation">
-                <span class="block w-5 h-0.5" style="background:#c0c9c1;"></span>
-                <span class="block w-5 h-0.5" style="background:#c0c9c1;"></span>
-                <span class="block w-5 h-0.5" style="background:#c0c9c1;"></span>
+            <button id="hamburger-btn" class="nav-hamburger" type="button" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
         </nav>
 
         <!-- Mobile menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-t px-6 py-4 space-y-3 text-[11px] uppercase tracking-widest font-semibold"
-             style="background:#131313; border-color:#404943; color:#c0c9c1;">
-            <p class="text-[10px] uppercase" style="color:#8a938c;">Characters</p>
-            <div class="pl-2 space-y-2">
-                <a href="/Characters/character_2" class="block hover:text-secondary" style="color:#c0c9c1;">Chrysant Pyrite</a>
-                <a href="/Characters/character_5" class="block hover:text-secondary" style="color:#c0c9c1;">Dahlia Onix</a>
-                <a href="/Characters/character_1" class="block hover:text-secondary" style="color:#c0c9c1;">Fern Malachite</a>
-                <a href="/Characters/character_6" class="block hover:text-secondary" style="color:#c0c9c1;">Gardenia Quartz</a>
-                <a href="/Characters/character_3" class="block hover:text-secondary" style="color:#c0c9c1;">Hyacinth Sapphire</a>
-                <a href="/Characters/character_4" class="block hover:text-secondary" style="color:#c0c9c1;">Poppy Ruby</a>
+        <div id="mobile-menu" class="nav-mobile">
+            <p class="nav-mobile-label">Characters</p>
+            <div class="nav-mobile-links">
+                <a href="/Characters/character_2">Chrysant Pyrite</a>
+                <a href="/Characters/character_5">Dahlia Onix</a>
+                <a href="/Characters/character_1">Fern Malachite</a>
+                <a href="/Characters/character_6">Gardenia Quartz</a>
+                <a href="/Characters/character_3">Hyacinth Sapphire</a>
+                <a href="/Characters/character_4">Poppy Ruby</a>
             </div>
-            <p class="text-[10px] uppercase pt-2" style="color:#8a938c;">Weapons</p>
-            <div class="pl-2 space-y-2">
-                <a href="/Weapons/weapon_5" class="block hover:text-secondary" style="color:#c0c9c1;">Chain Saw</a>
-                <a href="/Weapons/weapon_2" class="block hover:text-secondary" style="color:#c0c9c1;">Dumbbell</a>
-                <a href="/Weapons/weapon_3" class="block hover:text-secondary" style="color:#c0c9c1;">Flowerpot</a>
-                <a href="/Weapons/weapon_1" class="block hover:text-secondary" style="color:#c0c9c1;">Mower</a>
-                <a href="/Weapons/weapon_4" class="block hover:text-secondary" style="color:#c0c9c1;">Plastic Bag</a>
-                <a href="/Weapons/weapon_6" class="block hover:text-secondary" style="color:#c0c9c1;">Rat Poison</a>
+            <p class="nav-mobile-label">Weapons</p>
+            <div class="nav-mobile-links">
+                <a href="/Weapons/weapon_5">Chain Saw</a>
+                <a href="/Weapons/weapon_2">Dumbbell</a>
+                <a href="/Weapons/weapon_3">Flowerpot</a>
+                <a href="/Weapons/weapon_1">Mower</a>
+                <a href="/Weapons/weapon_4">Plastic Bag</a>
+                <a href="/Weapons/weapon_6">Rat Poison</a>
             </div>
-            <p class="text-[10px] uppercase pt-2" style="color:#8a938c;">Locations</p>
-            <div class="pl-2 space-y-2">
-                <a href="/Locations/location_4" class="block hover:text-secondary" style="color:#c0c9c1;">Basement</a>
-                <a href="/Locations/location_1" class="block hover:text-secondary" style="color:#c0c9c1;">Cinema</a>
-                <a href="/Locations/location_7" class="block hover:text-secondary" style="color:#c0c9c1;">Elevator</a>
-                <a href="/Locations/location_6" class="block hover:text-secondary" style="color:#c0c9c1;">Garden</a>
-                <a href="/Locations/location_2" class="block hover:text-secondary" style="color:#c0c9c1;">Gym</a>
-                <a href="/Locations/location_8" class="block hover:text-secondary" style="color:#c0c9c1;">Helipad</a>
-                <a href="/Locations/location_9" class="block hover:text-secondary" style="color:#c0c9c1;">Panic Room</a>
-                <a href="/Locations/location_5" class="block hover:text-secondary" style="color:#c0c9c1;">Solarium</a>
-                <a href="/Locations/location_3" class="block hover:text-secondary" style="color:#c0c9c1;">Swimming Pool</a>
+            <p class="nav-mobile-label">Locations</p>
+            <div class="nav-mobile-links">
+                <a href="/Locations/location_4">Basement</a>
+                <a href="/Locations/location_1">Cinema</a>
+                <a href="/Locations/location_7">Elevator</a>
+                <a href="/Locations/location_6">Garden</a>
+                <a href="/Locations/location_2">Gym</a>
+                <a href="/Locations/location_8">Helipad</a>
+                <a href="/Locations/location_9">Panic Room</a>
+                <a href="/Locations/location_5">Solarium</a>
+                <a href="/Locations/location_3">Swimming Pool</a>
             </div>
             @if (User.Identity?.IsAuthenticated == true)
             {
-                <div class="pt-2 border-t space-y-2" style="border-color:#404943;">
-                    <a asp-controller="Home" asp-action="Dashboard" class="block" style="color:#c0c9c1;">Dashboard</a>
-                    <a asp-controller="Game" asp-action="Index" class="block" style="color:#9cd2b5;">Play Game</a>
-                </div>
-                <div class="flex items-center justify-between pt-1">
-                    <span style="color:#c0c9c1;">@User.Identity.Name</span>
-                    <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
-                        <button type="submit" class="bg-transparent border-0 p-0 cursor-pointer"
-                                style="color:#c0c9c1; font-size:11px; letter-spacing:0.1em; font-family:Manrope,sans-serif; font-weight:600; text-transform:uppercase;">
-                            Log Out
-                        </button>
+                <hr class="nav-mobile-divider" />
+                <a asp-controller="Home" asp-action="Dashboard">Dashboard</a>
+                <a asp-controller="Game" asp-action="Index" class="nav-link-green">Play Game</a>
+                <div class="nav-mobile-auth">
+                    <span class="nav-username">@User.Identity.Name</span>
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                        <button type="submit" class="nav-logout">Log Out</button>
                     </form>
                 </div>
             }
             else
             {
-                <div class="flex gap-4 pt-2 border-t" style="border-color:#404943;">
-                    <a asp-controller="Account" asp-action="Login" style="color:#9cd2b5;">Login</a>
-                    <a asp-controller="Account" asp-action="Register" class="font-bold" style="color:#e9c349;">Register</a>
-                </div>
+                <hr class="nav-mobile-divider" />
+                <a asp-controller="Account" asp-action="Login" class="nav-link-green">Login</a>
+                <a asp-controller="Account" asp-action="Register" class="nav-link-gold">Register</a>
             }
         </div>
     </header>
@@ -249,8 +191,7 @@
     <script>
         // Mobile hamburger toggle
         document.getElementById('hamburger-btn').addEventListener('click', function () {
-            var menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+            document.getElementById('mobile-menu').classList.toggle('is-open');
         });
     </script>
 

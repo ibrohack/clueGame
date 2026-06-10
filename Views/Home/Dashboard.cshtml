@@ -1,6 +1,7 @@
 @model clueGame.Models.ViewModels.DashboardViewModel
 @{
     ViewData["Title"] = "Inspector's Ledger";
+    int gamesLost = Model.GamesPlayed - Model.GamesWon;
 }
 
 @section Styles {
@@ -23,6 +24,62 @@
         border: 1px solid #D8C8AC;
         pointer-events: none;
     }
+
+    .stat-card {
+        border-radius: 8px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(64,73,67,0.3);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+        background: #2a2a2a;
+        transition: transform 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-3px); }
+    .stat-card .stat-icon {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        font-size: 52px;
+        opacity: 0.08;
+        color: #e9c349;
+    }
+    .stat-card .stat-label {
+        font-family: Manrope, sans-serif;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #8a938c;
+        margin-bottom: 8px;
+    }
+    .stat-card .stat-value {
+        font-family: 'Noto Serif', serif;
+        font-size: 44px;
+        font-weight: 700;
+        color: #e9c349;
+        line-height: 1.1;
+    }
+    .stat-card .stat-sub {
+        font-family: Manrope, sans-serif;
+        font-size: 12px;
+        color: #9cd2b5;
+        margin-top: 12px;
+    }
+    .stat-card .stat-bar-track {
+        margin-top: 12px;
+        width: 100%;
+        height: 3px;
+        border-radius: 9999px;
+        background: #20201f;
+        overflow: hidden;
+    }
+    .stat-card .stat-bar-fill {
+        height: 100%;
+        border-radius: 9999px;
+        background: #e9c349;
+        transition: width 0.6s ease;
+    }
 </style>
 }
 
@@ -34,80 +91,95 @@
         <!-- Page Header -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-4">
             <div class="max-w-2xl">
-                <h1 class="font-headline-xl text-headline-xl mb-2 drop-shadow-md"
-                    style="font-family:'Noto Serif',serif; font-size:48px; font-weight:700; color:#e9c349;">
+                <p class="uppercase tracking-[0.3em] mb-2" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#9cd2b5;">Case Files</p>
+                <h1 style="font-family:'Noto Serif',serif; font-size:48px; font-weight:700; color:#e9c349; letter-spacing:-0.02em; line-height:1.2; margin-bottom:8px;">
                     Inspector's Ledger
                 </h1>
-                <p class="font-body-lg text-body-lg italic" style="font-family:Manrope,sans-serif; color:#c0c9c1;">
+                <p class="italic" style="font-family:Manrope,sans-serif; font-size:18px; color:#c0c9c1; line-height:1.6;">
                     "Trust no one, suspect everyone, and keep your notebook close."
                 </p>
             </div>
             <a asp-controller="Game" asp-action="New"
-               class="inline-block font-bold uppercase tracking-widest transition-all hover:scale-105 active:scale-95"
-               style="font-family:'Noto Serif',serif; font-size:18px; border:4px solid rgba(233,195,73,0.4); padding:16px 48px; background:rgba(6,64,43,0.2); color:#e9c349; border-radius:0.25rem; box-shadow:0 0 15px rgba(233,195,73,0.3); text-decoration:none;">
-                JUGAR
+               class="inline-flex items-center gap-3 font-bold uppercase tracking-widest transition-all hover:scale-105 active:scale-95"
+               style="font-family:'Noto Serif',serif; font-size:16px; border:2px solid rgba(233,195,73,0.5); padding:14px 36px; background:rgba(6,64,43,0.25); color:#e9c349; border-radius:0.25rem; box-shadow:0 0 20px rgba(233,195,73,0.2); text-decoration:none;"
+               onmouseover="this.style.background='rgba(6,64,43,0.5)'; this.style.boxShadow='0 0 28px rgba(233,195,73,0.35)';"
+               onmouseout="this.style.background='rgba(6,64,43,0.25)'; this.style.boxShadow='0 0 20px rgba(233,195,73,0.2)';">
+                <span class="material-symbols-outlined" style="font-size:20px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">play_arrow</span>
+                New Investigation
             </a>
         </header>
 
-        <!-- Stats Grid -->
-        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- ── Stats Grid (2 rows × 3) ── -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
             <!-- Cases Solved -->
-            <div class="rounded-lg p-6 relative overflow-hidden border border-outline-variant/30 shadow-[0_8px_16px_rgba(0,0,0,0.5)] group hover:-translate-y-1 transition-transform"
-                 style="background:#2a2a2a;">
-                <div class="absolute top-0 right-0 p-4 opacity-10" style="color:#e9c349;">
-                    <span class="material-symbols-outlined text-6xl">gavel</span>
-                </div>
-                <p class="uppercase tracking-widest mb-2" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; letter-spacing:0.1em; color:#c0c9c1;">Cases Solved</p>
-                <p style="font-family:'Noto Serif',serif; font-size:48px; font-weight:700; color:#e9c349; line-height:1.2;">@Model.GamesWon</p>
-                <p class="mt-4 text-xs" style="color:#9cd2b5;">Across all investigations</p>
-                <div class="absolute inset-x-0 top-0 h-px" style="background:linear-gradient(to right, transparent, #393939, transparent); opacity:0.5;"></div>
+            <div class="stat-card">
+                <span class="material-symbols-outlined stat-icon">gavel</span>
+                <p class="stat-label">Cases Solved</p>
+                <p class="stat-value">@Model.GamesWon</p>
+                <p class="stat-sub">
+                    <span class="material-symbols-outlined" style="font-size:14px; vertical-align:-3px;">check_circle</span>
+                    Successful investigations
+                </p>
             </div>
 
-            <!-- Accusation Accuracy -->
-            <div class="rounded-lg p-6 relative overflow-hidden border border-outline-variant/30 shadow-[0_8px_16px_rgba(0,0,0,0.5)] group hover:-translate-y-1 transition-transform"
-                 style="background:#2a2a2a;">
-                <div class="absolute top-0 right-0 p-4 opacity-10" style="color:#e9c349;">
-                    <span class="material-symbols-outlined text-6xl">target</span>
+            <!-- Win Rate -->
+            <div class="stat-card">
+                <span class="material-symbols-outlined stat-icon">target</span>
+                <p class="stat-label">Win Rate</p>
+                <p class="stat-value">@Model.AccuracyPercent<span style="font-size:24px;">%</span></p>
+                <div class="stat-bar-track">
+                    <div class="stat-bar-fill" style="width:@(Model.AccuracyPercent)%;"></div>
                 </div>
-                <p class="uppercase tracking-widest mb-2" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; letter-spacing:0.1em; color:#c0c9c1;">Accusation Acc.</p>
-                <p style="font-family:'Noto Serif',serif; font-size:48px; font-weight:700; color:#e9c349; line-height:1.2;">@Model.AccuracyPercent%</p>
-                <div class="mt-4 w-full h-1 rounded-full overflow-hidden" style="background:#20201f;">
-                    <div class="h-full" style="background:#e9c349; width:@(Model.AccuracyPercent)%;"></div>
-                </div>
-                <div class="absolute inset-x-0 top-0 h-px" style="background:linear-gradient(to right, transparent, #393939, transparent); opacity:0.5;"></div>
             </div>
 
             <!-- Games Played -->
-            <div class="rounded-lg p-6 relative overflow-hidden border border-outline-variant/30 shadow-[0_8px_16px_rgba(0,0,0,0.5)] group hover:-translate-y-1 transition-transform"
-                 style="background:#2a2a2a;">
-                <div class="absolute top-0 right-0 p-4 opacity-10" style="color:#e9c349;">
-                    <span class="material-symbols-outlined text-6xl">hourglass_empty</span>
-                </div>
-                <p class="uppercase tracking-widest mb-2" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; letter-spacing:0.1em; color:#c0c9c1;">Games Played</p>
-                <p style="font-family:'Noto Serif',serif; font-size:48px; font-weight:700; color:#e9c349; line-height:1.2;">@Model.GamesPlayed</p>
-                <div class="mt-4 flex items-center gap-2 text-xs" style="color:#9cd2b5;">
-                    <span class="material-symbols-outlined" style="font-size:16px;">trending_up</span>
-                    <span>Total investigations</span>
-                </div>
-                <div class="absolute inset-x-0 top-0 h-px" style="background:linear-gradient(to right, transparent, #393939, transparent); opacity:0.5;"></div>
+            <div class="stat-card">
+                <span class="material-symbols-outlined stat-icon">hourglass_empty</span>
+                <p class="stat-label">Games Played</p>
+                <p class="stat-value">@Model.GamesPlayed</p>
+                <p class="stat-sub">
+                    <span class="material-symbols-outlined" style="font-size:14px; vertical-align:-3px;">history</span>
+                    Last: @Model.LastGameDate
+                </p>
             </div>
 
-            <!-- Games Lost -->
-            <div class="rounded-lg p-6 relative overflow-hidden border border-outline-variant/30 shadow-[0_8px_16px_rgba(0,0,0,0.5)] group hover:-translate-y-1 transition-transform"
-                 style="background:#2a2a2a;">
-                <div class="absolute top-0 right-0 p-4 opacity-10" style="color:#e9c349;">
-                    <span class="material-symbols-outlined text-6xl">search</span>
-                </div>
-                <p class="uppercase tracking-widest mb-2" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; letter-spacing:0.1em; color:#c0c9c1;">Cases Failed</p>
-                <p style="font-family:'Noto Serif',serif; font-size:48px; font-weight:700; color:#e9c349; line-height:1.2;">@(Model.GamesPlayed - Model.GamesWon)</p>
-                <p class="mt-4 text-xs" style="color:#c0c9c1;">Better luck next time</p>
-                <div class="absolute inset-x-0 top-0 h-px" style="background:linear-gradient(to right, transparent, #393939, transparent); opacity:0.5;"></div>
+            <!-- Cases Failed -->
+            <div class="stat-card">
+                <span class="material-symbols-outlined stat-icon" style="color:#ffb4ab;">cancel</span>
+                <p class="stat-label">Cases Failed</p>
+                <p class="stat-value" style="color:@(gamesLost > 0 ? "#ffb4ab" : "#e9c349");">@gamesLost</p>
+                <p class="stat-sub" style="color:@(gamesLost > 0 ? "rgba(255,180,171,0.7)" : "#9cd2b5");">
+                    @(gamesLost == 0 ? "Flawless record" : "The culprit escaped")
+                </p>
+            </div>
+
+            <!-- Current Streak -->
+            <div class="stat-card">
+                <span class="material-symbols-outlined stat-icon" style="color:#e9c349;">local_fire_department</span>
+                <p class="stat-label">Win Streak</p>
+                <p class="stat-value" style="color:@(Model.CurrentStreak >= 3 ? "#e9c349" : Model.CurrentStreak >= 1 ? "#9cd2b5" : "#8a938c");">@Model.CurrentStreak</p>
+                <p class="stat-sub" style="color:@(Model.CurrentStreak >= 3 ? "#e9c349" : "#9cd2b5");">
+                    @(Model.CurrentStreak == 0 ? "No active streak"
+                      : Model.CurrentStreak == 1 ? "Consecutive win"
+                      : $"{Model.CurrentStreak} consecutive wins")
+                </p>
+            </div>
+
+            <!-- Total Clues -->
+            <div class="stat-card">
+                <span class="material-symbols-outlined stat-icon">search</span>
+                <p class="stat-label">Total Clues</p>
+                <p class="stat-value">@Model.TotalClues</p>
+                <p class="stat-sub">
+                    <span class="material-symbols-outlined" style="font-size:14px; vertical-align:-3px;">manage_search</span>
+                    Suggestions &amp; accusations
+                </p>
             </div>
 
         </section>
 
-        <!-- Case History -->
+        <!-- ── Case History + Inspector Profile ── -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             <!-- Parchment Case History -->
@@ -119,7 +191,9 @@
                 <header class="flex justify-between items-end mb-6 relative z-10 pb-2" style="border-bottom:2px solid #8C7A5D;">
                     <div>
                         <h2 style="font-family:'Noto Serif',serif; font-size:24px; font-weight:700; color:#1A1815;">The Archives</h2>
-                        <p style="font-family:Manrope,sans-serif; font-size:14px; color:#5C5445; font-style:italic;">Official Case Outcomes</p>
+                        <p style="font-family:Manrope,sans-serif; font-size:14px; color:#5C5445; font-style:italic;">
+                            Last @Model.History.Count case@(Model.History.Count == 1 ? "" : "s") on record
+                        </p>
                     </div>
                     <span class="material-symbols-outlined" style="color:#8C7A5D;">inventory_2</span>
                 </header>
@@ -127,7 +201,10 @@
                 <div class="overflow-x-auto relative z-10 custom-scrollbar">
                     @if (Model.History.Count == 0)
                     {
-                        <p class="italic text-center py-8" style="font-family:Manrope,sans-serif; color:#5C5445;">No cases on record yet.</p>
+                        <div class="text-center py-12">
+                            <span class="material-symbols-outlined" style="font-size:40px; color:#8C7A5D; opacity:0.5;">search_off</span>
+                            <p class="italic mt-3" style="font-family:Manrope,sans-serif; color:#5C5445;">No cases on record yet. Start your first investigation.</p>
+                        </div>
                     }
                     else
                     {
@@ -135,10 +212,12 @@
                             <thead>
                                 <tr style="color:#5C5445; border-bottom:1px solid #C8B89C;">
                                     <th class="py-3 px-2 uppercase tracking-wider text-xs font-bold">Date</th>
+                                    <th class="py-3 px-2 uppercase tracking-wider text-xs font-bold">Played As</th>
+                                    <th class="py-3 px-2 uppercase tracking-wider text-xs font-bold text-center">Players</th>
                                     <th class="py-3 px-2 uppercase tracking-wider text-xs font-bold">Outcome</th>
-                                    <th class="py-3 px-2 uppercase tracking-wider text-xs font-bold text-center">Suspect</th>
-                                    <th class="py-3 px-2 uppercase tracking-wider text-xs font-bold text-center">Weapon</th>
-                                    <th class="py-3 px-2 uppercase tracking-wider text-xs font-bold text-center">Location</th>
+                                    <th class="py-3 px-2 uppercase tracking-wider text-xs font-bold">Culprit</th>
+                                    <th class="py-3 px-2 uppercase tracking-wider text-xs font-bold">Weapon</th>
+                                    <th class="py-3 px-2 uppercase tracking-wider text-xs font-bold">Scene</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -146,24 +225,31 @@
                                 {
                                     <tr class="transition-colors" style="border-bottom:1px solid rgba(216,200,172,0.5);"
                                         onmouseover="this.style.background='rgba(232,220,194,0.5)'" onmouseout="this.style.background=''">
-                                        <td class="py-3 px-2 text-sm">@entry.Date</td>
+                                        <td class="py-3 px-2 text-xs" style="white-space:nowrap; color:#5C5445;">@entry.Date</td>
+                                        <td class="py-3 px-2 text-sm font-semibold">@entry.PlayedAsCharacter</td>
+                                        <td class="py-3 px-2 text-center text-sm">
+                                            <span class="inline-flex items-center gap-1" style="color:#5C5445;">
+                                                <span class="material-symbols-outlined" style="font-size:13px;">group</span>
+                                                @entry.NumPlayers
+                                            </span>
+                                        </td>
                                         <td class="py-3 px-2">
                                             @if (entry.Won)
                                             {
-                                                <span class="inline-flex items-center gap-1 font-bold text-sm" style="color:#1B503A;">
-                                                    <span class="material-symbols-outlined" style="font-size:16px;">check_circle</span> SOLVED
+                                                <span class="inline-flex items-center gap-1 font-bold text-xs uppercase" style="color:#1B503A;">
+                                                    <span class="material-symbols-outlined" style="font-size:14px;">check_circle</span> Solved
                                                 </span>
                                             }
                                             else
                                             {
-                                                <span class="inline-flex items-center gap-1 font-bold text-sm" style="color:#690005;">
-                                                    <span class="material-symbols-outlined" style="font-size:16px;">cancel</span> FAILED
+                                                <span class="inline-flex items-center gap-1 font-bold text-xs uppercase" style="color:#690005;">
+                                                    <span class="material-symbols-outlined" style="font-size:14px;">cancel</span> Failed
                                                 </span>
                                             }
                                         </td>
-                                        <td class="py-3 px-2 text-center text-sm">@entry.CharacterName</td>
-                                        <td class="py-3 px-2 text-center text-sm">@entry.WeaponName</td>
-                                        <td class="py-3 px-2 text-center text-sm">@entry.LocationName</td>
+                                        <td class="py-3 px-2 text-sm">@entry.SecretCharacter</td>
+                                        <td class="py-3 px-2 text-sm">@entry.SecretWeapon</td>
+                                        <td class="py-3 px-2 text-sm">@entry.SecretLocation</td>
                                     </tr>
                                 }
                             </tbody>
@@ -174,27 +260,85 @@
 
             <!-- Inspector Profile -->
             <section class="lg:col-span-1 flex flex-col gap-4">
-                <div class="rounded-lg p-6 border border-outline-variant/30 shadow-[0_8px_16px_rgba(0,0,0,0.5)] h-full flex flex-col relative overflow-hidden"
-                     style="background:#2a2a2a;">
-                    <div class="absolute inset-0 pointer-events-none z-10"
-                         style="background:linear-gradient(to top, #131313, rgba(42,42,42,0.8), transparent);"></div>
+                <div class="rounded-lg p-6 border shadow-[0_8px_16px_rgba(0,0,0,0.5)] flex flex-col gap-5"
+                     style="background:#1c1b1b; border-color:rgba(64,73,67,0.4); position:relative; overflow:hidden;">
 
-                    <header class="relative z-20 mb-4 flex justify-between items-start">
-                        <h2 style="font-family:'Noto Serif',serif; font-size:24px; font-weight:600; color:#e9c349;">Inspector Profile</h2>
-                        <span class="material-symbols-outlined opacity-50" style="color:#e9c349;">psychology</span>
+                    <!-- Decorative corner -->
+                    <div class="absolute top-0 left-0 w-8 h-8" style="border-top:2px solid rgba(233,195,73,0.3); border-left:2px solid rgba(233,195,73,0.3);"></div>
+                    <div class="absolute bottom-0 right-0 w-8 h-8" style="border-bottom:2px solid rgba(233,195,73,0.3); border-right:2px solid rgba(233,195,73,0.3);"></div>
+
+                    <header class="flex justify-between items-start">
+                        <h2 style="font-family:'Noto Serif',serif; font-size:22px; font-weight:600; color:#e9c349;">Inspector Profile</h2>
+                        <span class="material-symbols-outlined" style="color:#e9c349; opacity:0.5; font-size:22px;">psychology</span>
                     </header>
 
-                    <div class="relative z-20 mt-auto">
-                        <p class="uppercase tracking-widest mb-1" style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#9cd2b5;">Active Detective</p>
-                        <p class="uppercase leading-none mb-2" style="font-family:'Noto Serif',serif; font-size:32px; font-weight:600; color:#e5e2e1;">@Model.PlayerName</p>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <div class="px-2 py-1 border text-xs rounded" style="background:#20201f; border-color:#404943; color:#c0c9c1;">
-                                Win Rate: @Model.AccuracyPercent%
-                            </div>
-                            <div class="px-2 py-1 border text-xs rounded" style="background:#20201f; border-color:#404943; color:#c0c9c1;">
-                                @Model.GamesWon Solved
-                            </div>
+                    <!-- Name + rank -->
+                    <div style="border-bottom:1px solid rgba(64,73,67,0.4); padding-bottom:16px;">
+                        <p class="uppercase tracking-widest mb-1" style="font-family:Manrope,sans-serif; font-size:10px; font-weight:600; color:#9cd2b5;">Active Detective</p>
+                        <p class="uppercase" style="font-family:'Noto Serif',serif; font-size:28px; font-weight:700; color:#e5e2e1; line-height:1.1;">@Model.PlayerName</p>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            <span class="px-2 py-1 text-xs rounded" style="background:#20201f; border:1px solid #404943; color:#c0c9c1; font-family:Manrope,sans-serif;">
+                                @Model.AccuracyPercent% win rate
+                            </span>
+                            <span class="px-2 py-1 text-xs rounded" style="background:#20201f; border:1px solid #404943; color:#c0c9c1; font-family:Manrope,sans-serif;">
+                                @Model.GamesWon solved
+                            </span>
                         </div>
+                    </div>
+
+                    <!-- Stats list -->
+                    <div class="flex flex-col gap-3">
+
+                        <div class="flex justify-between items-center">
+                            <span class="flex items-center gap-2" style="font-family:Manrope,sans-serif; font-size:12px; color:#8a938c;">
+                                <span class="material-symbols-outlined" style="font-size:15px;">local_fire_department</span>
+                                Win streak
+                            </span>
+                            <span style="font-family:'Noto Serif',serif; font-size:18px; font-weight:600; color:@(Model.CurrentStreak >= 3 ? "#e9c349" : Model.CurrentStreak >= 1 ? "#9cd2b5" : "#8a938c");">
+                                @Model.CurrentStreak
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <span class="flex items-center gap-2" style="font-family:Manrope,sans-serif; font-size:12px; color:#8a938c;">
+                                <span class="material-symbols-outlined" style="font-size:15px;">manage_search</span>
+                                Total clues filed
+                            </span>
+                            <span style="font-family:'Noto Serif',serif; font-size:18px; font-weight:600; color:#e5e2e1;">
+                                @Model.TotalClues
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <span class="flex items-center gap-2" style="font-family:Manrope,sans-serif; font-size:12px; color:#8a938c;">
+                                <span class="material-symbols-outlined" style="font-size:15px;">person</span>
+                                Favourite alias
+                            </span>
+                            <span style="font-family:Manrope,sans-serif; font-size:12px; font-weight:600; color:#e5e2e1; text-align:right; max-width:120px;">
+                                @(string.IsNullOrEmpty(Model.MostPlayedCharacter) ? "—" : Model.MostPlayedCharacter)
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <span class="flex items-center gap-2" style="font-family:Manrope,sans-serif; font-size:12px; color:#8a938c;">
+                                <span class="material-symbols-outlined" style="font-size:15px;">cancel</span>
+                                Cases failed
+                            </span>
+                            <span style="font-family:'Noto Serif',serif; font-size:18px; font-weight:600; color:@(gamesLost > 0 ? "#ffb4ab" : "#9cd2b5");">
+                                @gamesLost
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <span class="flex items-center gap-2" style="font-family:Manrope,sans-serif; font-size:12px; color:#8a938c;">
+                                <span class="material-symbols-outlined" style="font-size:15px;">history</span>
+                                Last investigation
+                            </span>
+                            <span style="font-family:Manrope,sans-serif; font-size:12px; color:#c0c9c1;">
+                                @Model.LastGameDate
+                            </span>
+                        </div>
+
                     </div>
                 </div>
             </section>

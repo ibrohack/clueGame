@@ -119,6 +119,23 @@ public class GameController : Controller
         return View(vm);
     }
 
+    // GET /Game/Suggest
+    [HttpGet]
+    public async Task<IActionResult> Suggest(string gameId)
+    {
+        var (game, human, characters, weapons, locations) = await LoadGameContext(gameId);
+        if (game is null || human is null) return RedirectToAction(nameof(New));
+
+        return View(new SuggestViewModel
+        {
+            GameId = gameId,
+            TurnPhase = game.TurnPhase,
+            Characters = characters,
+            Weapons = weapons,
+            Locations = locations
+        });
+    }
+
     // POST /Game/Suggest
     [HttpPost]
     [ValidateAntiForgeryToken]

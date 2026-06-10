@@ -1,0 +1,221 @@
+@model clueGame.Models.ViewModels.SuggestViewModel
+@{
+    ViewData["Title"] = "Make a Suggestion";
+    var isHumanTurn = Model.TurnPhase == "human_suggestion";
+}
+
+@section Styles {
+<style>
+    body { overflow: hidden; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .icon-fill { font-variation-settings: 'FILL' 1; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #20201f; }
+    ::-webkit-scrollbar-thumb { background: #404943; border-radius: 4px; }
+
+    .select-field-wrap { position: relative; }
+    .select-field {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 100%;
+        background: #0a0a0a;
+        border: 1px solid #404943;
+        border-bottom: 2px solid rgba(64,73,67,0.9);
+        color: #e5e2e1;
+        font-family: Manrope, sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        padding: 13px 40px 13px 14px;
+        border-radius: 3px;
+        cursor: pointer;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .select-field:hover  { border-color: rgba(156,210,181,0.4); }
+    .select-field:focus  {
+        border-color: #9cd2b5;
+        box-shadow: 0 0 0 1px rgba(156,210,181,0.2), 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .select-field-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+        color: #9cd2b5;
+        pointer-events: none;
+    }
+</style>
+}
+
+<div class="flex" style="height: calc(100vh - 64px);">
+
+    @await Html.PartialAsync("_GameSidebar", new clueGame.Models.ViewModels.GameSidebarViewModel
+    {
+        GameId        = Model.GameId,
+        ActiveSection = "suggest"
+    })
+
+    <!-- Main content -->
+    <main class="flex-1 overflow-y-auto" style="background:#0e0e0e;">
+
+        <!-- Ambient gradient -->
+        <div class="pointer-events-none absolute inset-0"
+             style="background:radial-gradient(ellipse at top, rgba(42,42,42,0.2), transparent, transparent); z-index:0;"></div>
+
+        <div class="relative z-10 px-8 py-12 max-w-5xl mx-auto">
+
+            <!-- Page Header -->
+            <div class="text-center flex flex-col items-center mb-10">
+                <div class="w-16 h-16 rounded-full flex items-center justify-center mb-4"
+                     style="background:rgba(6,64,43,0.2); border:2px solid rgba(156,210,181,0.5); box-shadow:0 0 20px rgba(156,210,181,0.1);">
+                    <span class="material-symbols-outlined icon-fill" style="color:#9cd2b5; font-size:32px;">search</span>
+                </div>
+                <h2 style="font-family:'Noto Serif',serif; font-size:48px; font-weight:700; color:#e5e2e1; letter-spacing:-0.02em; line-height:1.2; margin-bottom:8px;">
+                    Make a Suggestion
+                </h2>
+                <p style="font-family:Manrope,sans-serif; font-size:18px; color:#c0c9c1; max-width:560px; line-height:1.6;">
+                    Interrogate the evidence. Name a suspect, a weapon, and a location — other players must reveal what they know.
+                </p>
+            </div>
+
+            @if (!isHumanTurn)
+            {
+                <!-- Not your turn notice -->
+                <div class="flex items-center gap-4 px-6 py-5 rounded-lg mb-8 mx-auto"
+                     style="max-width:520px; background:rgba(175,141,17,0.08); border:1px solid rgba(233,195,73,0.35);">
+                    <span class="material-symbols-outlined icon-fill" style="color:#e9c349; font-size:28px;">schedule</span>
+                    <div>
+                        <p class="uppercase tracking-widest mb-1"
+                           style="font-family:Manrope,sans-serif; font-size:11px; font-weight:600; color:#e9c349;">Not Your Turn</p>
+                        <p style="font-family:Manrope,sans-serif; font-size:14px; color:#c0c9c1; line-height:1.5;">
+                            Suggestions can only be made during your turn. Current phase:
+                            <strong style="color:#e9c349;">@Model.TurnPhase.Replace("_", " ")</strong>
+                        </p>
+                        <a asp-action="Board" asp-route-gameId="@Model.GameId"
+                           style="font-family:Manrope,sans-serif; font-size:12px; color:#9cd2b5; text-decoration:none;"
+                           onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+                            ← Return to Detective Ledger
+                        </a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <form asp-action="Suggest" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="GameId" value="@Model.GameId" />
+
+                    <!-- Bento grid: 3 columns -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+
+                        <!-- Suspect -->
+                        <section class="rounded-xl p-6 flex flex-col shadow-xl relative overflow-hidden"
+                                 style="background:#20201f; border:1px solid #404943;">
+                            <div class="absolute top-0 left-0 w-full h-32 pointer-events-none"
+                                 style="background:linear-gradient(to bottom, rgba(6,64,43,0.2), transparent);"></div>
+                            <div class="flex justify-between items-center mb-6 relative z-10">
+                                <h3 style="font-family:'Noto Serif',serif; font-size:24px; font-weight:600; color:#9cd2b5;">The Suspect</h3>
+                                <span class="material-symbols-outlined" style="color:#8a938c;">person_search</span>
+                            </div>
+                            <div class="flex-1 flex flex-col p-4 rounded-lg"
+                                 style="background:#131313; border:1px solid rgba(156,210,181,0.25); box-shadow:0 4px 15px rgba(0,0,0,0.5);">
+                                <p class="uppercase tracking-widest mb-3"
+                                   style="font-family:Manrope,sans-serif; font-size:11px; font-weight:600; color:#8a938c;">Select Suspect</p>
+                                <div class="select-field-wrap">
+                                    <select name="CharacterId" class="select-field">
+                                        @foreach (var c in Model.Characters)
+                                        {
+                                            <option value="@c.Id">@c.Name</option>
+                                        }
+                                    </select>
+                                    <span class="material-symbols-outlined select-field-icon">expand_more</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Weapon -->
+                        <section class="rounded-xl p-6 flex flex-col shadow-xl relative overflow-hidden"
+                                 style="background:#20201f; border:1px solid #404943;">
+                            <div class="absolute top-0 left-0 w-full h-32 pointer-events-none"
+                                 style="background:linear-gradient(to bottom, rgba(103,30,27,0.1), transparent);"></div>
+                            <div class="flex justify-between items-center mb-6 relative z-10">
+                                <h3 style="font-family:'Noto Serif',serif; font-size:24px; font-weight:600; color:#ffb3ac;">The Weapon</h3>
+                                <span class="material-symbols-outlined" style="color:#8a938c;">hardware</span>
+                            </div>
+                            <div class="flex-1 flex flex-col p-4 rounded-lg"
+                                 style="background:#131313; border:1px solid rgba(255,180,171,0.25); box-shadow:0 4px 15px rgba(0,0,0,0.5);">
+                                <p class="uppercase tracking-widest mb-3"
+                                   style="font-family:Manrope,sans-serif; font-size:11px; font-weight:600; color:#8a938c;">Select Weapon</p>
+                                <div class="select-field-wrap">
+                                    <select name="WeaponId" class="select-field">
+                                        @foreach (var w in Model.Weapons)
+                                        {
+                                            <option value="@w.Id">@w.Name</option>
+                                        }
+                                    </select>
+                                    <span class="material-symbols-outlined select-field-icon">expand_more</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Location -->
+                        <section class="rounded-xl p-6 flex flex-col shadow-xl relative overflow-hidden"
+                                 style="background:#20201f; border:1px solid #404943;">
+                            <div class="absolute top-0 left-0 w-full h-32 pointer-events-none"
+                                 style="background:linear-gradient(to bottom, rgba(175,141,17,0.1), transparent);"></div>
+                            <div class="flex justify-between items-center mb-6 relative z-10">
+                                <h3 style="font-family:'Noto Serif',serif; font-size:24px; font-weight:600; color:#e9c349;">The Location</h3>
+                                <span class="material-symbols-outlined" style="color:#8a938c;">meeting_room</span>
+                            </div>
+                            <div class="flex-1 flex flex-col p-4 rounded-lg"
+                                 style="background:#131313; border:1px solid rgba(233,195,73,0.25); box-shadow:0 4px 15px rgba(0,0,0,0.5);">
+                                <p class="uppercase tracking-widest mb-3"
+                                   style="font-family:Manrope,sans-serif; font-size:11px; font-weight:600; color:#8a938c;">Select Location</p>
+                                <div class="select-field-wrap">
+                                    <select name="LocationId" class="select-field">
+                                        @foreach (var l in Model.Locations)
+                                        {
+                                            <option value="@l.Id">@l.Name</option>
+                                        }
+                                    </select>
+                                    <span class="material-symbols-outlined select-field-icon">expand_more</span>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
+
+                    <!-- Info panel -->
+                    <div class="flex items-center gap-4 px-6 py-4 rounded-lg mb-8 mx-auto"
+                         style="max-width:520px; background:rgba(6,64,43,0.1); border:1px solid rgba(156,210,181,0.3);">
+                        <span class="material-symbols-outlined icon-fill" style="color:#9cd2b5; font-size:28px;">info</span>
+                        <p style="font-family:Manrope,sans-serif; font-size:14px; color:#c0c9c1; line-height:1.6;">
+                            A suggestion is not final. All players must show a card if they can refute it.
+                        </p>
+                    </div>
+
+                    <!-- CTA Button -->
+                    <div class="flex justify-center pb-12">
+                        <button type="submit"
+                                class="relative group cursor-pointer active:scale-[0.98] transition-transform">
+                            <div class="absolute -inset-1 rounded-full blur opacity-30 group-hover:opacity-60 transition duration-500"
+                                 style="background:linear-gradient(to right, #1b503a, #9cd2b5, #1b503a);"></div>
+                            <div class="relative flex items-center gap-4 px-16 py-6 rounded-full overflow-hidden"
+                                 style="background:#0e0e0e; border:2px solid #9cd2b5;">
+                                <div class="absolute inset-0 pointer-events-none"
+                                     style="background:linear-gradient(to top, transparent, rgba(156,210,181,0.07));"></div>
+                                <span class="material-symbols-outlined z-10" style="color:#9cd2b5; font-size:32px;">search</span>
+                                <span class="z-10" style="font-family:'Noto Serif',serif; font-size:32px; font-weight:600; color:#9cd2b5; letter-spacing:0.05em;">SUBMIT SUGGESTION</span>
+                            </div>
+                        </button>
+                    </div>
+
+                </form>
+            }
+
+        </div>
+    </main>
+
+</div>

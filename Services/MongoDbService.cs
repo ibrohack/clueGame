@@ -107,6 +107,16 @@ public class MongoDbService
                     .Limit(limit)
                     .ToListAsync();
 
+    public async Task<List<MongoGame>> GetAllFinishedGamesForPlayerAsync(string playerId)
+        => await _db.GetCollection<MongoGame>("games")
+                    .Find(g => g.IsFinished && g.Players.Any(p => p.PlayerId == playerId && !p.IsBot))
+                    .SortByDescending(g => g.CreatedAt)
+                    .ToListAsync();
+
+    public async Task<long> CountAllPlayerGuessesAsync(string playerId)
+        => await _db.GetCollection<MongoGuess>("guesses")
+                    .CountDocumentsAsync(g => g.PlayerId == playerId);
+
     // --- Guesses ---
 
     public async Task SaveGuessAsync(MongoGuess guess)

@@ -32,61 +32,11 @@
 
 <div class="flex" style="height: calc(100vh - 64px);">
 
-    <!-- Sidebar -->
-    <nav class="flex-shrink-0 flex flex-col z-40"
-         style="width:256px; background:#042016; border-right:2px solid rgba(120,80,0,0.4); box-shadow: 4px 0 20px rgba(0,0,0,0.8);">
-
-        <!-- Case file header -->
-        <div class="p-6" style="border-bottom:1px solid rgba(120,80,0,0.4);">
-            <div class="flex items-center gap-3 mb-2">
-                <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:#1a1a1a; border:1px solid #e9c349;">
-                    <span class="material-symbols-outlined icon-fill" style="color:#e9c349;">local_police</span>
-                </div>
-                <div>
-                    <p class="font-bold tracking-widest text-xs uppercase" style="color:#e9c349;">Current Case</p>
-                    <p class="capitalize" style="font-family:Manrope,sans-serif; font-size:10px; color:rgba(209,250,229,0.5);">The Blackwood Murder</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation -->
-        <div class="flex-1 flex flex-col py-2">
-            <a asp-action="Board" asp-route-gameId="@Model.GameId"
-               class="flex items-center gap-3 px-6 py-4 transition-all"
-               style="color:rgba(209,250,229,0.7); font-family:'Noto Serif',serif; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; text-decoration:none;"
-               onmouseover="this.style.background='rgba(6,64,43,0.5)'; this.style.color='white'; this.style.transform='translateX(4px)';"
-               onmouseout="this.style.background=''; this.style.color='rgba(209,250,229,0.7)'; this.style.transform='';">
-                <span class="material-symbols-outlined" style="font-size:18px;">map</span>
-                Detective Ledger
-            </a>
-            <a href="#"
-               class="flex items-center gap-3 px-6 py-4 transition-all"
-               style="color:rgba(209,250,229,0.7); font-family:'Noto Serif',serif; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; text-decoration:none;"
-               onmouseover="this.style.background='rgba(6,64,43,0.5)'; this.style.color='white';"
-               onmouseout="this.style.background=''; this.style.color='rgba(209,250,229,0.7)';">
-                <span class="material-symbols-outlined" style="font-size:18px;">inventory_2</span>
-                Evidence Bag
-            </a>
-            <a href="#"
-               class="flex items-center gap-3 px-6 py-4 transition-all"
-               style="color:rgba(209,250,229,0.7); font-family:'Noto Serif',serif; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; text-decoration:none;"
-               onmouseover="this.style.background='rgba(6,64,43,0.5)'; this.style.color='white';"
-               onmouseout="this.style.background=''; this.style.color='rgba(209,250,229,0.7)';">
-                <span class="material-symbols-outlined" style="font-size:18px;">vpn_key</span>
-                Secret Passages
-            </a>
-        </div>
-
-        <!-- Make Accusation CTA (active) -->
-        <div class="p-6" style="border-top:1px solid rgba(120,80,0,0.4);">
-            <div class="flex items-center gap-3 px-4 py-3 rounded font-bold text-sm uppercase tracking-widest"
-                 style="background:#e9c349; color:#1a1000;">
-                <span class="material-symbols-outlined icon-fill" style="font-size:18px;">gavel</span>
-                Make Accusation
-            </div>
-        </div>
-
-    </nav>
+    @await Html.PartialAsync("_GameSidebar", new clueGame.Models.ViewModels.GameSidebarViewModel
+    {
+        GameId        = Model.GameId,
+        ActiveSection = "accuse"
+    })
 
     <!-- Main content -->
     <main class="flex-1 overflow-y-auto" style="background:#0e0e0e;">

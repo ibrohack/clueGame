@@ -109,6 +109,7 @@ public class SuggestViewModel
     public string CharacterId { get; set; } = string.Empty;
     public string WeaponId { get; set; } = string.Empty;
     public string LocationId { get; set; } = string.Empty;
+    public string TurnPhase { get; set; } = string.Empty;
     public List<MongoCharacter> Characters { get; set; } = [];
     public List<MongoWeapon> Weapons { get; set; } = [];
     public List<MongoLocation> Locations { get; set; } = [];
@@ -147,4 +148,12 @@ public class GameOverViewModel
     public string SecretCharacterName { get; set; } = string.Empty;
     public string SecretWeaponName { get; set; } = string.Empty;
     public string SecretLocationName { get; set; } = string.Empty;
+}
+
+public class GameSidebarViewModel
+{
+    public string GameId { get; set; } = string.Empty;
+    /// <summary>"ledger" | "suggest" | "accuse"</summary>
+    public string ActiveSection { get; set; } = string.Empty;
+    public string CharacterName { get; set; } = string.Empty;
 }

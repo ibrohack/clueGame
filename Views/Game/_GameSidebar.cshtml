@@ -1,0 +1,121 @@
+@model clueGame.Models.ViewModels.GameSidebarViewModel
+@{
+    bool isLedger  = Model.ActiveSection == "ledger";
+    bool isSuggest = Model.ActiveSection == "suggest";
+    bool isAccuse  = Model.ActiveSection == "accuse";
+}
+
+<nav class="flex-shrink-0 flex flex-col z-40"
+     style="width:256px; background:#042016; border-right:2px solid rgba(120,80,0,0.4); box-shadow:4px 0 20px rgba(0,0,0,0.8);">
+
+    <!-- Header -->
+    <div class="p-6" style="border-bottom:1px solid rgba(120,80,0,0.4);">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                 style="background:#1a1a1a; border:1px solid #e9c349;">
+                <span class="material-symbols-outlined"
+                      style="color:#e9c349; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">local_police</span>
+            </div>
+            <div class="min-w-0">
+                <p class="font-bold tracking-widest text-xs uppercase" style="color:#e9c349; font-family:Manrope,sans-serif;">Current Case</p>
+                @if (!string.IsNullOrEmpty(Model.CharacterName))
+                {
+                    <p style="font-family:Manrope,sans-serif; font-size:10px; color:rgba(209,250,229,0.5);">Playing as: @Model.CharacterName</p>
+                }
+                else
+                {
+                    <p style="font-family:Manrope,sans-serif; font-size:10px; color:rgba(209,250,229,0.5);">The Blackwood Murder</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="flex-1 flex flex-col py-2">
+
+        @if (isLedger)
+        {
+            <div class="flex items-center gap-3 px-6 py-4 border-l-4"
+                 style="background:rgba(0,0,0,0.4); color:#e9c349; border-color:#e9c349; font-family:Manrope,sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:0.1em;">
+                <span class="material-symbols-outlined"
+                      style="font-size:18px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">edit_note</span>
+                Detective Ledger
+            </div>
+        }
+        else
+        {
+            <a asp-controller="Game" asp-action="Board" asp-route-gameId="@Model.GameId"
+               class="flex items-center gap-3 px-6 py-4 transition-all"
+               style="color:rgba(209,250,229,0.7); font-family:Manrope,sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; text-decoration:none;"
+               onmouseover="this.style.background='rgba(6,64,43,0.5)'; this.style.color='white'; this.style.paddingLeft='28px';"
+               onmouseout="this.style.background=''; this.style.color='rgba(209,250,229,0.7)'; this.style.paddingLeft='';">
+                <span class="material-symbols-outlined" style="font-size:18px;">edit_note</span>
+                Detective Ledger
+            </a>
+        }
+
+        @if (isSuggest)
+        {
+            <div class="flex items-center gap-3 px-6 py-4 border-l-4"
+                 style="background:rgba(0,0,0,0.4); color:#9cd2b5; border-color:#9cd2b5; font-family:Manrope,sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:0.1em;">
+                <span class="material-symbols-outlined"
+                      style="font-size:18px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">search</span>
+                Make Suggestion
+            </div>
+        }
+        else
+        {
+            <a asp-controller="Game" asp-action="Suggest" asp-route-gameId="@Model.GameId"
+               class="flex items-center gap-3 px-6 py-4 transition-all"
+               style="color:rgba(209,250,229,0.7); font-family:Manrope,sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; text-decoration:none;"
+               onmouseover="this.style.background='rgba(6,64,43,0.5)'; this.style.color='white'; this.style.paddingLeft='28px';"
+               onmouseout="this.style.background=''; this.style.color='rgba(209,250,229,0.7)'; this.style.paddingLeft='';">
+                <span class="material-symbols-outlined" style="font-size:18px;">search</span>
+                Make Suggestion
+            </a>
+        }
+
+    </div>
+
+    <!-- Bottom actions -->
+    <div class="p-5 flex flex-col gap-3" style="border-top:1px solid rgba(120,80,0,0.4);">
+
+        @if (isAccuse)
+        {
+            <div class="flex items-center justify-center gap-2 w-full py-3 px-4 font-bold text-xs uppercase tracking-widest"
+                 style="background:#e9c349; color:#1a1000; font-family:Manrope,sans-serif; border-radius:0.125rem;">
+                <span class="material-symbols-outlined"
+                      style="font-size:16px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">gavel</span>
+                Make Accusation
+            </div>
+        }
+        else
+        {
+            <a asp-controller="Game" asp-action="Accuse" asp-route-gameId="@Model.GameId"
+               class="flex items-center justify-center gap-2 w-full py-3 px-4 font-bold text-xs uppercase tracking-widest transition-all"
+               style="background:#e9c349; color:#1a1000; text-decoration:none; border-radius:0.125rem; box-shadow:0 0 15px rgba(245,158,11,0.3);"
+               onmouseover="this.style.background='#f5d060'; this.style.boxShadow='0 0 20px rgba(245,158,11,0.5)';"
+               onmouseout="this.style.background='#e9c349'; this.style.boxShadow='0 0 15px rgba(245,158,11,0.3)';">
+                <span class="material-symbols-outlined"
+                      style="font-size:16px; font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">gavel</span>
+                Make Accusation
+            </a>
+        }
+
+        <form asp-controller="Game" asp-action="Abandon" method="post"
+              onsubmit="return confirm('Abandon this investigation?')">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="gameId" value="@Model.GameId" />
+            <button type="submit"
+                    class="flex items-center justify-center gap-2 w-full py-3 px-4 font-bold text-xs uppercase tracking-widest transition-all"
+                    style="background:transparent; border:1px solid rgba(255,180,171,0.35); color:rgba(255,180,171,0.75); font-family:Manrope,sans-serif; border-radius:0.125rem; cursor:pointer;"
+                    onmouseover="this.style.borderColor='#ffb4ab'; this.style.color='#ffb4ab'; this.style.background='rgba(255,180,171,0.05)';"
+                    onmouseout="this.style.borderColor='rgba(255,180,171,0.35)'; this.style.color='rgba(255,180,171,0.75)'; this.style.background='transparent';">
+                <span class="material-symbols-outlined" style="font-size:16px;">logout</span>
+                Abandon Game
+            </button>
+        </form>
+
+    </div>
+
+</nav>
